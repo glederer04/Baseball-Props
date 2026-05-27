@@ -1,0 +1,18 @@
+:root {
+  --bs-primary: #10273f;
+}
+
+.navbar {
+  border-bottom: 3px solid #c8a34d;
+}
+
+.quarto-title-banner {
+  background-color: #f3f5f7;
+}
+
+h1,
+h2,
+h3 {
+  color: #10273f;
+}
+

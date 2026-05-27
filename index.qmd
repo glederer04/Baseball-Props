@@ -1,0 +1,22 @@
+---
+title: "Baseball Props Dashboard"
+toc: false
+---
+
+## Purpose
+
+This site will be a daily MLB betting research dashboard built in R and Quarto. It will compare modeled probabilities with available sportsbook prices, surface only picks that clear defined value thresholds, and preserve an honest record of every recommendation.
+
+## Initial Scope
+
+- Pitcher strikeout props
+- Batter total bases props
+- Daily price snapshots and pick tracking
+- Model performance and data-health reporting
+
+The site is currently in setup mode. Model output and live lines will appear only after the data provider and scoring pipeline have been validated.
+
+## Approach
+
+Recommendations will be evaluated against the line and price captured at prediction time. Performance will be reported using units and return on investment, not only win rate.
+

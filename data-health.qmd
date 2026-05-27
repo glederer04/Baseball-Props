@@ -1,0 +1,8 @@
+---
+title: "Data Health"
+---
+
+This page will report the most recent successful MLB data update, sportsbook line refresh, prediction run, and dashboard deployment.
+
+Before picks are published, the odds feed will be validated for reliable coverage of the intended FanDuel prop markets.
+

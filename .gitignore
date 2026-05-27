@@ -1,0 +1,13 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+/.quarto/
+/_site/
+
+# Local credentials and temporary downloads must never be committed.
+.Renviron
+data/raw/
+data/cache/
+

@@ -1,0 +1,8 @@
+---
+title: "Today's Card"
+---
+
+Today's recommendations will appear here once the data ingestion and prediction pipelines are active.
+
+The board will include the market, player, opponent, captured sportsbook line and price, modeled probability, implied break-even probability, estimated edge, and a short explanation.
+

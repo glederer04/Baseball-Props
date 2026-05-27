@@ -1,0 +1,26 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Baseball Props"
+  navbar:
+    background: "#10273f"
+    foreground: "#ffffff"
+    left:
+      - href: index.qmd
+        text: Home
+      - href: today.qmd
+        text: Today's Card
+      - href: results.qmd
+        text: Results
+      - href: performance.qmd
+        text: Performance
+      - href: data-health.qmd
+        text: Data Health
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true

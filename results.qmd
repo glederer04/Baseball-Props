@@ -1,0 +1,8 @@
+---
+title: "Results"
+---
+
+This page will preserve every locked recommendation with its original captured line, price, outcome, and flat-unit return.
+
+No recommendations have been issued yet.
+
