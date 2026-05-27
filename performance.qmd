@@ -2,7 +2,6 @@
 title: "Performance"
 ---
 
-This page will report record, units, ROI, calibration, and performance by market once graded picks have accumulated.
+This page will report record, calibration, Brier score, log loss, and performance by market once graded recommendations have accumulated.
 
 Model evaluation will use time-ordered validation and stored price snapshots to avoid overstating results.
-

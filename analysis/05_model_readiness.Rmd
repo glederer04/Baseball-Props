@@ -1,0 +1,73 @@
+---
+title: "05 - Model Readiness and Publication Gates"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+---
+
+## Purpose
+
+Prediction models should not begin issuing public recommendations simply
+because they render or because one holdout statistic looks promising. This
+notebook records the minimum evidence required before model output is promoted
+to the Quarto site.
+
+```{r setup, message=FALSE, warning=FALSE}
+library(dplyr)
+library(knitr)
+library(readr)
+
+project_root <- normalizePath(file.path(getwd(), ".."), mustWork = TRUE)
+processed_dir <- file.path(project_root, "data", "processed")
+
+count_metrics <- read_csv(file.path(processed_dir, "count_metrics.csv"), show_col_types = FALSE)
+probability_metrics <- read_csv(
+  file.path(processed_dir, "probability_metrics.csv"),
+  show_col_types = FALSE
+)
+nrfi_metrics <- read_csv(file.path(processed_dir, "nrfi_metrics.csv"), show_col_types = FALSE)
+```
+
+## Current Chronological Holdout
+
+```{r current-results}
+kable(count_metrics, digits = 3, caption = "Player prop count-model comparison")
+kable(probability_metrics, digits = 4, caption = "Player prop probability metrics")
+kable(nrfi_metrics, digits = 4, caption = "NRFI probability-model comparison")
+```
+
+## Publication Gates
+
+The website can show model-development results immediately. Daily
+recommendations should remain in research mode until all applicable gates
+pass.
+
+```{r gates}
+gates <- tibble::tribble(
+  ~gate, ~minimum_standard, ~reason,
+  "Historical coverage", "At least one completed season plus the current season", "Covers player changes and venue variation.",
+  "Chronological test window", "At least 30 later game dates held out", "Prevents random splitting from overstating accuracy.",
+  "Context improvement", "Context model is no worse than baseline on holdout Brier/log loss", "Extra variables must add evidence, not decoration.",
+  "Calibration", "Brier score improves on a constant-rate baseline and probability bins are inspected", "Recommendations depend on probabilities being believable.",
+  "Live shadow tracking", "At least 100 locked, pregame observations per market before promotion", "Confirms the live ingestion and name/line joins behave correctly.",
+  "Data health", "No missing probable starters or weather context in a recommended row", "A high-confidence result with missing inputs is not trustworthy."
+)
+
+kable(gates, caption = "Required gates before publishing daily recommendations")
+```
+
+## Interpreting Accuracy
+
+For pitcher strikeouts and total bases, there is no single acceptable
+"accuracy" number until the scored line is known; a predicted count is judged
+by MAE/RMSE and its derived over/under probability by Brier score, log loss,
+and calibration. A practical starting standard is a clearly lower holdout
+Brier score than a constant-probability baseline, stable calibration, and a
+live shadow sample before publishing recommendations.
+
+For NRFI, raw classification accuracy can be misleading because the majority
+class may already win frequently. NRFI should not be activated merely for
+exceeding 50% accuracy: its context model should improve Brier score and log
+loss against the baseline model and against predicting the historical NRFI
+rate for every game.

@@ -1,5 +1,5 @@
 ---
-title: "02 - Pregame Feature Engineering"
+title: "02 - Pregame Feature Engineering for Props and NRFI"
 output:
   html_document:
     toc: true
@@ -24,6 +24,14 @@ project_root <- normalizePath(file.path(getwd(), ".."), mustWork = TRUE)
 processed_dir <- file.path(project_root, "data", "processed")
 batter_games <- readRDS(file.path(processed_dir, "batter_game_outcomes.rds"))
 pitcher_games <- readRDS(file.path(processed_dir, "pitcher_game_outcomes.rds"))
+game_context <- readRDS(file.path(processed_dir, "game_context.rds"))
+nrfi_games <- readRDS(file.path(processed_dir, "nrfi_game_outcomes.rds"))
+
+context_features <- game_context |>
+  select(
+    game_pk, temperature_f, wind_mph, is_night, roof_closed_or_fixed,
+    grass_surface, elevation_ft, left_line_ft, center_ft, right_line_ft
+  )
 
 rolling_prior_mean <- function(x, window) {
   map_dbl(seq_along(x), function(i) {
@@ -59,6 +67,7 @@ market_games <- bind_rows(
       outcome = strikeouts
     )
 ) |>
+  left_join(context_features, by = "game_pk") |>
   arrange(market, player_id, game_date, game_pk)
 ```
 
@@ -66,9 +75,8 @@ market_games <- bind_rows(
 
 For each player, form measures use trailing 5- and 10-game windows plus the
 full prior sample. Opponent allowed form is calculated separately and joined
-back by opponent and date; it is retained for exploration and future opponent
-adjustments, while the first benchmark model uses only features available
-without resolving the player's daily opponent from the odds payload.
+back by opponent and date. Stadium and reported game-time weather features
+come from the historical game context table.
 
 ```{r rolling-features}
 player_features <- market_games |>
@@ -95,7 +103,17 @@ modeling_frame <- player_features |>
   filter(games_prior >= 5) |>
   mutate(
     player_sd_10 = replace_na(player_sd_10, 0),
-    workload_mean_10 = coalesce(workload_mean_10, workload)
+    workload_mean_10 = coalesce(workload_mean_10, workload),
+    opponent_allowed_mean_10 = coalesce(opponent_allowed_mean_10, player_mean_season),
+    temperature_f = coalesce(temperature_f, 70),
+    wind_mph = coalesce(wind_mph, 0),
+    is_night = coalesce(is_night, 0L),
+    roof_closed_or_fixed = coalesce(roof_closed_or_fixed, 0L),
+    grass_surface = coalesce(grass_surface, 1L),
+    elevation_ft = coalesce(elevation_ft, 0),
+    left_line_ft = coalesce(left_line_ft, 330),
+    center_ft = coalesce(center_ft, 400),
+    right_line_ft = coalesce(right_line_ft, 330)
   ) |>
   filter(
     is.finite(player_mean_5),
@@ -137,6 +155,16 @@ current_player_form <- market_games |>
 
 write_rds(current_player_form, file.path(processed_dir, "current_player_form.rds"))
 
+current_opponent_form <- market_games |>
+  arrange(market, opponent, game_date, game_pk) |>
+  group_by(market, opponent) |>
+  summarise(
+    opponent_allowed_mean_10 = mean(tail(outcome, 10), na.rm = TRUE),
+    .groups = "drop"
+  )
+
+write_rds(current_opponent_form, file.path(processed_dir, "current_opponent_form.rds"))
+
 feature_summary <- modeling_frame |>
   group_by(market) |>
   summarise(
@@ -161,4 +189,99 @@ ggplot(modeling_frame, aes(player_mean_10, outcome)) +
     y = "Observed next-game target"
   ) +
   theme_minimal()
+```
+
+## NRFI Features
+
+NRFI is a matchup-level target. Inputs use only prior results: each starter's
+trailing workload and strikeout form, each club's recent NRFI history, recent
+NRFI history at the venue, and the same game context fields available before
+first pitch.
+
+```{r nrfi-features}
+starter_form <- player_features |>
+  filter(market == "pitcher_strikeouts", games_prior >= 5) |>
+  select(
+    game_pk, is_home, player_id, player_name, games_prior,
+    player_mean_10, workload_mean_10
+  ) |>
+  mutate(side = if_else(is_home == 1L, "home", "away")) |>
+  select(-is_home) |>
+  pivot_wider(
+    names_from = side,
+    values_from = c(player_id, player_name, games_prior, player_mean_10, workload_mean_10),
+    names_glue = "{side}_{.value}"
+  )
+
+home_nrfi_form <- nrfi_games |>
+  arrange(home_team, game_date, game_pk) |>
+  group_by(home_team) |>
+  mutate(home_nrfi_mean_10 = rolling_prior_mean(nrfi, 10)) |>
+  ungroup() |>
+  select(game_pk, home_nrfi_mean_10)
+
+away_nrfi_form <- nrfi_games |>
+  arrange(away_team, game_date, game_pk) |>
+  group_by(away_team) |>
+  mutate(away_nrfi_mean_10 = rolling_prior_mean(nrfi, 10)) |>
+  ungroup() |>
+  select(game_pk, away_nrfi_mean_10)
+
+venue_nrfi_form <- nrfi_games |>
+  arrange(venue_id, game_date, game_pk) |>
+  group_by(venue_id) |>
+  mutate(venue_nrfi_mean_20 = rolling_prior_mean(nrfi, 20)) |>
+  ungroup() |>
+  select(game_pk, venue_nrfi_mean_20)
+
+nrfi_frame <- nrfi_games |>
+  left_join(starter_form, by = "game_pk") |>
+  left_join(home_nrfi_form, by = "game_pk") |>
+  left_join(away_nrfi_form, by = "game_pk") |>
+  left_join(venue_nrfi_form, by = "game_pk") |>
+  mutate(
+    temperature_f = coalesce(temperature_f, 70),
+    wind_mph = coalesce(wind_mph, 0),
+    is_night = coalesce(is_night, 0L),
+    roof_closed_or_fixed = coalesce(roof_closed_or_fixed, 0L),
+    grass_surface = coalesce(grass_surface, 1L),
+    elevation_ft = coalesce(elevation_ft, 0),
+    center_ft = coalesce(center_ft, 400)
+  ) |>
+  filter(
+    !is.na(home_player_id), !is.na(away_player_id),
+    is.finite(home_player_mean_10), is.finite(away_player_mean_10),
+    is.finite(home_workload_mean_10), is.finite(away_workload_mean_10),
+    is.finite(home_nrfi_mean_10), is.finite(away_nrfi_mean_10),
+    is.finite(venue_nrfi_mean_20)
+  )
+
+write_rds(nrfi_frame, file.path(processed_dir, "nrfi_modeling_frame.rds"))
+write_csv(nrfi_frame, file.path(processed_dir, "nrfi_modeling_frame.csv"))
+
+current_nrfi_team_form <- bind_rows(
+  nrfi_games |> transmute(team = home_team, game_date, game_pk, nrfi),
+  nrfi_games |> transmute(team = away_team, game_date, game_pk, nrfi)
+) |>
+  arrange(team, game_date, game_pk) |>
+  group_by(team) |>
+  summarise(nrfi_mean_10 = mean(tail(nrfi, 10)), .groups = "drop")
+
+current_nrfi_venue_form <- nrfi_games |>
+  arrange(venue_id, game_date, game_pk) |>
+  group_by(venue_id) |>
+  summarise(venue_nrfi_mean_20 = mean(tail(nrfi, 20)), .groups = "drop")
+
+write_rds(current_nrfi_team_form, file.path(processed_dir, "current_nrfi_team_form.rds"))
+write_rds(current_nrfi_venue_form, file.path(processed_dir, "current_nrfi_venue_form.rds"))
+
+nrfi_summary <- nrfi_frame |>
+  summarise(
+    games = n(),
+    first_game = min(game_date),
+    last_game = max(game_date),
+    nrfi_rate = mean(nrfi)
+  )
+
+kable(nrfi_summary, digits = 3, caption = "NRFI modeling frame")
 ```

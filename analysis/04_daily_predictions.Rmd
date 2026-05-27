@@ -7,20 +7,19 @@ output:
 params:
   event_date: !r Sys.Date()
   event_timezone: "America/New_York"
-  minimum_edge: 0.02
-  minimum_ev: 0.03
+  minimum_probability_difference: 0.03
 ---
 
 ## Objective
 
-This notebook is the bridge from an evaluated model to actionable daily
-research. It requests MLB player props from The Odds API, restricts the
-sportsbook to FanDuel, attaches model probabilities, and records the exact
-price snapshot used to make a recommendation.
+This notebook joins evaluated models to daily lines. It requests FanDuel
+player props and first-inning totals from The Odds API, retrieves forecast-time
+weather for the scheduled MLB venue from Open-Meteo, and stores the exact
+snapshot used for each recommendation.
 
-It will not publish fabricated picks. If `ODDS_API_KEY` is absent, the
-notebook runs through its setup and clearly reports that live scoring is
-disabled.
+NRFI is represented by the `Under 0.5` outcome in the
+`totals_1st_1_innings` market. If `ODDS_API_KEY` is absent, the notebook runs
+its setup and reports that live scoring is disabled.
 
 ```{r setup, message=FALSE, warning=FALSE}
 library(dplyr)
@@ -38,9 +37,18 @@ prediction_dir <- file.path(project_root, "data", "predictions")
 dir.create(prediction_dir, recursive = TRUE, showWarnings = FALSE)
 
 models <- readRDS(file.path(processed_dir, "benchmark_models.rds"))
+nrfi_model <- readRDS(file.path(processed_dir, "nrfi_model.rds"))
 current_form <- readRDS(file.path(processed_dir, "current_player_form.rds"))
+current_opponent_form <- readRDS(file.path(processed_dir, "current_opponent_form.rds"))
+current_nrfi_team_form <- readRDS(file.path(processed_dir, "current_nrfi_team_form.rds"))
+current_nrfi_venue_form <- readRDS(file.path(processed_dir, "current_nrfi_venue_form.rds"))
+
 api_key <- Sys.getenv("ODDS_API_KEY")
 run_timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
+`%||%` <- function(x, y) if (is.null(x) || length(x) == 0) y else x
+num <- function(x) as.numeric(x %||% NA_real_)
+int <- function(x) as.integer(x %||% NA_integer_)
+chr <- function(x) as.character(x %||% NA_character_)
 
 if (as.Date(params$event_date) <= max(current_form$last_game_date)) {
   stop("event_date must be later than the outcomes used to build current player form.")
@@ -50,44 +58,59 @@ clean_name <- function(x) {
   tolower(gsub("[^a-z0-9]", "", iconv(x, to = "ASCII//TRANSLIT")))
 }
 
-american_to_decimal <- function(price) {
-  ifelse(price > 0, 1 + price / 100, 1 + 100 / abs(price))
-}
-
 american_implied_probability <- function(price) {
   ifelse(price > 0, 100 / (price + 100), abs(price) / (abs(price) + 100))
 }
+
+add_no_vig_probability <- function(data) {
+  data |>
+    mutate(implied_probability_raw = american_implied_probability(american_price)) |>
+    group_by(event_id, market, player_name, line) |>
+    mutate(
+      implied_probability = if_else(
+        n() == 2L,
+        implied_probability_raw / sum(implied_probability_raw),
+        implied_probability_raw
+      )
+    ) |>
+    ungroup()
+}
 ```
 
-## Obtain FanDuel Prop Snapshots
+## Data Access Helpers
 
-The two requested market keys are documented in The Odds API MLB player-prop
-catalog: `pitcher_strikeouts` and `batter_total_bases`.
+Historical weather in model training comes from MLB's recorded game weather.
+For a future card, Open-Meteo supplies hourly forecast weather at the MLB
+venue coordinates available before first pitch.
 
-```{r odds-functions}
-get_api_json <- function(url, ...) {
+```{r api-functions}
+get_public_json <- function(url, ...) {
   request(url) |>
-    req_url_query(apiKey = api_key, ...) |>
-    req_user_agent("Baseball-Props research dashboard (R/httr2)") |>
+    req_url_query(...) |>
+    req_user_agent("Baseball-Props prediction research dashboard (R/httr2)") |>
     req_timeout(seconds = 30) |>
     req_retry(max_tries = 3) |>
     req_perform() |>
     resp_body_json(simplifyVector = FALSE)
 }
 
-fetch_events <- function() {
-  get_api_json("https://api.the-odds-api.com/v4/sports/baseball_mlb/events")
+get_odds_json <- function(url, ...) {
+  get_public_json(url, apiKey = api_key, ...)
 }
 
-fetch_fanduel_props <- function(event) {
-  payload <- get_api_json(
+fetch_events <- function() {
+  get_odds_json("https://api.the-odds-api.com/v4/sports/baseball_mlb/events")
+}
+
+fetch_fanduel_lines <- function(event) {
+  payload <- get_odds_json(
     paste0(
       "https://api.the-odds-api.com/v4/sports/baseball_mlb/events/",
       event$id,
       "/odds"
     ),
     regions = "us",
-    markets = "pitcher_strikeouts,batter_total_bases",
+    markets = "pitcher_strikeouts,batter_total_bases,totals_1st_1_innings",
     bookmakers = "fanduel",
     oddsFormat = "american"
   )
@@ -102,7 +125,7 @@ fetch_fanduel_props <- function(event) {
           away_team = event$away_team,
           sportsbook = book$key,
           market = market$key,
-          player_name = outcome$description,
+          player_name = chr(outcome$description),
           side = outcome$name,
           line = as.numeric(outcome$point),
           american_price = as.numeric(outcome$price),
@@ -112,39 +135,130 @@ fetch_fanduel_props <- function(event) {
     })
   })
 }
+
+fetch_venue <- function(venue_id) {
+  payload <- get_public_json(
+    "https://statsapi.mlb.com/api/v1/venues",
+    venueIds = venue_id,
+    hydrate = "location,fieldInfo"
+  )$venues[[1]]
+  location <- payload$location %||% list()
+  coordinates <- location$defaultCoordinates %||% list()
+  field <- payload$fieldInfo %||% list()
+  tibble(
+    venue_id = int(payload$id),
+    latitude = num(coordinates$latitude),
+    longitude = num(coordinates$longitude),
+    elevation_ft = num(location$elevation),
+    roof_closed_or_fixed = as.integer(chr(field$roofType) %in% c("Closed", "Fixed")),
+    grass_surface = as.integer(chr(field$turfType) == "Grass"),
+    center_ft = num(field$center)
+  )
+}
+
+fetch_forecast_at_start <- function(latitude, longitude, game_datetime) {
+  payload <- get_public_json(
+    "https://api.open-meteo.com/v1/forecast",
+    latitude = latitude,
+    longitude = longitude,
+    hourly = "temperature_2m,wind_speed_10m,precipitation_probability",
+    temperature_unit = "fahrenheit",
+    wind_speed_unit = "mph",
+    timezone = params$event_timezone,
+    forecast_days = 16
+  )
+  hourly <- tibble(
+    forecast_time = ymd_hm(unlist(payload$hourly$time), tz = params$event_timezone),
+    temperature_f = unlist(payload$hourly$temperature_2m),
+    wind_mph = unlist(payload$hourly$wind_speed_10m),
+    precipitation_probability = unlist(payload$hourly$precipitation_probability)
+  )
+  start_local <- with_tz(ymd_hms(game_datetime), params$event_timezone)
+  hourly[which.min(abs(difftime(hourly$forecast_time, start_local, units = "mins"))), ]
+}
+
+fetch_daily_game_context <- function() {
+  schedule <- get_public_json(
+    "https://statsapi.mlb.com/api/v1/schedule",
+    sportId = 1,
+    date = as.character(as.Date(params$event_date)),
+    hydrate = "venue,probablePitcher"
+  )
+  games <- map_dfr(schedule$dates %||% list(), function(day) {
+    map_dfr(day$games %||% list(), function(game) {
+      tibble(
+        home_team = chr(game$teams$home$team$name),
+        away_team = chr(game$teams$away$team$name),
+        home_probable_pitcher = chr(game$teams$home$probablePitcher$fullName),
+        away_probable_pitcher = chr(game$teams$away$probablePitcher$fullName),
+        commence_time = chr(game$gameDate),
+        venue_id = int(game$venue$id),
+        is_night = as.integer(chr(game$dayNight) == "night")
+      )
+    })
+  })
+  venues <- map_dfr(unique(games$venue_id), fetch_venue)
+  games |>
+    left_join(venues, by = "venue_id") |>
+    mutate(
+      weather = pmap(
+        list(latitude, longitude, commence_time),
+        fetch_forecast_at_start
+      )
+    ) |>
+    unnest(weather)
+}
 ```
 
-```{r live-lines}
-`%||%` <- function(x, y) if (is.null(x) || length(x) == 0) y else x
+## Obtain Daily Line and Weather Snapshots
 
+```{r live-lines}
 if (!nzchar(api_key)) {
-  props <- tibble()
-  cat("No ODDS_API_KEY found. Live FanDuel prop retrieval and scoring were skipped.\n")
+  lines <- tibble(
+    event_id = character(),
+    commence_time = character(),
+    home_team = character(),
+    away_team = character(),
+    sportsbook = character(),
+    market = character(),
+    player_name = character(),
+    side = character(),
+    line = double(),
+    american_price = double(),
+    captured_at = character()
+  )
+  daily_context <- tibble()
+  cat("No ODDS_API_KEY found. Live FanDuel line retrieval and scoring were skipped.\n")
 } else {
   events <- fetch_events()
   selected_events <- keep(events, function(event) {
     local_start <- with_tz(ymd_hms(event$commence_time), params$event_timezone)
     as.Date(local_start) == as.Date(params$event_date)
   })
-  props <- map_dfr(selected_events, fetch_fanduel_props)
+  lines <- map_dfr(selected_events, fetch_fanduel_lines)
+  daily_context <- fetch_daily_game_context()
 
-  if (nrow(props) > 0) {
+  if (nrow(lines) > 0) {
     write_csv(
-      props,
+      lines,
       file.path(
         prediction_dir,
-        paste0("fanduel_props_", format(Sys.time(), "%Y%m%d_%H%M%S"), ".csv")
+        paste0("fanduel_lines_", format(Sys.time(), "%Y%m%d_%H%M%S"), ".csv")
       )
     )
   }
 }
 ```
 
-## Score Available Lines
+## Score Player Props
 
-```{r score-lines}
-if (nrow(props) > 0) {
-  scoring_data <- props |>
+```{r score-player-props}
+player_lines <- lines |>
+  filter(market %in% c("pitcher_strikeouts", "batter_total_bases"))
+
+if (nrow(player_lines) > 0) {
+  scoring_data <- player_lines |>
+    left_join(daily_context, by = c("home_team", "away_team", "commence_time")) |>
     mutate(player_key = clean_name(player_name)) |>
     left_join(
       current_form |>
@@ -153,9 +267,13 @@ if (nrow(props) > 0) {
       by = c("market", "player_key")
     ) |>
     filter(!is.na(player_id)) |>
-    mutate(is_home = as.integer(team == home_team))
+    mutate(
+      is_home = as.integer(team == home_team),
+      opponent = if_else(is_home == 1L, away_team, home_team)
+    ) |>
+    left_join(current_opponent_form, by = c("market", "opponent"))
 
-  scored <- scoring_data |>
+  scored_props <- scoring_data |>
     group_split(market) |>
     map_dfr(function(market_rows) {
       model <- models[[unique(market_rows$market)]]
@@ -164,45 +282,113 @@ if (nrow(props) > 0) {
     }) |>
     mutate(
       probability_over = ppois(line, expected_count, lower.tail = FALSE),
-      model_probability = if_else(side == "Over", probability_over, 1 - probability_over),
-      decimal_price = american_to_decimal(american_price),
-      implied_probability_raw = american_implied_probability(american_price)
+      model_probability = if_else(side == "Over", probability_over, 1 - probability_over)
     ) |>
-    group_by(event_id, market, player_name, line) |>
+    add_no_vig_probability() |>
     mutate(
-      implied_probability = if_else(
-        n() == 2L,
-        implied_probability_raw / sum(implied_probability_raw),
-        implied_probability_raw
-      ),
-      edge = model_probability - implied_probability,
-      expected_value = model_probability * decimal_price - 1,
-      qualifies = edge >= params$minimum_edge & expected_value >= params$minimum_ev
+      probability_difference = model_probability - implied_probability,
+      qualifies = probability_difference >= params$minimum_probability_difference
     ) |>
-    ungroup() |>
-    arrange(desc(qualifies), desc(expected_value))
+    arrange(desc(qualifies), desc(probability_difference))
 
-  recommendations <- filter(scored, qualifies)
-  write_csv(scored, file.path(prediction_dir, "latest_scored_props.csv"))
-  write_csv(recommendations, file.path(prediction_dir, "latest_recommendations.csv"))
+  write_csv(scored_props, file.path(prediction_dir, "latest_scored_player_props.csv"))
 
   kable(
-    scored |>
+    scored_props |>
       select(
-        player_name, market, side, line, american_price, expected_count,
-        model_probability, implied_probability, edge, expected_value, qualifies
+        player_name, market, side, line, model_probability,
+        implied_probability, probability_difference, qualifies
       ),
     digits = 3,
     caption = "Scored FanDuel player props"
   )
 } else {
-  cat("No prop lines were available to score in this run.\n")
+  cat("No player prop lines were available to score in this run.\n")
+}
+```
+
+## Score NRFI
+
+```{r score-nrfi}
+nrfi_lines <- lines |>
+  filter(market == "totals_1st_1_innings", line == 0.5)
+
+if (nrow(nrfi_lines) > 0) {
+  pitcher_form <- current_form |>
+    filter(market == "pitcher_strikeouts") |>
+    mutate(pitcher_key = clean_name(player_name))
+
+  nrfi_data <- nrfi_lines |>
+    left_join(daily_context, by = c("home_team", "away_team", "commence_time")) |>
+    mutate(
+      home_pitcher_key = clean_name(home_probable_pitcher),
+      away_pitcher_key = clean_name(away_probable_pitcher)
+    ) |>
+    left_join(
+      pitcher_form |>
+        transmute(
+          home_pitcher_key = pitcher_key,
+          home_player_mean_10 = player_mean_10,
+          home_workload_mean_10 = workload_mean_10
+        ),
+      by = "home_pitcher_key"
+    ) |>
+    left_join(
+      pitcher_form |>
+        transmute(
+          away_pitcher_key = pitcher_key,
+          away_player_mean_10 = player_mean_10,
+          away_workload_mean_10 = workload_mean_10
+        ),
+      by = "away_pitcher_key"
+    ) |>
+    left_join(
+      current_nrfi_team_form |>
+        rename(home_team = team, home_nrfi_mean_10 = nrfi_mean_10),
+      by = "home_team"
+    ) |>
+    left_join(
+      current_nrfi_team_form |>
+        rename(away_team = team, away_nrfi_mean_10 = nrfi_mean_10),
+      by = "away_team"
+    ) |>
+    left_join(current_nrfi_venue_form, by = "venue_id") |>
+    filter(
+      !is.na(home_player_mean_10), !is.na(away_player_mean_10),
+      !is.na(venue_nrfi_mean_20)
+    )
+
+  scored_nrfi <- nrfi_data |>
+    mutate(
+      probability_nrfi = predict(nrfi_model, newdata = nrfi_data, type = "response"),
+      model_probability = if_else(side == "Under", probability_nrfi, 1 - probability_nrfi)
+    ) |>
+    add_no_vig_probability() |>
+    mutate(
+      probability_difference = model_probability - implied_probability,
+      qualifies = probability_difference >= params$minimum_probability_difference
+    ) |>
+    arrange(desc(qualifies), desc(probability_difference))
+
+  write_csv(scored_nrfi, file.path(prediction_dir, "latest_scored_nrfi.csv"))
+
+  kable(
+    scored_nrfi |>
+      select(
+        home_team, away_team, side, line, model_probability,
+        implied_probability, probability_difference, qualifies
+      ),
+    digits = 3,
+    caption = "Scored FanDuel first-inning totals (Under 0.5 = NRFI)"
+  )
+} else {
+  cat("No FanDuel first-inning total at 0.5 was available to score in this run.\n")
 }
 ```
 
 ## Evaluation Discipline
 
-A qualified recommendation becomes eligible for performance reporting only
-after this notebook has stored its pregame line and price. Grading future
-outcomes against those locked snapshots will support units, ROI, calibration,
-and market-by-market performance without look-ahead bias.
+A recommendation becomes eligible for performance reporting only after this
+notebook stores its pregame line, model probability, and market-implied
+probability. Future grading reports accuracy and calibration from those locked
+snapshots without look-ahead bias.

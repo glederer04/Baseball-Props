@@ -1,13 +1,13 @@
 # Baseball Props
 
-Personal MLB betting research dashboard built with R and Quarto.
+Personal MLB prediction research dashboard built with R and Quarto.
 
 ## Initial Product Scope
 
-- Pitcher strikeout and batter total bases modeling
+- Pitcher strikeout, batter total bases, and NRFI modeling
 - Daily sportsbook price snapshots
-- Ranked recommendations based on modeled edge
-- Honest historical results and performance reporting
+- Ranked recommendations based on modeled probability differences
+- Honest historical recommendation and calibration reporting
 
 ## Development
 
@@ -27,8 +27,9 @@ renv::restore()
 
 Research and model development live in [`analysis/`](analysis/README.md) as
 ordered R Markdown notebooks. The workflow acquires MLB game outcomes, builds
-pregame rolling features, evaluates benchmark models chronologically, and
-scores captured FanDuel lines once an `ODDS_API_KEY` is configured locally.
+pregame rolling and weather/venue features, evaluates benchmark models
+chronologically, and scores captured FanDuel lines once an `ODDS_API_KEY` is
+configured locally.
 
 ## Publishing
 

@@ -1,5 +1,5 @@
 ---
-title: "03 - Modeling and Chronological Evaluation"
+title: "03 - Enhanced Modeling and Chronological Evaluation"
 output:
   html_document:
     toc: true
@@ -10,10 +10,10 @@ params:
 
 ## Objective
 
-The initial benchmark is a separate Poisson regression for each count target.
-It is deliberately interpretable and establishes an honest baseline before
-more flexible models are considered. Validation is chronological: earlier
-games train the model and later games assess performance.
+This notebook compares baseline and context-enhanced Poisson models for each
+player count target, then fits a dedicated NRFI probability model. All
+validation is chronological: earlier games train each model and later games
+assess performance.
 
 ```{r setup, message=FALSE, warning=FALSE}
 library(dplyr)
@@ -26,10 +26,16 @@ library(tidyr)
 project_root <- normalizePath(file.path(getwd(), ".."), mustWork = TRUE)
 processed_dir <- file.path(project_root, "data", "processed")
 frame <- readRDS(file.path(processed_dir, "modeling_frame.rds"))
+nrfi_frame <- readRDS(file.path(processed_dir, "nrfi_modeling_frame.rds"))
 stopifnot(params$training_fraction > 0.5, params$training_fraction < 1)
 
-model_formula <- outcome ~ player_mean_5 + player_mean_10 +
+baseline_formula <- outcome ~ player_mean_5 + player_mean_10 +
   player_mean_season + player_sd_10 + workload_mean_10 + is_home
+
+enhanced_formula <- outcome ~ player_mean_5 + player_mean_10 +
+  player_mean_season + player_sd_10 + workload_mean_10 + is_home +
+  opponent_allowed_mean_10 + temperature_f + wind_mph + is_night +
+  roof_closed_or_fixed + grass_surface + elevation_ft + center_ft
 
 poisson_deviance <- function(observed, predicted) {
   component <- ifelse(
@@ -40,31 +46,38 @@ poisson_deviance <- function(observed, predicted) {
   mean(2 * component)
 }
 
-fit_market <- function(market_frame) {
+fit_market <- function(market_frame, formula, model_name) {
   game_dates <- sort(unique(market_frame$game_date))
   cutoff_index <- floor(length(game_dates) * params$training_fraction)
   cutoff_date <- game_dates[cutoff_index]
   train <- filter(market_frame, game_date <= cutoff_date)
   test <- filter(market_frame, game_date > cutoff_date)
 
-  model <- glm(model_formula, family = poisson(link = "log"), data = train)
+  model <- glm(formula, family = poisson(link = "log"), data = train)
   predictions <- test |>
     mutate(expected_count = pmax(predict(model, newdata = test, type = "response"), 0.001))
 
-  list(model = model, train = train, test = predictions, cutoff_date = cutoff_date)
+  list(
+    model = model, train = train, test = predictions,
+    cutoff_date = cutoff_date, model_name = model_name
+  )
 }
 
-market_models <- split(frame, frame$market) |>
-  map(fit_market)
+market_frames <- split(frame, frame$market)
+baseline_models <- map(market_frames, fit_market, formula = baseline_formula, model_name = "Baseline")
+enhanced_models <- map(market_frames, fit_market, formula = enhanced_formula, model_name = "Context enhanced")
+market_models <- enhanced_models
 ```
 
-## Count Prediction Performance
+## Player Prop Count Performance
 
 ```{r metrics}
-count_metrics <- imap_dfr(market_models, function(result, market_name) {
+summarise_count_metrics <- function(models) {
+  imap_dfr(models, function(result, market_name) {
   result$test |>
     summarise(
       market = market_name,
+      model = result$model_name,
       training_rows = nrow(result$train),
       test_rows = n(),
       training_through = as.character(result$cutoff_date),
@@ -75,17 +88,23 @@ count_metrics <- imap_dfr(market_models, function(result, market_name) {
       predicted_average = mean(expected_count),
       observed_average = mean(outcome)
     )
-})
+  })
+}
+
+count_metrics <- bind_rows(
+  summarise_count_metrics(baseline_models),
+  summarise_count_metrics(enhanced_models)
+)
 
 kable(count_metrics, digits = 3, caption = "Chronological holdout count metrics")
 ```
 
 ## Over Probability Evaluation
 
-Prop recommendations need probabilities, not just expected counts. For an
-initial probability check, each held-out outcome is evaluated against common
-half-point lines. This assesses calibration without implying that historical
-prices were available or that ROI has been backtested.
+Prop recommendations need probabilities, not just expected counts. Each
+enhanced-model held-out outcome is evaluated against common half-point lines.
+This assesses probability calibration without implying historical line
+availability.
 
 ```{r probability-evaluation}
 line_grid <- list(
@@ -93,16 +112,24 @@ line_grid <- list(
   pitcher_strikeouts = c(3.5, 4.5, 5.5, 6.5, 7.5, 8.5)
 )
 
-line_predictions <- imap_dfr(market_models, function(result, market_name) {
-  tidyr::crossing(result$test, line = line_grid[[market_name]]) |>
-    mutate(
-      over_result = as.integer(outcome > line),
-      probability_over = ppois(line, expected_count, lower.tail = FALSE)
-    )
-})
+make_line_predictions <- function(results) {
+  imap_dfr(results, function(result, market_name) {
+    tidyr::crossing(result$test, line = line_grid[[market_name]]) |>
+      mutate(
+        model = result$model_name,
+        over_result = as.integer(outcome > line),
+        probability_over = ppois(line, expected_count, lower.tail = FALSE)
+      )
+  })
+}
+
+line_predictions <- bind_rows(
+  make_line_predictions(baseline_models),
+  make_line_predictions(enhanced_models)
+)
 
 probability_metrics <- line_predictions |>
-  group_by(market) |>
+  group_by(market, model) |>
   summarise(
     line_predictions = n(),
     brier_score = mean((over_result - probability_over)^2),
@@ -114,13 +141,20 @@ probability_metrics <- line_predictions |>
 
 kable(probability_metrics, digits = 4, caption = "Held-out over probability metrics")
 
+selected_prop_models <- probability_metrics |>
+  group_by(market) |>
+  slice_min(brier_score, n = 1, with_ties = FALSE) |>
+  ungroup() |>
+  select(market, model)
+
 calibration <- line_predictions |>
+  inner_join(selected_prop_models, by = c("market", "model")) |>
   mutate(probability_bin = cut(
     probability_over,
     breaks = seq(0, 1, by = 0.1),
     include.lowest = TRUE
   )) |>
-  group_by(market, probability_bin) |>
+  group_by(market, model, probability_bin) |>
   summarise(
     predictions = n(),
     predicted = mean(probability_over),
@@ -144,20 +178,137 @@ ggplot(calibration, aes(predicted, observed, size = predictions)) +
   theme_minimal()
 ```
 
+## NRFI Probability Model
+
+NRFI is a binary outcome, so it uses logistic regression. Its context model
+uses both expected starters' prior form, club and venue first-inning history,
+and the venue/weather conditions already measured for player props.
+
+```{r nrfi-model}
+nrfi_baseline_formula <- nrfi ~ home_player_mean_10 + away_player_mean_10 +
+  home_workload_mean_10 + away_workload_mean_10 +
+  home_nrfi_mean_10 + away_nrfi_mean_10 + venue_nrfi_mean_20
+
+nrfi_enhanced_formula <- update(
+  nrfi_baseline_formula,
+  . ~ . + temperature_f + wind_mph + is_night +
+    roof_closed_or_fixed + grass_surface + elevation_ft + center_ft
+)
+
+fit_nrfi <- function(formula, model_name) {
+  dates <- sort(unique(nrfi_frame$game_date))
+  cutoff <- dates[floor(length(dates) * params$training_fraction)]
+  train <- filter(nrfi_frame, game_date <= cutoff)
+  test <- filter(nrfi_frame, game_date > cutoff)
+  model <- glm(formula, family = binomial(link = "logit"), data = train)
+  test <- test |>
+    mutate(probability_nrfi = predict(model, newdata = test, type = "response"))
+  list(model = model, train = train, test = test, cutoff_date = cutoff, model_name = model_name)
+}
+
+binary_auc <- function(observed, probability) {
+  positives <- probability[observed == 1]
+  negatives <- probability[observed == 0]
+  comparisons <- outer(positives, negatives, "-")
+  mean(comparisons > 0) + 0.5 * mean(comparisons == 0)
+}
+
+summarise_nrfi <- function(result) {
+  result$test |>
+    summarise(
+      market = "nrfi",
+      model = result$model_name,
+      training_rows = nrow(result$train),
+      test_rows = n(),
+      training_through = as.character(result$cutoff_date),
+      test_start = as.character(min(game_date)),
+      accuracy_at_50 = mean((probability_nrfi >= 0.5) == nrfi),
+      brier_score = mean((nrfi - probability_nrfi)^2),
+      log_loss = -mean(
+        nrfi * log(pmax(probability_nrfi, 1e-8)) +
+          (1 - nrfi) * log(pmax(1 - probability_nrfi, 1e-8))
+      ),
+      auc = binary_auc(nrfi, probability_nrfi),
+      predicted_rate = mean(probability_nrfi),
+      observed_rate = mean(nrfi)
+    )
+}
+
+nrfi_baseline <- fit_nrfi(nrfi_baseline_formula, "Baseline")
+nrfi_enhanced <- fit_nrfi(nrfi_enhanced_formula, "Context enhanced")
+nrfi_constant <- list(
+  model_name = "Constant training rate",
+  cutoff_date = nrfi_baseline$cutoff_date,
+  train = nrfi_baseline$train,
+  test = nrfi_baseline$test |>
+    mutate(probability_nrfi = mean(nrfi_baseline$train$nrfi))
+)
+nrfi_metrics <- bind_rows(
+  summarise_nrfi(nrfi_constant),
+  summarise_nrfi(nrfi_baseline),
+  summarise_nrfi(nrfi_enhanced)
+)
+
+kable(nrfi_metrics, digits = 4, caption = "Chronological holdout NRFI metrics")
+```
+
 ## Persist Models and Evaluation
 
 ```{r output}
-models <- map(market_models, "model")
-holdout_predictions <- map_dfr(market_models, "test", .id = "market")
+models <- imap(selected_prop_models$market, function(market_name, index) {
+  candidate <- selected_prop_models$model[[index]]
+  if (candidate == "Context enhanced") {
+    enhanced_models[[market_name]]$model
+  } else {
+    baseline_models[[market_name]]$model
+  }
+}) |>
+  set_names(selected_prop_models$market)
+selected_prop_results <- imap(selected_prop_models$market, function(market_name, index) {
+  if (selected_prop_models$model[[index]] == "Context enhanced") {
+    enhanced_models[[market_name]]
+  } else {
+    baseline_models[[market_name]]
+  }
+}) |>
+  set_names(selected_prop_models$market)
+
+selected_nrfi_name <- nrfi_metrics |>
+  filter(model != "Constant training rate") |>
+  slice_min(brier_score, n = 1, with_ties = FALSE) |>
+  pull(model)
+selected_nrfi_model <- if (selected_nrfi_name == "Context enhanced") {
+  nrfi_enhanced$model
+} else {
+  nrfi_baseline$model
+}
+selected_nrfi_result <- if (selected_nrfi_name == "Context enhanced") {
+  nrfi_enhanced
+} else {
+  nrfi_baseline
+}
+
+holdout_predictions <- map_dfr(selected_prop_results, "test", .id = "market")
+selected_registry <- bind_rows(
+  selected_prop_models,
+  tibble(market = "nrfi", model = selected_nrfi_name)
+)
 
 saveRDS(models, file.path(processed_dir, "benchmark_models.rds"))
+saveRDS(selected_nrfi_model, file.path(processed_dir, "nrfi_model.rds"))
 write_csv(count_metrics, file.path(processed_dir, "count_metrics.csv"))
 write_csv(probability_metrics, file.path(processed_dir, "probability_metrics.csv"))
+write_csv(nrfi_metrics, file.path(processed_dir, "nrfi_metrics.csv"))
 write_csv(holdout_predictions, file.path(processed_dir, "holdout_predictions.csv"))
+write_csv(selected_nrfi_result$test, file.path(processed_dir, "nrfi_holdout_predictions.csv"))
+write_csv(selected_registry, file.path(processed_dir, "selected_model_registry.csv"))
 
 cat(
-  "ROI is intentionally not reported here: valid ROI evaluation requires\n",
-  "sportsbook prices captured before each game. That begins in the daily\n",
-  "prediction notebook once an odds API credential is configured.\n"
+  "Candidate models selected by lower holdout Brier score:\n"
+)
+print(selected_registry)
+cat(
+  "\nThis report measures predictive accuracy and calibration. Daily captured\n",
+  "lines will later support transparent grading of issued recommendations.\n"
 )
 ```

@@ -2,7 +2,6 @@
 title: "Results"
 ---
 
-This page will preserve every locked recommendation with its original captured line, price, outcome, and flat-unit return.
+This page will preserve every locked recommendation with its original captured line, modeled probability, market-implied probability, and outcome.
 
 No recommendations have been issued yet.
-

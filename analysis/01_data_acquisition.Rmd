@@ -1,5 +1,5 @@
 ---
-title: "01 - MLB Data Acquisition and Target Construction"
+title: "01 - MLB Data Acquisition, Context, and Target Construction"
 output:
   html_document:
     toc: true
@@ -12,15 +12,16 @@ params:
 
 ## Objective
 
-This notebook acquires completed regular-season MLB games and constructs the
-observed targets for the initial two prop markets:
+This notebook acquires completed regular-season MLB games, venue/weather
+context, and observed targets for the initial markets:
 
 - Pitcher strikeouts: strikeouts recorded by the starting pitcher.
 - Batter total bases: `1B + 2 * 2B + 3 * 3B + 4 * HR`.
+- NRFI: whether neither team scored in the first inning.
 
-Official game outcomes come from MLB's public Stats API schedule and box-score
-endpoints. Raw JSON responses are cached locally so rerunning downstream
-analysis does not repeatedly query the service.
+Official game outcomes, reported weather, and stadium metadata come from
+MLB's public Stats API. Raw JSON responses are cached locally so rerunning
+downstream analysis does not repeatedly query the service.
 
 ```{r setup, message=FALSE, warning=FALSE}
 library(dplyr)
@@ -47,6 +48,7 @@ stopifnot(start_date <= end_date, end_date < Sys.Date())
 `%||%` <- function(x, y) if (is.null(x) || length(x) == 0) y else x
 num <- function(x) as.numeric(x %||% NA_real_)
 int <- function(x) as.integer(x %||% NA_integer_)
+chr <- function(x) as.character(x %||% NA_character_)
 ```
 
 ## Download Helpers
@@ -84,11 +86,12 @@ fetch_schedule <- function(first_date, last_date, refresh = FALSE) {
   map2_dfr(windows$start, windows$end, function(window_start, window_end) {
     url <- paste0(
       "https://statsapi.mlb.com/api/v1/schedule?sportId=1&gameTypes=R",
+      "&hydrate=venue,weather",
       "&startDate=", window_start, "&endDate=", window_end
     )
     cache_file <- file.path(
       raw_dir,
-      paste0("schedule_", window_start, "_", window_end, ".json")
+      paste0("schedule_context_", window_start, "_", window_end, ".json")
     )
     payload <- read_or_get_json(url, cache_file, refresh)
 
@@ -97,9 +100,16 @@ fetch_schedule <- function(first_date, last_date, refresh = FALSE) {
         tibble(
           game_pk = int(game$gamePk),
           game_date = as.Date(day$date),
+          game_datetime = as.POSIXct(game$gameDate, format = "%Y-%m-%dT%H:%M:%OSZ", tz = "UTC"),
           game_state = game$status$abstractGameState %||% NA_character_,
           away_team = game$teams$away$team$name %||% NA_character_,
-          home_team = game$teams$home$team$name %||% NA_character_
+          home_team = game$teams$home$team$name %||% NA_character_,
+          venue_id = int(game$venue$id),
+          venue_name = chr(game$venue$name),
+          condition = chr(game$weather$condition),
+          temperature_f = num(game$weather$temp),
+          wind_description = chr(game$weather$wind),
+          day_night = chr(game$dayNight)
         )
       })
     })
@@ -123,6 +133,66 @@ schedule_summary <- games |>
   )
 
 kable(schedule_summary, caption = "Completed regular-season games acquired")
+```
+
+## Stadium and Weather Context
+
+MLB reports the game-time condition, temperature, and wind description on its
+schedule feed. Venue hydration provides coordinates, surface, roof type, and
+outfield dimensions. These fields are appropriate historical pregame context;
+future prediction-time weather forecasts are requested separately in the
+daily prediction notebook.
+
+```{r context-functions}
+fetch_venue <- function(venue_id, refresh = FALSE) {
+  cache_file <- file.path(raw_dir, paste0("venue_", venue_id, ".json"))
+  url <- paste0(
+    "https://statsapi.mlb.com/api/v1/venues?venueIds=", venue_id,
+    "&hydrate=location,fieldInfo"
+  )
+  venue <- read_or_get_json(url, cache_file, refresh)$venues[[1]]
+  location <- venue$location %||% list()
+  coordinates <- location$defaultCoordinates %||% list()
+  field <- venue$fieldInfo %||% list()
+
+  tibble(
+    venue_id = int(venue$id),
+    latitude = num(coordinates$latitude),
+    longitude = num(coordinates$longitude),
+    elevation_ft = num(location$elevation),
+    turf_type = chr(field$turfType),
+    roof_type = chr(field$roofType),
+    left_line_ft = num(field$leftLine),
+    left_center_ft = num(field$leftCenter),
+    center_ft = num(field$center),
+    right_center_ft = num(field$rightCenter),
+    right_line_ft = num(field$rightLine)
+  )
+}
+
+parse_wind_speed <- function(wind_description) {
+  as.numeric(sub("^([0-9]+).*", "\\1", wind_description))
+}
+```
+
+```{r acquire-context}
+venues <- map_dfr(
+  unique(games$venue_id[!is.na(games$venue_id)]),
+  fetch_venue,
+  refresh = params$refresh_cache
+)
+
+game_context <- games |>
+  left_join(venues, by = "venue_id") |>
+  mutate(
+    wind_mph = parse_wind_speed(wind_description),
+    is_night = as.integer(day_night == "night"),
+    roof_closed_or_fixed = as.integer(roof_type %in% c("Closed", "Fixed")),
+    grass_surface = as.integer(turf_type == "Grass")
+  )
+
+write_rds(game_context, file.path(processed_dir, "game_context.rds"))
+write_csv(game_context, file.path(processed_dir, "game_context.csv"))
 ```
 
 ## Box Scores
@@ -205,6 +275,48 @@ write_csv(batter_games, file.path(processed_dir, "batter_game_outcomes.csv"))
 write_csv(pitcher_games, file.path(processed_dir, "pitcher_game_outcomes.csv"))
 ```
 
+## NRFI Outcome
+
+```{r nrfi-functions}
+fetch_first_inning <- function(game, refresh = FALSE) {
+  cache_file <- file.path(raw_dir, paste0("linescore_", game$game_pk, ".json"))
+  url <- paste0("https://statsapi.mlb.com/api/v1/game/", game$game_pk, "/linescore")
+  payload <- read_or_get_json(url, cache_file, refresh)
+  innings <- payload$innings %||% list()
+  if (length(innings) == 0) {
+    return(tibble(
+      game_pk = game$game_pk,
+      first_inning_away_runs = NA_integer_,
+      first_inning_home_runs = NA_integer_
+    ))
+  }
+  first <- innings[[1]]
+
+  tibble(
+    game_pk = game$game_pk,
+    first_inning_away_runs = int(first$away$runs),
+    first_inning_home_runs = int(first$home$runs)
+  )
+}
+```
+
+```{r acquire-nrfi}
+nrfi_games <- map_dfr(
+  split(games, seq_len(nrow(games))),
+  fetch_first_inning,
+  refresh = params$refresh_cache
+) |>
+  left_join(game_context, by = "game_pk") |>
+  filter(!is.na(first_inning_away_runs), !is.na(first_inning_home_runs)) |>
+  mutate(
+    first_inning_runs = first_inning_away_runs + first_inning_home_runs,
+    nrfi = as.integer(first_inning_runs == 0)
+  )
+
+write_rds(nrfi_games, file.path(processed_dir, "nrfi_game_outcomes.rds"))
+write_csv(nrfi_games, file.path(processed_dir, "nrfi_game_outcomes.csv"))
+```
+
 ## Quality Checks
 
 ```{r quality}
@@ -224,6 +336,14 @@ quality_summary <- bind_rows(
       players = n_distinct(player_id),
       missing_target = sum(is.na(strikeouts)),
       mean_target = mean(strikeouts)
+    ),
+  nrfi_games |>
+    summarise(
+      market = "NRFI",
+      appearances = n(),
+      players = NA_integer_,
+      missing_target = sum(is.na(nrfi)),
+      mean_target = mean(nrfi)
     )
 )
 
@@ -232,10 +352,13 @@ kable(quality_summary, digits = 2, caption = "Outcome dataset checks")
 stopifnot(
   nrow(batter_games) > 0,
   nrow(pitcher_games) > 0,
+  nrow(nrfi_games) > 0,
   !anyNA(batter_games$total_bases),
   !anyNA(pitcher_games$strikeouts),
+  !anyNA(nrfi_games$nrfi),
   all(batter_games$total_bases >= 0),
-  all(pitcher_games$strikeouts >= 0)
+  all(pitcher_games$strikeouts >= 0),
+  all(nrfi_games$nrfi %in% c(0, 1))
 )
 ```
 

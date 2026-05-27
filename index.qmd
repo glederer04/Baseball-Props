@@ -5,12 +5,13 @@ toc: false
 
 ## Purpose
 
-This site will be a daily MLB betting research dashboard built in R and Quarto. It will compare modeled probabilities with available sportsbook prices, surface only picks that clear defined value thresholds, and preserve an honest record of every recommendation.
+This site will be a daily MLB prediction research dashboard built in R and Quarto. It will compare modeled probabilities with available sportsbook lines, surface only recommendations that clear defined confidence thresholds, and preserve an honest record of every recommendation.
 
 ## Initial Scope
 
 - Pitcher strikeout props
 - Batter total bases props
+- NRFI (no run first inning)
 - Daily price snapshots and pick tracking
 - Model performance and data-health reporting
 
@@ -18,5 +19,4 @@ The site is currently in setup mode. Model output and live lines will appear onl
 
 ## Approach
 
-Recommendations will be evaluated against the line and price captured at prediction time. Performance will be reported using units and return on investment, not only win rate.
-
+Recommendations will be evaluated against the line captured at prediction time. Performance will emphasize chronological validation, probability calibration, accuracy by market, and a complete record of issued recommendations.
