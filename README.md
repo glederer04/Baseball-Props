@@ -23,7 +23,13 @@ The R package environment is managed with `renv`. Restore dependencies after clo
 renv::restore()
 ```
 
+## Modeling Workflow
+
+Research and model development live in [`analysis/`](analysis/README.md) as
+ordered R Markdown notebooks. The workflow acquires MLB game outcomes, builds
+pregame rolling features, evaluates benchmark models chronologically, and
+scores captured FanDuel lines once an `ODDS_API_KEY` is configured locally.
+
 ## Publishing
 
 The GitHub Actions workflow renders the Quarto website and publishes it through GitHub Pages after changes are pushed to `main`. API keys and other credentials must be stored in GitHub Secrets, never committed to this public repository.
-

@@ -1,0 +1,208 @@
+---
+title: "04 - FanDuel Lines and Daily Predictions"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+params:
+  event_date: !r Sys.Date()
+  event_timezone: "America/New_York"
+  minimum_edge: 0.02
+  minimum_ev: 0.03
+---
+
+## Objective
+
+This notebook is the bridge from an evaluated model to actionable daily
+research. It requests MLB player props from The Odds API, restricts the
+sportsbook to FanDuel, attaches model probabilities, and records the exact
+price snapshot used to make a recommendation.
+
+It will not publish fabricated picks. If `ODDS_API_KEY` is absent, the
+notebook runs through its setup and clearly reports that live scoring is
+disabled.
+
+```{r setup, message=FALSE, warning=FALSE}
+library(dplyr)
+library(httr2)
+library(jsonlite)
+library(knitr)
+library(lubridate)
+library(purrr)
+library(readr)
+library(tidyr)
+
+project_root <- normalizePath(file.path(getwd(), ".."), mustWork = TRUE)
+processed_dir <- file.path(project_root, "data", "processed")
+prediction_dir <- file.path(project_root, "data", "predictions")
+dir.create(prediction_dir, recursive = TRUE, showWarnings = FALSE)
+
+models <- readRDS(file.path(processed_dir, "benchmark_models.rds"))
+current_form <- readRDS(file.path(processed_dir, "current_player_form.rds"))
+api_key <- Sys.getenv("ODDS_API_KEY")
+run_timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
+
+if (as.Date(params$event_date) <= max(current_form$last_game_date)) {
+  stop("event_date must be later than the outcomes used to build current player form.")
+}
+
+clean_name <- function(x) {
+  tolower(gsub("[^a-z0-9]", "", iconv(x, to = "ASCII//TRANSLIT")))
+}
+
+american_to_decimal <- function(price) {
+  ifelse(price > 0, 1 + price / 100, 1 + 100 / abs(price))
+}
+
+american_implied_probability <- function(price) {
+  ifelse(price > 0, 100 / (price + 100), abs(price) / (abs(price) + 100))
+}
+```
+
+## Obtain FanDuel Prop Snapshots
+
+The two requested market keys are documented in The Odds API MLB player-prop
+catalog: `pitcher_strikeouts` and `batter_total_bases`.
+
+```{r odds-functions}
+get_api_json <- function(url, ...) {
+  request(url) |>
+    req_url_query(apiKey = api_key, ...) |>
+    req_user_agent("Baseball-Props research dashboard (R/httr2)") |>
+    req_timeout(seconds = 30) |>
+    req_retry(max_tries = 3) |>
+    req_perform() |>
+    resp_body_json(simplifyVector = FALSE)
+}
+
+fetch_events <- function() {
+  get_api_json("https://api.the-odds-api.com/v4/sports/baseball_mlb/events")
+}
+
+fetch_fanduel_props <- function(event) {
+  payload <- get_api_json(
+    paste0(
+      "https://api.the-odds-api.com/v4/sports/baseball_mlb/events/",
+      event$id,
+      "/odds"
+    ),
+    regions = "us",
+    markets = "pitcher_strikeouts,batter_total_bases",
+    bookmakers = "fanduel",
+    oddsFormat = "american"
+  )
+
+  map_dfr(payload$bookmakers %||% list(), function(book) {
+    map_dfr(book$markets %||% list(), function(market) {
+      map_dfr(market$outcomes %||% list(), function(outcome) {
+        tibble(
+          event_id = event$id,
+          commence_time = event$commence_time,
+          home_team = event$home_team,
+          away_team = event$away_team,
+          sportsbook = book$key,
+          market = market$key,
+          player_name = outcome$description,
+          side = outcome$name,
+          line = as.numeric(outcome$point),
+          american_price = as.numeric(outcome$price),
+          captured_at = run_timestamp
+        )
+      })
+    })
+  })
+}
+```
+
+```{r live-lines}
+`%||%` <- function(x, y) if (is.null(x) || length(x) == 0) y else x
+
+if (!nzchar(api_key)) {
+  props <- tibble()
+  cat("No ODDS_API_KEY found. Live FanDuel prop retrieval and scoring were skipped.\n")
+} else {
+  events <- fetch_events()
+  selected_events <- keep(events, function(event) {
+    local_start <- with_tz(ymd_hms(event$commence_time), params$event_timezone)
+    as.Date(local_start) == as.Date(params$event_date)
+  })
+  props <- map_dfr(selected_events, fetch_fanduel_props)
+
+  if (nrow(props) > 0) {
+    write_csv(
+      props,
+      file.path(
+        prediction_dir,
+        paste0("fanduel_props_", format(Sys.time(), "%Y%m%d_%H%M%S"), ".csv")
+      )
+    )
+  }
+}
+```
+
+## Score Available Lines
+
+```{r score-lines}
+if (nrow(props) > 0) {
+  scoring_data <- props |>
+    mutate(player_key = clean_name(player_name)) |>
+    left_join(
+      current_form |>
+        mutate(player_key = clean_name(player_name)) |>
+        select(-player_name),
+      by = c("market", "player_key")
+    ) |>
+    filter(!is.na(player_id)) |>
+    mutate(is_home = as.integer(team == home_team))
+
+  scored <- scoring_data |>
+    group_split(market) |>
+    map_dfr(function(market_rows) {
+      model <- models[[unique(market_rows$market)]]
+      market_rows |>
+        mutate(expected_count = predict(model, newdata = market_rows, type = "response"))
+    }) |>
+    mutate(
+      probability_over = ppois(line, expected_count, lower.tail = FALSE),
+      model_probability = if_else(side == "Over", probability_over, 1 - probability_over),
+      decimal_price = american_to_decimal(american_price),
+      implied_probability_raw = american_implied_probability(american_price)
+    ) |>
+    group_by(event_id, market, player_name, line) |>
+    mutate(
+      implied_probability = if_else(
+        n() == 2L,
+        implied_probability_raw / sum(implied_probability_raw),
+        implied_probability_raw
+      ),
+      edge = model_probability - implied_probability,
+      expected_value = model_probability * decimal_price - 1,
+      qualifies = edge >= params$minimum_edge & expected_value >= params$minimum_ev
+    ) |>
+    ungroup() |>
+    arrange(desc(qualifies), desc(expected_value))
+
+  recommendations <- filter(scored, qualifies)
+  write_csv(scored, file.path(prediction_dir, "latest_scored_props.csv"))
+  write_csv(recommendations, file.path(prediction_dir, "latest_recommendations.csv"))
+
+  kable(
+    scored |>
+      select(
+        player_name, market, side, line, american_price, expected_count,
+        model_probability, implied_probability, edge, expected_value, qualifies
+      ),
+    digits = 3,
+    caption = "Scored FanDuel player props"
+  )
+} else {
+  cat("No prop lines were available to score in this run.\n")
+}
+```
+
+## Evaluation Discipline
+
+A qualified recommendation becomes eligible for performance reporting only
+after this notebook has stored its pregame line and price. Grading future
+outcomes against those locked snapshots will support units, ROI, calibration,
+and market-by-market performance without look-ahead bias.

@@ -1,0 +1,246 @@
+---
+title: "01 - MLB Data Acquisition and Target Construction"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+params:
+  start_date: "2025-03-27"
+  end_date: !r format(Sys.Date() - 1, "%Y-%m-%d")
+  refresh_cache: false
+---
+
+## Objective
+
+This notebook acquires completed regular-season MLB games and constructs the
+observed targets for the initial two prop markets:
+
+- Pitcher strikeouts: strikeouts recorded by the starting pitcher.
+- Batter total bases: `1B + 2 * 2B + 3 * 3B + 4 * HR`.
+
+Official game outcomes come from MLB's public Stats API schedule and box-score
+endpoints. Raw JSON responses are cached locally so rerunning downstream
+analysis does not repeatedly query the service.
+
+```{r setup, message=FALSE, warning=FALSE}
+library(dplyr)
+library(httr2)
+library(jsonlite)
+library(knitr)
+library(lubridate)
+library(purrr)
+library(readr)
+library(tidyr)
+
+options(dplyr.summarise.inform = FALSE)
+
+project_root <- normalizePath(file.path(getwd(), ".."), mustWork = TRUE)
+raw_dir <- file.path(project_root, "data", "raw", "mlb_stats_api")
+processed_dir <- file.path(project_root, "data", "processed")
+dir.create(raw_dir, recursive = TRUE, showWarnings = FALSE)
+dir.create(processed_dir, recursive = TRUE, showWarnings = FALSE)
+
+start_date <- as.Date(params$start_date)
+end_date <- as.Date(params$end_date)
+stopifnot(start_date <= end_date, end_date < Sys.Date())
+
+`%||%` <- function(x, y) if (is.null(x) || length(x) == 0) y else x
+num <- function(x) as.numeric(x %||% NA_real_)
+int <- function(x) as.integer(x %||% NA_integer_)
+```
+
+## Download Helpers
+
+Every response is persisted as JSON in `data/raw/`, which is gitignored. Set
+`refresh_cache: true` only when a fresh copy is intentionally required.
+
+```{r download-functions}
+read_or_get_json <- function(url, cache_file, refresh = FALSE) {
+  if (file.exists(cache_file) && !refresh) {
+    return(fromJSON(cache_file, simplifyVector = FALSE))
+  }
+
+  response <- request(url) |>
+    req_user_agent("Baseball-Props research dashboard (R/httr2)") |>
+    req_timeout(seconds = 30) |>
+    req_retry(max_tries = 3) |>
+    req_perform()
+
+  writeBin(resp_body_raw(response), cache_file)
+  fromJSON(cache_file, simplifyVector = FALSE)
+}
+
+monthly_windows <- function(first_date, last_date) {
+  starts <- seq(floor_date(first_date, "month"), last_date, by = "month")
+  tibble(
+    start = pmax(starts, first_date),
+    end = pmin(ceiling_date(starts, "month") - days(1), last_date)
+  )
+}
+
+fetch_schedule <- function(first_date, last_date, refresh = FALSE) {
+  windows <- monthly_windows(first_date, last_date)
+
+  map2_dfr(windows$start, windows$end, function(window_start, window_end) {
+    url <- paste0(
+      "https://statsapi.mlb.com/api/v1/schedule?sportId=1&gameTypes=R",
+      "&startDate=", window_start, "&endDate=", window_end
+    )
+    cache_file <- file.path(
+      raw_dir,
+      paste0("schedule_", window_start, "_", window_end, ".json")
+    )
+    payload <- read_or_get_json(url, cache_file, refresh)
+
+    map_dfr(payload$dates %||% list(), function(day) {
+      map_dfr(day$games %||% list(), function(game) {
+        tibble(
+          game_pk = int(game$gamePk),
+          game_date = as.Date(day$date),
+          game_state = game$status$abstractGameState %||% NA_character_,
+          away_team = game$teams$away$team$name %||% NA_character_,
+          home_team = game$teams$home$team$name %||% NA_character_
+        )
+      })
+    })
+  }) |>
+    distinct(game_pk, .keep_all = TRUE) |>
+    filter(game_state == "Final") |>
+    arrange(game_date, game_pk)
+}
+```
+
+## Completed Games
+
+```{r schedule}
+games <- fetch_schedule(start_date, end_date, params$refresh_cache)
+
+schedule_summary <- games |>
+  summarise(
+    start_date = min(game_date),
+    end_date = max(game_date),
+    completed_games = n()
+  )
+
+kable(schedule_summary, caption = "Completed regular-season games acquired")
+```
+
+## Box Scores
+
+The box-score parser keeps one row per player-game appearance, then produces
+separate outcomes for the two markets. Pitcher props are restricted to the
+starting pitcher because FanDuel pitcher markets require the listed pitcher to
+start for action.
+
+```{r boxscore-functions}
+parse_team_players <- function(players, side, game) {
+  map_dfr(players %||% list(), function(player) {
+    batting <- player$stats$batting %||% list()
+    pitching <- player$stats$pitching %||% list()
+    team_name <- if (side == "home") game$home_team else game$away_team
+    opponent <- if (side == "home") game$away_team else game$home_team
+
+    tibble(
+      game_pk = game$game_pk,
+      game_date = game$game_date,
+      player_id = int(player$person$id),
+      player_name = player$person$fullName %||% NA_character_,
+      team = team_name,
+      opponent = opponent,
+      is_home = as.integer(side == "home"),
+      plate_appearances = int(batting$plateAppearances),
+      at_bats = int(batting$atBats),
+      hits = int(batting$hits),
+      doubles = int(batting$doubles),
+      triples = int(batting$triples),
+      home_runs = int(batting$homeRuns),
+      innings_pitched = num(pitching$inningsPitched),
+      strikeouts = int(pitching$strikeOuts),
+      games_started = int(pitching$gamesStarted)
+    )
+  })
+}
+
+fetch_boxscore <- function(game, refresh = FALSE) {
+  cache_file <- file.path(raw_dir, paste0("boxscore_", game$game_pk, ".json"))
+  url <- paste0("https://statsapi.mlb.com/api/v1/game/", game$game_pk, "/boxscore")
+  payload <- read_or_get_json(url, cache_file, refresh)
+
+  bind_rows(
+    parse_team_players(payload$teams$away$players, "away", game),
+    parse_team_players(payload$teams$home$players, "home", game)
+  )
+}
+```
+
+```{r acquire-boxscores}
+player_games <- map_dfr(
+  split(games, seq_len(nrow(games))),
+  fetch_boxscore,
+  refresh = params$refresh_cache
+)
+
+batter_games <- player_games |>
+  filter(!is.na(plate_appearances), plate_appearances > 0) |>
+  mutate(
+    across(c(hits, doubles, triples, home_runs), ~ replace_na(.x, 0L)),
+    singles = hits - doubles - triples - home_runs,
+    total_bases = singles + 2L * doubles + 3L * triples + 4L * home_runs
+  ) |>
+  select(
+    game_pk, game_date, player_id, player_name, team, opponent, is_home,
+    plate_appearances, at_bats, hits, doubles, triples, home_runs, total_bases
+  )
+
+pitcher_games <- player_games |>
+  filter(games_started == 1L, !is.na(strikeouts)) |>
+  select(
+    game_pk, game_date, player_id, player_name, team, opponent, is_home,
+    innings_pitched, strikeouts
+  )
+
+write_rds(batter_games, file.path(processed_dir, "batter_game_outcomes.rds"))
+write_rds(pitcher_games, file.path(processed_dir, "pitcher_game_outcomes.rds"))
+write_csv(batter_games, file.path(processed_dir, "batter_game_outcomes.csv"))
+write_csv(pitcher_games, file.path(processed_dir, "pitcher_game_outcomes.csv"))
+```
+
+## Quality Checks
+
+```{r quality}
+quality_summary <- bind_rows(
+  batter_games |>
+    summarise(
+      market = "Batter total bases",
+      appearances = n(),
+      players = n_distinct(player_id),
+      missing_target = sum(is.na(total_bases)),
+      mean_target = mean(total_bases)
+    ),
+  pitcher_games |>
+    summarise(
+      market = "Pitcher strikeouts",
+      appearances = n(),
+      players = n_distinct(player_id),
+      missing_target = sum(is.na(strikeouts)),
+      mean_target = mean(strikeouts)
+    )
+)
+
+kable(quality_summary, digits = 2, caption = "Outcome dataset checks")
+
+stopifnot(
+  nrow(batter_games) > 0,
+  nrow(pitcher_games) > 0,
+  !anyNA(batter_games$total_bases),
+  !anyNA(pitcher_games$strikeouts),
+  all(batter_games$total_bases >= 0),
+  all(pitcher_games$strikeouts >= 0)
+)
+```
+
+## Output
+
+The processed files written by this notebook are the input to
+`02_feature_engineering.Rmd`. They remain local analysis artifacts until the
+pipeline is validated and integrated into the Quarto site.

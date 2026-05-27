@@ -1,0 +1,163 @@
+---
+title: "03 - Modeling and Chronological Evaluation"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+params:
+  training_fraction: 0.8
+---
+
+## Objective
+
+The initial benchmark is a separate Poisson regression for each count target.
+It is deliberately interpretable and establishes an honest baseline before
+more flexible models are considered. Validation is chronological: earlier
+games train the model and later games assess performance.
+
+```{r setup, message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(purrr)
+library(readr)
+library(tidyr)
+
+project_root <- normalizePath(file.path(getwd(), ".."), mustWork = TRUE)
+processed_dir <- file.path(project_root, "data", "processed")
+frame <- readRDS(file.path(processed_dir, "modeling_frame.rds"))
+stopifnot(params$training_fraction > 0.5, params$training_fraction < 1)
+
+model_formula <- outcome ~ player_mean_5 + player_mean_10 +
+  player_mean_season + player_sd_10 + workload_mean_10 + is_home
+
+poisson_deviance <- function(observed, predicted) {
+  component <- ifelse(
+    observed == 0,
+    predicted,
+    observed * log(observed / predicted) - (observed - predicted)
+  )
+  mean(2 * component)
+}
+
+fit_market <- function(market_frame) {
+  game_dates <- sort(unique(market_frame$game_date))
+  cutoff_index <- floor(length(game_dates) * params$training_fraction)
+  cutoff_date <- game_dates[cutoff_index]
+  train <- filter(market_frame, game_date <= cutoff_date)
+  test <- filter(market_frame, game_date > cutoff_date)
+
+  model <- glm(model_formula, family = poisson(link = "log"), data = train)
+  predictions <- test |>
+    mutate(expected_count = pmax(predict(model, newdata = test, type = "response"), 0.001))
+
+  list(model = model, train = train, test = predictions, cutoff_date = cutoff_date)
+}
+
+market_models <- split(frame, frame$market) |>
+  map(fit_market)
+```
+
+## Count Prediction Performance
+
+```{r metrics}
+count_metrics <- imap_dfr(market_models, function(result, market_name) {
+  result$test |>
+    summarise(
+      market = market_name,
+      training_rows = nrow(result$train),
+      test_rows = n(),
+      training_through = as.character(result$cutoff_date),
+      test_start = as.character(min(game_date)),
+      rmse = sqrt(mean((outcome - expected_count)^2)),
+      mae = mean(abs(outcome - expected_count)),
+      poisson_deviance = poisson_deviance(outcome, expected_count),
+      predicted_average = mean(expected_count),
+      observed_average = mean(outcome)
+    )
+})
+
+kable(count_metrics, digits = 3, caption = "Chronological holdout count metrics")
+```
+
+## Over Probability Evaluation
+
+Prop recommendations need probabilities, not just expected counts. For an
+initial probability check, each held-out outcome is evaluated against common
+half-point lines. This assesses calibration without implying that historical
+prices were available or that ROI has been backtested.
+
+```{r probability-evaluation}
+line_grid <- list(
+  batter_total_bases = c(0.5, 1.5, 2.5, 3.5),
+  pitcher_strikeouts = c(3.5, 4.5, 5.5, 6.5, 7.5, 8.5)
+)
+
+line_predictions <- imap_dfr(market_models, function(result, market_name) {
+  tidyr::crossing(result$test, line = line_grid[[market_name]]) |>
+    mutate(
+      over_result = as.integer(outcome > line),
+      probability_over = ppois(line, expected_count, lower.tail = FALSE)
+    )
+})
+
+probability_metrics <- line_predictions |>
+  group_by(market) |>
+  summarise(
+    line_predictions = n(),
+    brier_score = mean((over_result - probability_over)^2),
+    log_loss = -mean(
+      over_result * log(pmax(probability_over, 1e-8)) +
+        (1 - over_result) * log(pmax(1 - probability_over, 1e-8))
+    )
+  )
+
+kable(probability_metrics, digits = 4, caption = "Held-out over probability metrics")
+
+calibration <- line_predictions |>
+  mutate(probability_bin = cut(
+    probability_over,
+    breaks = seq(0, 1, by = 0.1),
+    include.lowest = TRUE
+  )) |>
+  group_by(market, probability_bin) |>
+  summarise(
+    predictions = n(),
+    predicted = mean(probability_over),
+    observed = mean(over_result),
+    .groups = "drop"
+  )
+```
+
+```{r calibration-plot, fig.height=4.5, fig.width=8}
+ggplot(calibration, aes(predicted, observed, size = predictions)) +
+  geom_abline(linetype = "dashed", color = "gray45") +
+  geom_point(color = "#1f5f8b", alpha = 0.85) +
+  facet_wrap(~ market) +
+  coord_equal(xlim = c(0, 1), ylim = c(0, 1)) +
+  labs(
+    title = "Chronological holdout calibration",
+    x = "Modeled over probability",
+    y = "Observed over frequency",
+    size = "Rows"
+  ) +
+  theme_minimal()
+```
+
+## Persist Models and Evaluation
+
+```{r output}
+models <- map(market_models, "model")
+holdout_predictions <- map_dfr(market_models, "test", .id = "market")
+
+saveRDS(models, file.path(processed_dir, "benchmark_models.rds"))
+write_csv(count_metrics, file.path(processed_dir, "count_metrics.csv"))
+write_csv(probability_metrics, file.path(processed_dir, "probability_metrics.csv"))
+write_csv(holdout_predictions, file.path(processed_dir, "holdout_predictions.csv"))
+
+cat(
+  "ROI is intentionally not reported here: valid ROI evaluation requires\n",
+  "sportsbook prices captured before each game. That begins in the daily\n",
+  "prediction notebook once an odds API credential is configured.\n"
+)
+```

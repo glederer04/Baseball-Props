@@ -10,4 +10,7 @@
 .Renviron
 data/raw/
 data/cache/
-
+data/processed/
+data/predictions/
+analysis/*.html
+analysis/*_files/

@@ -1,0 +1,164 @@
+---
+title: "02 - Pregame Feature Engineering"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+---
+
+## Objective
+
+This notebook converts game outcomes into modeling rows. Every predictor is
+calculated using games strictly before the target game; the current game's
+result never appears in its own inputs.
+
+```{r setup, message=FALSE, warning=FALSE}
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(purrr)
+library(readr)
+library(tidyr)
+
+project_root <- normalizePath(file.path(getwd(), ".."), mustWork = TRUE)
+processed_dir <- file.path(project_root, "data", "processed")
+batter_games <- readRDS(file.path(processed_dir, "batter_game_outcomes.rds"))
+pitcher_games <- readRDS(file.path(processed_dir, "pitcher_game_outcomes.rds"))
+
+rolling_prior_mean <- function(x, window) {
+  map_dbl(seq_along(x), function(i) {
+    prior <- x[seq_len(i - 1)]
+    if (length(prior) == 0) NA_real_ else mean(tail(prior, window), na.rm = TRUE)
+  })
+}
+
+rolling_prior_sd <- function(x, window) {
+  map_dbl(seq_along(x), function(i) {
+    prior <- tail(x[seq_len(i - 1)], window)
+    if (length(prior) < 2) NA_real_ else sd(prior, na.rm = TRUE)
+  })
+}
+```
+
+## Market-Level Modeling Frame
+
+```{r combine-markets}
+market_games <- bind_rows(
+  batter_games |>
+    transmute(
+      market = "batter_total_bases",
+      game_pk, game_date, player_id, player_name, team, opponent, is_home,
+      workload = plate_appearances,
+      outcome = total_bases
+    ),
+  pitcher_games |>
+    transmute(
+      market = "pitcher_strikeouts",
+      game_pk, game_date, player_id, player_name, team, opponent, is_home,
+      workload = innings_pitched,
+      outcome = strikeouts
+    )
+) |>
+  arrange(market, player_id, game_date, game_pk)
+```
+
+## Rolling Player and Opponent Form
+
+For each player, form measures use trailing 5- and 10-game windows plus the
+full prior sample. Opponent allowed form is calculated separately and joined
+back by opponent and date; it is retained for exploration and future opponent
+adjustments, while the first benchmark model uses only features available
+without resolving the player's daily opponent from the odds payload.
+
+```{r rolling-features}
+player_features <- market_games |>
+  group_by(market, player_id) |>
+  mutate(
+    games_prior = row_number() - 1L,
+    player_mean_5 = rolling_prior_mean(outcome, 5),
+    player_mean_10 = rolling_prior_mean(outcome, 10),
+    player_mean_season = rolling_prior_mean(outcome, Inf),
+    player_sd_10 = rolling_prior_sd(outcome, 10),
+    workload_mean_10 = rolling_prior_mean(workload, 10)
+  ) |>
+  ungroup()
+
+opponent_features <- market_games |>
+  arrange(market, opponent, game_date, game_pk) |>
+  group_by(market, opponent) |>
+  mutate(opponent_allowed_mean_10 = rolling_prior_mean(outcome, 10)) |>
+  ungroup() |>
+  select(market, game_pk, player_id, opponent_allowed_mean_10)
+
+modeling_frame <- player_features |>
+  left_join(opponent_features, by = c("market", "game_pk", "player_id")) |>
+  filter(games_prior >= 5) |>
+  mutate(
+    player_sd_10 = replace_na(player_sd_10, 0),
+    workload_mean_10 = coalesce(workload_mean_10, workload)
+  ) |>
+  filter(
+    is.finite(player_mean_5),
+    is.finite(player_mean_10),
+    is.finite(player_mean_season),
+    is.finite(workload_mean_10)
+  )
+
+write_rds(modeling_frame, file.path(processed_dir, "modeling_frame.rds"))
+write_csv(modeling_frame, file.path(processed_dir, "modeling_frame.csv"))
+```
+
+## Current Player Form for Prediction
+
+Daily prediction requires a feature row representing information available
+after each player's most recent completed game.
+
+```{r prediction-features}
+summarise_current_form <- function(data) {
+  data |>
+    group_by(market, player_id, player_name) |>
+    summarise(
+      team = last(team),
+      last_game_date = max(game_date),
+      games_prior = n(),
+      player_mean_5 = mean(tail(outcome, 5)),
+      player_mean_10 = mean(tail(outcome, 10)),
+      player_mean_season = mean(outcome),
+      player_sd_10 = if (n() < 2) 0 else sd(tail(outcome, 10)),
+      workload_mean_10 = mean(tail(workload, 10)),
+      .groups = "drop"
+    ) |>
+    filter(games_prior >= 5)
+}
+
+current_player_form <- market_games |>
+  arrange(market, player_id, game_date, game_pk) |>
+  summarise_current_form()
+
+write_rds(current_player_form, file.path(processed_dir, "current_player_form.rds"))
+
+feature_summary <- modeling_frame |>
+  group_by(market) |>
+  summarise(
+    modeling_rows = n(),
+    unique_players = n_distinct(player_id),
+    first_game = min(game_date),
+    last_game = max(game_date),
+    mean_outcome = mean(outcome)
+  )
+
+kable(feature_summary, digits = 2, caption = "Leakage-safe modeling frame")
+```
+
+```{r form-plot, fig.height=4.5, fig.width=8}
+ggplot(modeling_frame, aes(player_mean_10, outcome)) +
+  geom_point(alpha = 0.08) +
+  geom_smooth(method = "lm", se = FALSE, color = "#1f5f8b") +
+  facet_wrap(~ market, scales = "free") +
+  labs(
+    title = "Trailing form and next-game outcome",
+    x = "Prior 10-game mean",
+    y = "Observed next-game target"
+  ) +
+  theme_minimal()
+```
