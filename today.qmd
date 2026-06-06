@@ -43,7 +43,7 @@ cat(render_projection_board(projections))
 <div class="callout-panel">
 <span class="card-kicker">How to read this board</span>
 <h3>Confidence is cross-market, not certainty.</h3>
-<p><strong>Projection vs Line</strong> shows the model count against the displayed reference line for props. <strong>Probability</strong> is the chance of the listed side. <strong>Confidence</strong> is a 0-100 score that blends probability with model-versus-line distance so strikeouts, total bases, and NRFI can be compared on one board.</p>
+<p><strong>Bet</strong> shows the player or matchup with the listed side and line directly underneath. <strong>Gap</strong> shows only how far the model is above or below that listed line for props. <strong>Probability</strong> is the chance of the listed side, and <strong>Confidence</strong> is a 0-100 score that blends probability with model-versus-line distance so strikeouts, total bases, and NRFI can be compared on one board.</p>
 </div>
 
 ## Signal guide

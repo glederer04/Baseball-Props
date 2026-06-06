@@ -76,15 +76,22 @@ render_projection_board <- function(x) {
     return('<div class="empty-state"><h3>No model-only projections are available.</h3><p>The MLB schedule or probable-starter feed did not produce usable rows for this date.</p></div>')
   }
   rows <- vapply(seq_len(nrow(x)), function(i) {
-    projection_value <- if (x$market[i] == "nrfi") {
-      pct(x$probability_over[i])
+    bet_subject <- if (x$market[i] == "nrfi") {
+      x$matchup[i]
     } else {
-      sprintf("%.2f vs %.1f", x$expected_count[i], x$reference_line[i])
+      x$selection[i]
     }
-    projection_label <- if (x$market[i] == "nrfi") {
-      "Raw NRFI probability"
+    gap_value <- if (x$market[i] == "nrfi" || is.na(x$line_gap[i])) {
+      "-"
     } else {
-      paste0(ifelse(x$line_gap[i] >= 0, "+", ""), sprintf("%.2f", x$line_gap[i]), " model gap")
+      paste0(ifelse(x$line_gap[i] >= 0, "+", ""), sprintf("%.2f", x$line_gap[i]))
+    }
+    gap_label <- if (x$market[i] == "nrfi" || is.na(x$line_gap[i])) {
+      "probability-based game side"
+    } else if (x$line_gap[i] >= 0) {
+      "model above listed line"
+    } else {
+      "model below listed line"
     }
     confidence_width <- paste0(pmax(4, pmin(100, x$confidence[i])), "%")
     sprintf(
@@ -94,9 +101,9 @@ render_projection_board <- function(x) {
         '<td><strong>%s</strong><br><span class="mini-note">%s</span></td>',
         '<td><div class="prob-track"><span style="width:%s"></span></div><strong>%s</strong></td></tr>'),
       escape_html(x$market[i]), escape_html(x$matchup[i]),
-      escape_html(x$recommendation[i]), escape_html(x$projection_note[i]),
+      escape_html(bet_subject), escape_html(x$recommendation[i]),
       escape_html(market_label(x$market[i])), escape_html(x$matchup[i]),
-      escape_html(x$game_time[i]), projection_value, projection_label,
+      escape_html(x$game_time[i]), gap_value, gap_label,
       pct(x$model_probability[i]), "Selected-side probability",
       confidence_width, sprintf("%.1f", x$confidence[i])
     )
@@ -108,7 +115,7 @@ render_projection_board <- function(x) {
     '<button class="filter-chip" data-filter="nrfi">NRFI</button>',
     '<select id="matchup-filter"><option value="all">All matchups</option></select></div>',
     '<div class="signal-table-wrap"><table class="signal-table projection-table"><thead><tr>',
-    '<th>Best Bet</th><th>Market</th><th>Matchup</th><th>Projection vs Line</th>',
+    '<th>Bet</th><th>Market</th><th>Matchup</th><th>Gap</th>',
     '<th><span class="explain" title="Probability for the displayed side, not a guarantee">Probability</span></th>',
     '<th><span class="explain" title="Uniform score from selected-side probability and model-versus-line gap">Confidence</span></th>',
     '</tr></thead><tbody>', paste(rows, collapse = ""), '</tbody></table></div>',
