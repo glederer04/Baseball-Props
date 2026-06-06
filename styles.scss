@@ -1,0 +1,13 @@
+/*-- scss:defaults --*/
+$body-bg: #07111f;
+$body-color: #e8eef7;
+$link-color: #72e0c4;
+$font-family-sans-serif: "Avenir Next", "Segoe UI", sans-serif;
+$headings-font-family: "Avenir Next", "Segoe UI", sans-serif;
+$navbar-bg: #07111f;
+$navbar-fg: #f7fbff;
+$border-color: rgba(255, 255, 255, .1);
+
+/*-- scss:rules --*/
+.navbar { border-bottom: 1px solid rgba(255,255,255,.08); }
+.navbar-brand img { height: 28px; }

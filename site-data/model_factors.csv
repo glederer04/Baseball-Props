@@ -1,0 +1,7 @@
+category,factor,plain_language,technical_detail
+Player form,Recent production,What has this player produced over the last 5 and 10 games?,Trailing means are calculated strictly before the game being predicted.
+Player form,Typical workload,How much opportunity has the player recently received?,Recent innings pitched or plate appearances help anchor the expected count.
+Matchup,Opponent allowed form,How much has this opponent recently allowed in the target market?,Joined by opponent and market using prior games only.
+Environment,Venue and weather,Could the park and conditions change the run environment?,"Temperature, wind, roof, surface, elevation, and center-field distance are candidate context features."
+NRFI,Starter quality,How strong and durable are both probable starters?,Both starters' trailing strikeout and workload form enter the NRFI model.
+NRFI,Team and venue history,How often have these clubs and this park produced scoreless first innings?,Trailing team NRFI rates and a venue 20-game rate are calculated before each target game.

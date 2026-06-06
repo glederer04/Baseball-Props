@@ -1,7 +1,28 @@
 ---
-title: "Results"
+title: "How It Works"
+toc: false
 ---
 
-This page will preserve every locked recommendation with its original captured line, modeled probability, market-implied probability, and outcome.
+<section class="page-lead">
+<div class="eyebrow">From baseball data to a readable decision</div>
+<h1>One pipeline, five questions.</h1>
+<p>The system is designed to make the reasoning inspectable. Each stage answers a different question before a row is allowed onto the board.</p>
+</section>
 
-No recommendations have been issued yet.
+<div class="method-step"><div class="method-number">1</div><div><h3>What happened?</h3><p>Completed games, box scores, first-inning outcomes, venues, and game-time weather come from MLB's public Stats API.</p></div></div>
+<div class="method-step"><div class="method-number">2</div><div><h3>What was knowable beforehand?</h3><p>Rolling player, opponent, team, starter, and venue features use only games before the target game. Current-game outcomes never enter their own inputs.</p></div></div>
+<div class="method-step"><div class="method-number">3</div><div><h3>Does context improve prediction?</h3><p>Baseline and context-enhanced models are compared on later dates. Extra factors are selected only when they improve probability performance.</p></div></div>
+<div class="method-step"><div class="method-number">4</div><div><h3>What does the market imply?</h3><p>FanDuel prices are converted from American odds to probabilities, then normalized across both sides to estimate a no-vig market probability.</p></div></div>
+<div class="method-step"><div class="method-number">5</div><div><h3>Is the disagreement useful?</h3><p>The board ranks model probability minus market probability. Rows below the research threshold stay off the main board.</p></div></div>
+
+## A simple example
+
+<div class="callout-panel">
+<span class="card-kicker">Illustration only</span>
+<h3>Model: 58% · Market: 51% · Edge: +7%</h3>
+<p>The model thinks the selected side happens 58 times in 100 similar situations. The no-vig market estimate is 51 times in 100. That seven-point difference is a strong signal to investigate. It is not a claim that the bet will win.</p>
+</div>
+
+## Why there is no historical picks tab yet
+
+<p>Historical pick storage and grading are intentionally deferred. The current goal is to make live model-versus-line comparisons clear and useful. Once snapshot storage is added, this site will report every locked recommendation, including losses, with calibration and market-by-market results.</p>

@@ -1,22 +1,68 @@
 ---
-title: "Baseball Props Dashboard"
+title: "Diamond Signal"
 toc: false
 ---
 
-## Purpose
+```{r}
+#| echo: false
+#| results: asis
+source("R/site_helpers.R")
+status <- read_site_csv("pipeline_status.csv")
+summary <- read_site_csv("model_summary.csv")
+board <- read_site_csv("latest_board.csv")
+is_live <- nrow(status) && identical(status$line_feed_status[1], "Live")
+```
 
-This site will be a daily MLB prediction research dashboard built in R and Quarto. It will compare modeled probabilities with available sportsbook lines, surface only recommendations that clear defined confidence thresholds, and preserve an honest record of every recommendation.
+<section class="hero">
+<div class="eyebrow">MLB prop intelligence · evidence first</div>
+<h1>Find the distance<br>between <span class="accent">price</span> and probability.</h1>
+<p class="hero-copy">Diamond Signal turns player form, opponent context, venue conditions, and live sportsbook prices into one readable question: where does the model disagree with the market enough to matter?</p>
+<div class="hero-actions">
+<a class="button-primary" href="today.html">Open the model board</a>
+<a class="button-ghost" href="results.html">See how it works</a>
+</div>
+</section>
 
-## Initial Scope
+```{r}
+#| echo: false
+#| results: asis
+dot_class <- if (is_live) "status-dot live" else "status-dot"
+feed_text <- if (is_live) {
+  paste0("Live card captured ", escape_html(status$last_line_refresh[1]))
+} else {
+  "Model engine ready · live line feed awaiting an Odds API key or available markets"
+}
+cat(sprintf('<div class="status-strip"><span class="%s"></span><strong>%s</strong></div>', dot_class, feed_text))
+```
 
-- Pitcher strikeout props
-- Batter total bases props
-- NRFI (no run first inning)
-- Daily price snapshots and pick tracking
-- Model performance and data-health reporting
+```{r}
+#| echo: false
+#| results: asis
+if (nrow(summary)) {
+  tb <- summary[summary$market == "batter_total_bases", , drop = FALSE]
+  ks <- summary[summary$market == "pitcher_strikeouts", , drop = FALSE]
+  nrfi <- summary[summary$market == "nrfi", , drop = FALSE]
+  cards <- c(
+    metric_card("Markets modeled", "3", "Total bases · strikeouts · NRFI", "Each market has its own evaluated model."),
+    metric_card("Holdout predictions", format(sum(summary$test_rows), big.mark = ","), "Later games only", "Models are evaluated on games after their training window."),
+    metric_card("Best live edge", if (nrow(board)) paste0("+", pct(max(board$probability_difference))) else "Waiting", if (nrow(board)) "Current priced card" else "No line snapshot yet", "Edge is model probability minus no-vig market probability.")
+  )
+  cat('<div class="metric-grid">', paste(cards, collapse = ""), '</div>')
+}
+```
 
-The site is currently in setup mode. Model output and live lines will appear only after the data provider and scoring pipeline have been validated.
+## Three markets. One decision language.
 
-## Approach
+<div class="market-grid">
+<div class="market-card" style="--accent:#72e0c4"><span class="card-kicker">Player prop</span><h3>Pitcher strikeouts</h3><p>Projects a starter's expected strikeouts from recent form, workload, location, and opponent context, then converts that count into over/under probabilities.</p></div>
+<div class="market-card" style="--accent:#71b7ff"><span class="card-kicker">Player prop</span><h3>Batter total bases</h3><p>Estimates total bases using recent production and the environment around the matchup. Context earns a place only when it improves later-game testing.</p></div>
+<div class="market-card" style="--accent:#c8f169"><span class="card-kicker">Game market</span><h3>NRFI</h3><p>Estimates the chance of a scoreless first inning from probable starters, recent team NRFI rates, and venue history.</p></div>
+</div>
 
-Recommendations will be evaluated against the line captured at prediction time. Performance will emphasize chronological validation, probability calibration, accuracy by market, and a complete record of issued recommendations.
+## Built to clarify, not to decorate a guess.
+
+<div class="feature-grid">
+<div class="feature-card"><span class="card-kicker">01 · Price aware</span><h3>The line is part of the decision.</h3><p>A projection is not a pick by itself. The board compares modeled probability with the market's no-vig probability at the captured price.</p></div>
+<div class="feature-card"><span class="card-kicker">02 · Time ordered</span><h3>Later games test earlier learning.</h3><p>Model evaluation uses chronological holdouts, which is closer to the daily prediction problem than a random split.</p></div>
+<div class="feature-card"><span class="card-kicker">03 · Honest states</span><h3>No line, no pick.</h3><p>When data is missing or a model does not clear the edge threshold, the site says so. Empty boards are valid outcomes.</p></div>
+</div>

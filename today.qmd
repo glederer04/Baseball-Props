@@ -1,7 +1,47 @@
 ---
-title: "Today's Card"
+title: "Model Board"
+toc: false
 ---
 
-Today's recommendations will appear here once the data ingestion and prediction pipelines are active.
+```{r}
+#| echo: false
+#| results: asis
+source("R/site_helpers.R")
+board <- read_site_csv("latest_board.csv")
+status <- read_site_csv("pipeline_status.csv")
+```
 
-The board will include the market, player or matchup, opponent, captured sportsbook line, modeled probability, market-implied probability, probability difference, and a short explanation.
+<section class="page-lead">
+<div class="eyebrow">Today's priced opportunities</div>
+<h1>The model board.</h1>
+<p>Every row is a comparison between a model probability and the sportsbook's estimated fair probability. Larger positive edges deserve attention, not blind action.</p>
+</section>
+
+```{r}
+#| echo: false
+#| results: asis
+line_status <- if (nrow(status)) status$line_feed_status[1] else "Unknown"
+captured <- if (nrow(status)) status$last_line_refresh[1] else "Not available"
+qualified <- if (nrow(board)) sum(board$probability_difference >= .03) else 0
+cards <- c(
+  metric_card("Line feed", line_status, paste("Last refresh:", captured), "The board cannot price an edge without a sportsbook line."),
+  metric_card("Signals ≥ 3%", qualified, "Research threshold", "A 3 percentage-point gap is the current minimum display threshold."),
+  metric_card("Top edge", if (nrow(board)) paste0("+", pct(max(board$probability_difference))) else "-", if (nrow(board)) "Model minus market" else "No priced rows", "This is not expected return; it is a probability difference.")
+)
+cat('<div class="metric-grid">', paste(cards, collapse = ""), '</div>')
+cat(render_signal_table(board))
+```
+
+<div class="callout-panel">
+<span class="card-kicker">How to read this board</span>
+<h3>Edge is a disagreement, not a promise.</h3>
+<p><strong>Model</strong> is the estimated probability of the listed side. <strong>Market</strong> removes the estimated sportsbook margin from both sides of the same line. <strong>Edge</strong> is the difference. Hover over those column names for a quick reminder.</p>
+</div>
+
+## Signal guide
+
+<div class="feature-grid">
+<div class="feature-card"><span class="pill strong">Strong</span><h3>7%+ probability edge</h3><p>A larger disagreement worth a closer look at lineup news, pitcher confirmation, and price movement.</p></div>
+<div class="feature-card"><span class="pill watch">Watch</span><h3>3% to 7% edge</h3><p>A modest difference. Useful for monitoring, but more sensitive to model error and changing prices.</p></div>
+<div class="feature-card"><span class="pill">Pass</span><h3>Below 3% edge</h3><p>Not shown on the main board. The market and model are too close to create a useful signal.</p></div>
+</div>

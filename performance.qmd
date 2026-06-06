@@ -1,7 +1,72 @@
 ---
-title: "Performance"
+title: "Model Lab"
+toc: false
 ---
 
-This page will report record, calibration, Brier score, log loss, and performance by market once graded recommendations have accumulated.
+```{r}
+#| echo: false
+#| results: asis
+source("R/site_helpers.R")
+models <- read_site_csv("model_summary.csv")
+factors <- read_site_csv("model_factors.csv")
+```
 
-Model evaluation will use time-ordered validation and stored price snapshots to avoid overstating results.
+<section class="page-lead">
+<div class="eyebrow">Technical transparency</div>
+<h1>What the models know. What they do not.</h1>
+<p>This page reports chronological holdout performance, selected model forms, and the factors available at prediction time. It is deliberately more technical than the board.</p>
+</section>
+
+```{r}
+#| echo: false
+#| results: asis
+if (nrow(models)) {
+  cards <- vapply(seq_len(nrow(models)), function(i) {
+    detail <- if (models$market[i] == "nrfi") {
+      paste0("Brier ", sprintf("%.3f", models$brier_score[i]), " · AUC ", sprintf("%.3f", models$auc[i]))
+    } else {
+      paste0("Brier ", sprintf("%.3f", models$brier_score[i]), " · MAE ", sprintf("%.2f", models$mae[i]))
+    }
+    metric_card(market_label(models$market[i]), models$selected_model[i], detail, "Selected using later-game holdout probability performance.")
+  }, character(1))
+  cat('<div class="metric-grid">', paste(cards, collapse = ""), '</div>')
+}
+```
+
+## Holdout scorecard
+
+```{r}
+#| echo: false
+#| results: asis
+if (nrow(models)) {
+  rows <- vapply(seq_len(nrow(models)), function(i) sprintf(
+    '<tr><td><strong>%s</strong></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
+    market_label(models$market[i]), escape_html(models$selected_model[i]),
+    format(models$test_rows[i], big.mark = ","), sprintf("%.3f", models$brier_score[i]),
+    ifelse(is.na(models$mae[i]), "-", sprintf("%.2f", models$mae[i])),
+    escape_html(models$training_through[i])
+  ), character(1))
+  cat('<div class="signal-table-wrap"><table class="signal-table"><thead><tr><th>Market</th><th>Selected model</th><th>Holdout rows</th><th><span class="explain" title="Mean squared error of predicted probabilities; lower is better">Brier</span></th><th><span class="explain" title="Mean absolute error of count predictions; lower is better">Count MAE</span></th><th>Training through</th></tr></thead><tbody>', paste(rows, collapse = ""), '</tbody></table></div>')
+}
+```
+
+## Inputs available before first pitch
+
+```{r}
+#| echo: false
+#| results: asis
+if (nrow(factors)) {
+  cards <- vapply(seq_len(nrow(factors)), function(i) sprintf(
+    '<div class="feature-card" title="%s"><span class="card-kicker">%s</span><h3>%s</h3><p>%s</p></div>',
+    escape_html(factors$technical_detail[i]), escape_html(factors$category[i]),
+    escape_html(factors$factor[i]), escape_html(factors$plain_language[i])
+  ), character(1))
+  cat('<div class="feature-grid">', paste(cards, collapse = ""), '</div>')
+}
+```
+
+## Important limitations
+
+<div class="callout-panel">
+<p>The player models currently use Poisson count distributions, which are interpretable and practical but can understate extra game-to-game variance. NRFI discrimination is modest. Prices can move, probable pitchers can change, and total-bases props depend on confirmed playing time. The live board should be treated as a research ranking, not a guarantee or staking instruction.</p>
+</div>

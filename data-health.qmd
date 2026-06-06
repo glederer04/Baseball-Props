@@ -1,7 +1,43 @@
 ---
 title: "Data Health"
+toc: false
 ---
 
-This page will report the most recent successful MLB data update, sportsbook line refresh, prediction run, and dashboard deployment.
+```{r}
+#| echo: false
+#| results: asis
+source("R/site_helpers.R")
+status <- read_site_csv("pipeline_status.csv")
+```
 
-Before recommendations are published, the line feed will be validated for reliable coverage of the intended FanDuel prop and NRFI markets.
+<section class="page-lead">
+<div class="eyebrow">Operational transparency</div>
+<h1>Trust starts with knowing what is fresh.</h1>
+<p>This page separates model readiness from live-feed readiness. A working model does not imply that today's line board is current.</p>
+</section>
+
+```{r}
+#| echo: false
+#| results: asis
+if (nrow(status)) {
+  items <- list(
+    c("Historical outcomes", status$historical_data_through[1], "Latest completed game included in the local model inputs."),
+    c("Model training", status$model_training_through[1], "Latest date included in the training side of chronological evaluation."),
+    c("Line feed", status$line_feed_status[1], paste("Last refresh:", status$last_line_refresh[1])),
+    c("Site build", status$site_data_generated_at[1], "Timestamp when the tracked site-data snapshot was generated.")
+  )
+  cards <- vapply(items, function(x) sprintf(
+    '<div class="health-card"><span class="card-kicker">%s</span><strong class="%s">%s</strong><p>%s</p></div>',
+    escape_html(x[1]), ifelse(grepl("Live|Ready", x[2]), "health-good", ""), escape_html(x[2]), escape_html(x[3])
+  ), character(1))
+  cat('<div class="health-grid">', paste(cards, collapse = ""), '</div>')
+}
+```
+
+## Publication gates
+
+<div class="feature-grid">
+<div class="feature-card"><span class="card-kicker">Pass</span><h3>Chronological evaluation</h3><p>All model scorecards use later game dates as the holdout set.</p></div>
+<div class="feature-card"><span class="card-kicker">Pass</span><h3>No invented board rows</h3><p>If a live line cannot be scored, the board remains empty and explains why.</p></div>
+<div class="feature-card"><span class="card-kicker">Next</span><h3>Forward pick tracking</h3><p>Locked historical recommendations and grading will be added after the live visualization workflow is stable.</p></div>
+</div>

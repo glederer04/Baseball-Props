@@ -5,24 +5,40 @@ project:
     - "*.qmd"
 
 website:
-  title: "Baseball Props"
+  title: "Diamond Signal"
+  site-url: "https://glederer04.github.io/Baseball-Props/"
+  description: "An evidence-first MLB player prop and NRFI model dashboard."
+  favicon: assets/favicon.svg
   navbar:
-    background: "#10273f"
-    foreground: "#ffffff"
+    logo: assets/mark.svg
+    logo-alt: "Diamond Signal"
+    background: "#07111f"
+    foreground: "#f5f7fb"
     left:
       - href: index.qmd
-        text: Home
+        text: Overview
       - href: today.qmd
-        text: Today's Card
-      - href: results.qmd
-        text: Results
+        text: Model Board
       - href: performance.qmd
-        text: Performance
+        text: Model Lab
+      - href: results.qmd
+        text: How It Works
       - href: data-health.qmd
         text: Data Health
+    right:
+      - icon: github
+        href: https://github.com/glederer04/Baseball-Props
+        aria-label: GitHub repository
+  page-footer:
+    left: "Diamond Signal · research, not financial advice"
+    right: "Built with R, MLB Stats API, Open-Meteo, and Quarto"
 
 format:
   html:
-    theme: cosmo
+    theme: [cosmo, styles.scss]
     css: styles.css
-    toc: true
+    toc: false
+    smooth-scroll: true
+    page-layout: full
+    code-fold: true
+    include-after-body: includes/site-footer.html

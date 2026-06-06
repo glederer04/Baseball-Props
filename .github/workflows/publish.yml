@@ -1,5 +1,8 @@
 on:
   workflow_dispatch:
+  schedule:
+    # One pregame refresh per day. Manual dispatch is available for another refresh.
+    - cron: '0 15 * * *'
   push:
     branches: main
 
@@ -38,6 +41,15 @@ jobs:
         uses: r-lib/actions/setup-renv@v2
         with:
           cache-version: 1
+
+      - name: Score today's live card
+        if: github.event_name != 'push'
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: Rscript R/run_daily_predictions.R
+
+      - name: Refresh site status
+        run: Rscript R/update_site_status.R
 
       - name: Render site
         uses: quarto-dev/quarto-actions/render@v2

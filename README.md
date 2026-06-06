@@ -1,35 +1,39 @@
-# Baseball Props
+# Diamond Signal
 
-Personal MLB prediction research dashboard built with R and Quarto.
+An evidence-first MLB prop research dashboard built with R and Quarto.
 
-## Initial Product Scope
+## Current Product Scope
 
-- Pitcher strikeout, batter total bases, and NRFI modeling
-- Daily sportsbook price snapshots
-- Ranked recommendations based on modeled probability differences
-- Honest historical recommendation and calibration reporting
+- Pitcher strikeout, batter total bases, and NRFI probability models
+- Live FanDuel line ingestion through The Odds API
+- Ranked model-versus-market signals with no-vig probability comparisons
+- Chronological model evaluation and visible data-health reporting
 
 ## Development
 
-Open `Baseball-Props.Rproj` in RStudio and render the Quarto website locally.
+The public website renders only the small, tracked files in `site-data/`.
+Research artifacts remain local under `data/processed/`; compact objects needed
+for live scoring are stored in `runtime/`.
 
-```r
-quarto::quarto_render()
+```sh
+Rscript R/export_site_data.R
+Rscript R/prepare_runtime.R
+Rscript R/run_daily_predictions.R
+quarto render
 ```
 
-The R package environment is managed with `renv`. Restore dependencies after cloning with:
+Set `ODDS_API_KEY` locally or as a GitHub Actions secret to activate live
+pricing. Without it, the site renders an honest empty board rather than sample
+or invented picks.
 
-```r
-renv::restore()
-```
+The daily GitHub Actions refresh runs once at 15:00 UTC to protect the free API
+quota. Manual workflow dispatch can request another refresh.
 
 ## Modeling Workflow
 
-Research and model development live in [`analysis/`](analysis/README.md) as
-ordered R Markdown notebooks. The workflow acquires MLB game outcomes, builds
-pregame rolling and weather/venue features, evaluates benchmark models
-chronologically, and scores captured FanDuel lines once an `ODDS_API_KEY` is
-configured locally.
+Research and model development live in [`analysis/`](analysis/README.md).
+The ordered notebooks acquire outcomes, build leakage-safe pregame features,
+evaluate candidates chronologically, and score captured lines.
 
 ## Publishing
 
