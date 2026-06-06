@@ -23,6 +23,6 @@ toc: false
 <p>The model thinks the selected side happens 58 times in 100 similar situations. The no-vig market estimate is 51 times in 100. That seven-point difference is a strong signal to investigate. It is not a claim that the bet will win.</p>
 </div>
 
-## Why there is no historical picks tab yet
+## Pick Tracking
 
-<p>Historical pick storage and grading are intentionally deferred. The current goal is to make live model-versus-line comparisons clear and useful. Once snapshot storage is added, this site will report every locked recommendation, including losses, with calibration and market-by-market results.</p>
+<p>The My Picks tab stores user-selected singles and parlays locally in the browser. The site refresh also publishes compact final-game settlement rows so saved slips can be marked pending, won, or lost after public MLB results are available. This is research tracking only: no stake size, payout, account, or payment information is collected.</p>

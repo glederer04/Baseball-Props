@@ -1,0 +1,27 @@
+---
+title: "My Picks"
+toc: false
+---
+
+<section class="page-lead">
+<div class="eyebrow">Local pick tracker</div>
+<h1>Your saved card.</h1>
+<p>Build singles or parlays from the Model Board, enter the American odds you actually see, and save the slip for local tracking. No stake size, payout, account, or personal information is stored.</p>
+</section>
+
+<div class="callout-panel">
+<span class="card-kicker">Privacy and limits</span>
+<h3>Saved in this browser only.</h3>
+<p>This tracker uses local browser storage. It is free, private to this device/browser, and meant for research tracking. Clearing site data or switching devices will remove saved slips unless you keep a separate record.</p>
+</div>
+
+## Current Slip
+
+<div data-pick-slip></div>
+
+## Saved Slips
+
+<div class="metric-grid" data-pick-summary></div>
+<div data-saved-tickets></div>
+
+<script src="assets/picks.js"></script>

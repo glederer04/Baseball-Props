@@ -18,10 +18,11 @@ Rscript R/export_site_data.R
 EVENT_DATE="${today}" Rscript R/run_model_projections.R
 Rscript R/run_daily_predictions.R
 Rscript R/update_site_status.R
+Rscript R/update_pick_results.R
 
 /Applications/RStudio.app/Contents/Resources/app/quarto/bin/quarto render
 
-git add .github/workflows/publish.yml R runtime site-data assets scripts _quarto.yml styles.css today.qmd performance.qmd data-health.qmd index.qmd results.qmd README.md
+git add .github/workflows/publish.yml R runtime site-data assets scripts _quarto.yml styles.css today.qmd picks.qmd performance.qmd data-health.qmd index.qmd results.qmd README.md
 
 if git diff --cached --quiet; then
   echo "No daily changes to commit."

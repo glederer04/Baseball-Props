@@ -7,6 +7,7 @@ An evidence-first MLB prop research dashboard built with R and Quarto.
 - Pitcher strikeout, batter total bases, and NRFI probability models
 - Live FanDuel line ingestion through The Odds API
 - Ranked model-versus-market signals with no-vig probability comparisons
+- Browser-local pick slip and parlay odds tracker with public-result grading
 - Chronological model evaluation and visible data-health reporting
 
 ## Development
@@ -19,6 +20,7 @@ for live scoring are stored in `runtime/`.
 Rscript R/export_site_data.R
 Rscript R/prepare_runtime.R
 Rscript R/run_daily_predictions.R
+Rscript R/update_pick_results.R
 quarto render
 ```
 

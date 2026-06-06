@@ -19,6 +19,8 @@ website:
         text: Overview
       - href: today.qmd
         text: Model Board
+      - href: picks.qmd
+        text: My Picks
       - href: performance.qmd
         text: Model Lab
       - href: results.qmd

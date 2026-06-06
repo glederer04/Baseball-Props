@@ -55,6 +55,9 @@ jobs:
       - name: Refresh site status
         run: Rscript R/update_site_status.R
 
+      - name: Refresh pick settlement results
+        run: Rscript R/update_pick_results.R
+
       - name: Render site
         uses: quarto-dev/quarto-actions/render@v2
 
