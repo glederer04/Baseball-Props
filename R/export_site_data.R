@@ -51,7 +51,7 @@ if (!file.exists(board_path)) {
       market = character(), side = character(), line = double(),
       american_price = double(), model_probability = double(),
       implied_probability = double(), probability_difference = double(),
-      signal = character()
+      signal = character(), captured_at = character()
     ),
     board_path
   )

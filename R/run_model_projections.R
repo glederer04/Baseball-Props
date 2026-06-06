@@ -14,6 +14,7 @@ dir.create(site_dir, recursive = TRUE, showWarnings = FALSE)
 event_date <- as.Date(Sys.getenv("EVENT_DATE", unset = as.character(Sys.Date())))
 event_timezone <- "America/New_York"
 run_timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%S%z")
+slate_label <- sprintf("%s %d, %s", format(event_date, "%B"), as.integer(format(event_date, "%d")), format(event_date, "%Y"))
 
 models <- readRDS(file.path(runtime_dir, "prop_models.rds"))
 nrfi_model <- readRDS(file.path(runtime_dir, "nrfi_model.rds"))
@@ -28,6 +29,14 @@ int <- function(x) as.integer(x %||% NA_integer_)
 chr <- function(x) as.character(x %||% NA_character_)
 clean_key <- function(x) tolower(gsub("[^a-z0-9]", "", iconv(x, to = "ASCII//TRANSLIT")))
 format_game_time <- function(x) sub("^0", "", format(with_tz(ymd_hms(x), event_timezone), "%I:%M %p ET"))
+clamp <- function(x, lower = 0, upper = 100) pmin(pmax(x, lower), upper)
+side_from_probability <- function(probability_over) if_else(probability_over >= 0.5, "Over", "Under")
+side_probability <- function(probability_over) pmax(probability_over, 1 - probability_over)
+confidence_score <- function(probability, line_gap, line_scale) {
+  probability_component <- clamp((probability - 0.5) / 0.25, 0, 1)
+  gap_component <- clamp(abs(line_gap) / line_scale, 0, 1)
+  round(100 * (0.62 * probability_component + 0.38 * gap_component), 1)
+}
 
 get_json <- function(url, ...) {
   request(url) |>
@@ -47,13 +56,39 @@ fetch_venue <- function(venue_id) {
   )$venues[[1]]
   location <- venue$location %||% list()
   field <- venue$fieldInfo %||% list()
+  coordinates <- location$defaultCoordinates %||% list()
   tibble(
     venue_id = int(venue$id),
+    latitude = num(coordinates$latitude),
+    longitude = num(coordinates$longitude),
     elevation_ft = num(location$elevation),
     roof_closed_or_fixed = as.integer(chr(field$roofType) %in% c("Closed", "Fixed", "Dome")),
     grass_surface = as.integer(chr(field$turfType) == "Grass"),
     center_ft = num(field$center)
   )
+}
+
+fetch_forecast_at_start <- function(latitude, longitude, commence_time) {
+  if (is.na(latitude) || is.na(longitude)) {
+    return(tibble(temperature_f = 70, wind_mph = 0))
+  }
+  payload <- get_json(
+    "https://api.open-meteo.com/v1/forecast",
+    latitude = latitude,
+    longitude = longitude,
+    hourly = "temperature_2m,wind_speed_10m",
+    temperature_unit = "fahrenheit",
+    wind_speed_unit = "mph",
+    timezone = event_timezone,
+    forecast_days = 16
+  )
+  hourly <- tibble(
+    forecast_time = ymd_hm(unlist(payload$hourly$time), tz = event_timezone),
+    temperature_f = as.numeric(unlist(payload$hourly$temperature_2m)),
+    wind_mph = as.numeric(unlist(payload$hourly$wind_speed_10m))
+  )
+  local_start <- with_tz(ymd_hms(commence_time), event_timezone)
+  hourly[which.min(abs(difftime(hourly$forecast_time, local_start, units = "mins"))), c("temperature_f", "wind_mph")]
 }
 
 fetch_schedule <- function() {
@@ -84,9 +119,9 @@ fetch_schedule <- function() {
     mutate(
       matchup = paste(away_team, "at", home_team),
       game_time = format_game_time(commence_time),
-      temperature_f = 70,
-      wind_mph = 0
-    )
+      weather = pmap(list(latitude, longitude, commence_time), fetch_forecast_at_start)
+    ) |>
+    unnest(weather)
 }
 
 make_player_features <- function(schedule, market) {
@@ -119,15 +154,21 @@ project_batters <- function(schedule) {
     mutate(
       expected_count = pmax(predict(models$batter_total_bases, newdata = features, type = "response"), .001),
       reference_line = 1.5,
-      probability_over = ppois(reference_line, expected_count, lower.tail = FALSE)
+      probability_over = ppois(reference_line, expected_count, lower.tail = FALSE),
+      selected_side = "Over",
+      model_probability = probability_over,
+      line_gap = expected_count - reference_line,
+      confidence = confidence_score(model_probability, pmax(line_gap, 0), line_scale = 1),
+      recommendation = paste(selected_side, reference_line, "TB")
     ) |>
     group_by(matchup) |>
-    slice_max(expected_count, n = 5, with_ties = FALSE) |>
+    slice_max(confidence, n = 5, with_ties = FALSE) |>
     ungroup() |>
     transmute(
-      selection = player_name, matchup, game_time, market,
-      expected_count, reference_line, probability_over,
-      model_probability = probability_over,
+      slate_date = as.character(event_date), slate_label, selection = player_name,
+      matchup, game_time, market, recommended_side = selected_side,
+      recommendation, expected_count, reference_line, line_gap,
+      probability_over, model_probability, confidence,
       projection_note = "Lineup unconfirmed · reference over 1.5 TB",
       status = "Batter watch", generated_at = run_timestamp
     )
@@ -146,14 +187,20 @@ project_pitchers <- function(schedule) {
   features |>
     mutate(
       expected_count = pmax(predict(models$pitcher_strikeouts, newdata = features, type = "response"), .001),
-      reference_line = pmax(2.5, round(expected_count - .5) + .5),
-      probability_over = ppois(reference_line, expected_count, lower.tail = FALSE)
+      reference_line = pmax(2.5, pmin(8.5, floor(player_mean_10) + 0.5)),
+      probability_over = ppois(reference_line, expected_count, lower.tail = FALSE),
+      selected_side = side_from_probability(probability_over),
+      model_probability = side_probability(probability_over),
+      line_gap = expected_count - reference_line,
+      confidence = confidence_score(model_probability, line_gap, line_scale = 2),
+      recommendation = paste(selected_side, reference_line, "K")
     ) |>
     transmute(
-      selection = player_name, matchup, game_time, market,
-      expected_count, reference_line, probability_over,
-      model_probability = probability_over,
-      projection_note = paste("Probable starter · reference over", reference_line, "K"),
+      slate_date = as.character(event_date), slate_label, selection = player_name,
+      matchup, game_time, market, recommended_side = selected_side,
+      recommendation, expected_count, reference_line, line_gap,
+      probability_over, model_probability, confidence,
+      projection_note = paste("Probable starter · model vs reference", reference_line, "K"),
       status = "Probable starter", generated_at = run_timestamp
     )
 }
@@ -181,11 +228,19 @@ project_nrfi <- function(schedule) {
     filter(if_all(c(home_player_mean_10, away_player_mean_10, venue_nrfi_mean_20), ~ !is.na(.x)))
   if (!nrow(features)) return(tibble())
   features |>
-    mutate(probability_nrfi = predict(nrfi_model, newdata = features, type = "response")) |>
+    mutate(
+      probability_nrfi = predict(nrfi_model, newdata = features, type = "response"),
+      selected_side = if_else(probability_nrfi >= 0.5, "NRFI", "YRFI"),
+      model_probability = pmax(probability_nrfi, 1 - probability_nrfi),
+      confidence = round(100 * clamp((model_probability - 0.5) / 0.15, 0, 1), 1),
+      recommendation = selected_side
+    ) |>
     transmute(
-      selection = "NRFI", matchup, game_time, market = "nrfi",
-      expected_count = NA_real_, reference_line = .5, probability_over = NA_real_,
-      model_probability = probability_nrfi,
+      slate_date = as.character(event_date), slate_label, selection = selected_side,
+      matchup, game_time, market = "nrfi", recommended_side = selected_side,
+      recommendation, expected_count = NA_real_, reference_line = .5,
+      line_gap = NA_real_, probability_over = probability_nrfi,
+      model_probability, confidence,
       projection_note = paste(home_probable_pitcher, "vs", away_probable_pitcher),
       status = "Probable starters", generated_at = run_timestamp
     )
@@ -197,8 +252,8 @@ projections <- bind_rows(
   project_nrfi(schedule),
   project_batters(schedule)
 ) |>
-  mutate(market_order = match(market, c("pitcher_strikeouts", "nrfi", "batter_total_bases"))) |>
-  arrange(market_order, desc(model_probability), matchup) |>
+  mutate(market_order = match(market, c("pitcher_strikeouts", "batter_total_bases", "nrfi"))) |>
+  arrange(desc(confidence), market_order, desc(model_probability), matchup) |>
   select(-market_order)
 
 write_csv(projections, file.path(site_dir, "today_projections.csv"))

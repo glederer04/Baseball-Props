@@ -30,6 +30,11 @@ market_label <- function(x) {
   unname(ifelse(x %in% names(labels), labels[x], x))
 }
 
+date_label <- function(x) {
+  if (!length(x) || is.na(x) || !nzchar(x)) return("-")
+  format(as.Date(x), "%B %e, %Y")
+}
+
 metric_card <- function(label, value, detail, title = "") {
   sprintf(
     '<div class="metric" title="%s"><span class="metric-label">%s</span><span class="metric-value">%s</span><span class="metric-detail">%s</span></div>',
@@ -71,16 +76,29 @@ render_projection_board <- function(x) {
     return('<div class="empty-state"><h3>No model-only projections are available.</h3><p>The MLB schedule or probable-starter feed did not produce usable rows for this date.</p></div>')
   }
   rows <- vapply(seq_len(nrow(x)), function(i) {
-    expectation <- if (x$market[i] == "nrfi") pct(x$model_probability[i]) else sprintf("%.2f", x$expected_count[i])
-    expectation_label <- if (x$market[i] == "nrfi") "NRFI probability" else "Expected count"
+    projection_value <- if (x$market[i] == "nrfi") {
+      pct(x$probability_over[i])
+    } else {
+      sprintf("%.2f vs %.1f", x$expected_count[i], x$reference_line[i])
+    }
+    projection_label <- if (x$market[i] == "nrfi") {
+      "Raw NRFI probability"
+    } else {
+      paste0(ifelse(x$line_gap[i] >= 0, "+", ""), sprintf("%.2f", x$line_gap[i]), " model gap")
+    }
+    confidence_width <- paste0(pmax(4, pmin(100, x$confidence[i])), "%")
     sprintf(
       paste0('<tr data-market="%s" data-matchup="%s"><td><strong>%s</strong><br><span class="mini-note">%s</span></td>',
         '<td><span class="pill">%s</span></td><td>%s<br><span class="mini-note">%s</span></td>',
         '<td><strong>%s</strong><br><span class="mini-note">%s</span></td>',
+        '<td><strong>%s</strong><br><span class="mini-note">%s</span></td>',
         '<td><div class="prob-track"><span style="width:%s"></span></div><strong>%s</strong></td></tr>'),
-      escape_html(x$market[i]), escape_html(x$matchup[i]), escape_html(x$selection[i]), escape_html(x$projection_note[i]),
-      escape_html(market_label(x$market[i])), escape_html(x$matchup[i]), escape_html(x$game_time[i]),
-      expectation, expectation_label, pct(x$model_probability[i]), pct(x$model_probability[i])
+      escape_html(x$market[i]), escape_html(x$matchup[i]),
+      escape_html(x$recommendation[i]), escape_html(x$projection_note[i]),
+      escape_html(market_label(x$market[i])), escape_html(x$matchup[i]),
+      escape_html(x$game_time[i]), projection_value, projection_label,
+      pct(x$model_probability[i]), "Selected-side probability",
+      confidence_width, sprintf("%.1f", x$confidence[i])
     )
   }, character(1))
   paste0(
@@ -90,8 +108,9 @@ render_projection_board <- function(x) {
     '<button class="filter-chip" data-filter="nrfi">NRFI</button>',
     '<select id="matchup-filter"><option value="all">All matchups</option></select></div>',
     '<div class="signal-table-wrap"><table class="signal-table projection-table"><thead><tr>',
-    '<th>Selection</th><th>Market</th><th>Matchup</th><th>Projection</th>',
-    '<th><span class="explain" title="Model probability over the displayed reference line, or NRFI probability">Probability</span></th>',
+    '<th>Best Bet</th><th>Market</th><th>Matchup</th><th>Projection vs Line</th>',
+    '<th><span class="explain" title="Probability for the displayed side, not a guarantee">Probability</span></th>',
+    '<th><span class="explain" title="Uniform score from selected-side probability and model-versus-line gap">Confidence</span></th>',
     '</tr></thead><tbody>', paste(rows, collapse = ""), '</tbody></table></div>',
     '<script src="assets/board.js"></script>'
   )
