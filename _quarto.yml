@@ -3,12 +3,15 @@ project:
   output-dir: _site
   render:
     - "*.qmd"
+  resources:
+    - favicon.png
+    - assets/favicon.png
 
 website:
   title: "Diamond Signal"
   site-url: "https://glederer04.github.io/Baseball-Props/"
   description: "An evidence-first MLB player prop and NRFI model dashboard."
-  favicon: assets/mark.svg
+  favicon: favicon.svg
   navbar:
     logo: assets/mark.svg
     logo-alt: "Diamond Signal"
@@ -44,3 +47,4 @@ format:
     page-layout: full
     code-fold: true
     include-after-body: includes/site-footer.html
+    include-in-header: includes/favicon.html
