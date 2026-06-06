@@ -65,3 +65,34 @@ render_signal_table <- function(x) {
     '</tr></thead><tbody>', paste(rows, collapse = ""), '</tbody></table></div>'
   )
 }
+
+render_projection_board <- function(x) {
+  if (!nrow(x)) {
+    return('<div class="empty-state"><h3>No model-only projections are available.</h3><p>The MLB schedule or probable-starter feed did not produce usable rows for this date.</p></div>')
+  }
+  rows <- vapply(seq_len(nrow(x)), function(i) {
+    expectation <- if (x$market[i] == "nrfi") pct(x$model_probability[i]) else sprintf("%.2f", x$expected_count[i])
+    expectation_label <- if (x$market[i] == "nrfi") "NRFI probability" else "Expected count"
+    sprintf(
+      paste0('<tr data-market="%s" data-matchup="%s"><td><strong>%s</strong><br><span class="mini-note">%s</span></td>',
+        '<td><span class="pill">%s</span></td><td>%s<br><span class="mini-note">%s</span></td>',
+        '<td><strong>%s</strong><br><span class="mini-note">%s</span></td>',
+        '<td><div class="prob-track"><span style="width:%s"></span></div><strong>%s</strong></td></tr>'),
+      escape_html(x$market[i]), escape_html(x$matchup[i]), escape_html(x$selection[i]), escape_html(x$projection_note[i]),
+      escape_html(market_label(x$market[i])), escape_html(x$matchup[i]), escape_html(x$game_time[i]),
+      expectation, expectation_label, pct(x$model_probability[i]), pct(x$model_probability[i])
+    )
+  }, character(1))
+  paste0(
+    '<div class="board-controls"><button class="filter-chip active" data-filter="all">All</button>',
+    '<button class="filter-chip" data-filter="pitcher_strikeouts">Pitchers</button>',
+    '<button class="filter-chip" data-filter="batter_total_bases">Batters</button>',
+    '<button class="filter-chip" data-filter="nrfi">NRFI</button>',
+    '<select id="matchup-filter"><option value="all">All matchups</option></select></div>',
+    '<div class="signal-table-wrap"><table class="signal-table projection-table"><thead><tr>',
+    '<th>Selection</th><th>Market</th><th>Matchup</th><th>Projection</th>',
+    '<th><span class="explain" title="Model probability over the displayed reference line, or NRFI probability">Probability</span></th>',
+    '</tr></thead><tbody>', paste(rows, collapse = ""), '</tbody></table></div>',
+    '<script src="assets/board.js"></script>'
+  )
+}

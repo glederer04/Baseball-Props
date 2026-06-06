@@ -1,8 +1,8 @@
 on:
   workflow_dispatch:
   schedule:
-    # One pregame refresh per day. Manual dispatch is available for another refresh.
-    - cron: '0 15 * * *'
+    # 4 AM Eastern during daylight-saving time; manual dispatch is available too.
+    - cron: '0 8 * * *'
   push:
     branches: main
 
@@ -41,6 +41,10 @@ jobs:
         uses: r-lib/actions/setup-renv@v2
         with:
           cache-version: 1
+
+      - name: Build today's model-only projection board
+        if: github.event_name != 'push'
+        run: Rscript R/run_model_projections.R
 
       - name: Score today's live card
         if: github.event_name != 'push'

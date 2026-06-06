@@ -8,13 +8,14 @@ toc: false
 #| results: asis
 source("R/site_helpers.R")
 board <- read_site_csv("latest_board.csv")
+projections <- read_site_csv("today_projections.csv")
 status <- read_site_csv("pipeline_status.csv")
 ```
 
 <section class="page-lead">
-<div class="eyebrow">Today's priced opportunities</div>
+<div class="eyebrow">Today's 4 AM model snapshot</div>
 <h1>The model board.</h1>
-<p>Every row is a comparison between a model probability and the sportsbook's estimated fair probability. Larger positive edges deserve attention, not blind action.</p>
+<p>Explore today's probable-starter, NRFI, and batter watchlist projections. When live prices are available, sportsbook-priced edges appear first; model-only rows remain visible so the board is useful every day.</p>
 </section>
 
 ```{r}
@@ -25,11 +26,17 @@ captured <- if (nrow(status)) status$last_line_refresh[1] else "Not available"
 qualified <- if (nrow(board)) sum(board$probability_difference >= .03) else 0
 cards <- c(
   metric_card("Line feed", line_status, paste("Last refresh:", captured), "The board cannot price an edge without a sportsbook line."),
-  metric_card("Signals ≥ 3%", qualified, "Research threshold", "A 3 percentage-point gap is the current minimum display threshold."),
-  metric_card("Top edge", if (nrow(board)) paste0("+", pct(max(board$probability_difference))) else "-", if (nrow(board)) "Model minus market" else "No priced rows", "This is not expected return; it is a probability difference.")
+  metric_card("Model projections", nrow(projections), "Today's playable board", "Generated from the MLB schedule and information available before games."),
+  metric_card("Priced signals", qualified, if (nrow(board)) "Model minus market ≥ 3%" else "Odds feed not configured", "Priced signals require a sportsbook line snapshot.")
 )
 cat('<div class="metric-grid">', paste(cards, collapse = ""), '</div>')
-cat(render_signal_table(board))
+if (nrow(board)) {
+  cat('<h2>Priced edges</h2>')
+  cat(render_signal_table(board))
+}
+cat('<h2>Model-only projections</h2>')
+cat('<p class="mini-note">These recreate a pregame research board using current model inputs and today’s MLB schedule. Batter rows are a watchlist because lineups may not have been confirmed at 4 AM ET. Reference lines are analytical benchmarks, not captured sportsbook prices.</p>')
+cat(render_projection_board(projections))
 ```
 
 <div class="callout-panel">

@@ -8,7 +8,7 @@ website:
   title: "Diamond Signal"
   site-url: "https://glederer04.github.io/Baseball-Props/"
   description: "An evidence-first MLB player prop and NRFI model dashboard."
-  favicon: assets/favicon.svg
+  favicon: assets/mark.svg
   navbar:
     logo: assets/mark.svg
     logo-alt: "Diamond Signal"

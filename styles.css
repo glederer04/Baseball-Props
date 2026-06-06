@@ -60,6 +60,14 @@ p { color: var(--muted); line-height: 1.7; }
 .edge-neg { color: var(--coral); font-weight: 750; }
 .empty-state { padding: 2.4rem; text-align: center; border: 1px dashed rgba(255,255,255,.16); border-radius: 18px; background: rgba(255,255,255,.02); }
 .empty-state h3 { margin-top: 0; }
+.board-controls { display: flex; gap: .55rem; flex-wrap: wrap; align-items: center; margin: 1rem 0; }
+.filter-chip, #matchup-filter { border: 1px solid var(--line); background: var(--panel); color: var(--text); border-radius: 999px; padding: .55rem .85rem; font-size: .82rem; }
+.filter-chip { cursor: pointer; }
+.filter-chip.active, .filter-chip:hover { background: var(--mint); color: var(--ink); border-color: var(--mint); }
+#matchup-filter { margin-left: auto; max-width: 260px; }
+.prob-track { width: 110px; height: 6px; background: rgba(255,255,255,.08); border-radius: 999px; margin-bottom: .45rem; overflow: hidden; }
+.prob-track span { display: block; height: 100%; background: linear-gradient(90deg, var(--sky), var(--mint)); border-radius: inherit; }
+tr[hidden] { display: none; }
 
 .explain { cursor: help; border-bottom: 1px dotted var(--mint); }
 .method-step { display: grid; grid-template-columns: 3.5rem 1fr; gap: 1rem; margin: 1rem 0; padding: 1rem 0; border-bottom: 1px solid var(--line); }
