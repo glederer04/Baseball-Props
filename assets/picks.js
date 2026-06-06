@@ -29,12 +29,41 @@
   const saveSlip = slip => {
     write(slipKey, slip);
     updateSlipCount();
+    syncAddButtons();
+    updateFloatingLink();
     renderSlip();
   };
 
   const updateSlipCount = () => {
     const count = currentSlip().length;
     document.querySelectorAll("[data-slip-count]").forEach(node => node.textContent = String(count));
+  };
+
+  const syncAddButtons = () => {
+    const slipKeys = new Set(currentSlip().map(legKey));
+    document.querySelectorAll(".add-pick-btn").forEach(button => {
+      const added = slipKeys.has(legKey(getButtonLeg(button)));
+      button.classList.toggle("added", added);
+      button.textContent = added ? "Added" : "+ add";
+      button.setAttribute("aria-pressed", added ? "true" : "false");
+    });
+  };
+
+  const updateFloatingLink = () => {
+    const count = currentSlip().length;
+    let link = document.querySelector("[data-floating-slip-link]");
+    if (!count) {
+      link?.remove();
+      return;
+    }
+    if (!link) {
+      link = document.createElement("a");
+      link.className = "floating-slip-link";
+      link.href = "picks.html";
+      link.dataset.floatingSlipLink = "";
+      document.body.appendChild(link);
+    }
+    link.innerHTML = `Go to My Picks <strong data-slip-count>${count}</strong>`;
   };
 
   const getButtonLeg = button => ({
@@ -60,15 +89,15 @@
         const leg = getButtonLeg(button);
         const slip = currentSlip();
         if (!slip.some(item => legKey(item) === legKey(leg))) slip.push(leg);
-        saveSlip(slip);
-        button.textContent = "Added";
-        button.classList.add("added");
-        setTimeout(() => {
-          button.textContent = "+ Add";
-          button.classList.remove("added");
-        }, 1400);
+        write(slipKey, slip);
+        updateSlipCount();
+        syncAddButtons();
+        updateFloatingLink();
+        renderSlip();
       });
     });
+    syncAddButtons();
+    updateFloatingLink();
   };
 
   const totalOdds = legs => {
@@ -100,7 +129,7 @@
       <div class="ticket-card active-ticket">
         <div class="ticket-head">
           <div><span class="card-kicker">Current slip</span><h3>${slip.length === 1 ? "Single" : `${slip.length}-leg parlay`}</h3></div>
-          <strong>${odds.american}</strong>
+          <strong data-current-slip-odds>${odds.american}</strong>
         </div>
         <div class="slip-list">
           ${slip.map((leg, index) => `
@@ -122,7 +151,9 @@
         const next = currentSlip();
         next[Number(input.dataset.oddsIndex)].odds = input.value;
         write(slipKey, next);
-        renderSlip();
+        const odds = totalOdds(next);
+        const totalNode = container.querySelector("[data-current-slip-odds]");
+        if (totalNode) totalNode.textContent = odds.american;
       });
     });
     container.querySelectorAll(".remove-leg-btn").forEach(button => {
@@ -154,7 +185,11 @@
       legs
     });
     write(ticketsKey, tickets);
-    saveSlip([]);
+    write(slipKey, []);
+    updateSlipCount();
+    syncAddButtons();
+    updateFloatingLink();
+    renderSlip();
     renderTickets();
   };
 
@@ -231,7 +266,8 @@
       summary.innerHTML = `
         <div class="metric"><span class="metric-label">Saved slips</span><span class="metric-value">${tickets.length}</span><span class="metric-detail">Stored in this browser</span></div>
         <div class="metric"><span class="metric-label">Settled record</span><span class="metric-value">${wins}-${Math.max(0, settled.length - wins)}</span><span class="metric-detail">Pushes excluded from wins</span></div>
-        <div class="metric"><span class="metric-label">Win rate</span><span class="metric-value">${settled.length ? pct(wins / settled.length) : "-"}</span><span class="metric-detail">Saved slip results</span></div>`;
+        <div class="metric"><span class="metric-label">Win rate</span><span class="metric-value">${settled.length ? pct(wins / settled.length) : "-"}</span><span class="metric-detail">Saved slip results</span></div>
+        <div class="metric action-metric"><button class="button-ghost clear-tickets-btn" type="button">Clear saved slips</button><span class="metric-detail">Removes all saved slips from this browser</span></div>`;
     }
     container.innerHTML = graded.map(ticket => `
       <div class="ticket-card">
@@ -255,11 +291,19 @@
         renderTickets();
       });
     });
+    summary?.querySelector(".clear-tickets-btn")?.addEventListener("click", () => {
+      if (confirm("Clear all saved slips from this browser?")) {
+        write(ticketsKey, []);
+        renderTickets();
+      }
+    });
   };
 
   document.addEventListener("DOMContentLoaded", () => {
     bindAddButtons();
     updateSlipCount();
+    syncAddButtons();
+    updateFloatingLink();
     renderSlip();
     renderTickets();
   });
