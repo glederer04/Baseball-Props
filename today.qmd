@@ -11,45 +11,61 @@ board <- read_site_csv("latest_board.csv")
 projections <- read_site_csv("today_projections.csv")
 status <- read_site_csv("pipeline_status.csv")
 slate_label <- if (nrow(projections) && "slate_label" %in% names(projections)) projections$slate_label[1] else "today"
+updated_at <- if (nrow(status) && "site_data_generated_at" %in% names(status)) format_status_time(status$site_data_generated_at[1]) else "Not available"
+if (nrow(board)) {
+  board_join <- transform(
+    board,
+    join_market = normalize_market_key(market),
+    join_side = ifelse(normalize_market_key(market) == "nrfi", selection, side)
+  )
+  projections$row_id <- seq_len(nrow(projections))
+  projections$join_id <- paste(projections$selection, projections$matchup, projections$market, projections$recommended_side, sep = "||")
+  board_join$join_id <- paste(board_join$selection, board_join$matchup, board_join$join_market, board_join$join_side, sep = "||")
+  line_lookup <- board_join[!duplicated(board_join$join_id), c("join_id", "american_price")]
+  projections <- merge(projections, line_lookup, by = "join_id", all.x = TRUE, sort = FALSE)
+  projections <- projections[order(projections$row_id), ]
+  projections$join_id <- NULL
+  projections$row_id <- NULL
+}
 ```
 
 <section class="page-lead">
-<div class="eyebrow">4 AM ET model snapshot · `r slate_label`</div>
+<div class="eyebrow">Updated `r updated_at` · `r slate_label` slate</div>
 <h1>The model board.</h1>
-<p>Explore today's ranked card. Props are ordered by a uniform confidence score that blends the model's selected-side probability with how far the projection is from the displayed line. NRFI rows use the selected side's probability directly.</p>
+<p>Use the FanDuel-priced section first when it is available. The model-only board below is the full research slate, with a board score used only to rank ideas against each other, not to claim certainty.</p>
 </section>
 
 ```{r}
 #| echo: false
 #| results: asis
-line_status <- if (nrow(status)) status$line_feed_status[1] else "Unknown"
-captured <- if (nrow(status)) status$last_line_refresh[1] else "Not available"
-qualified <- if (nrow(board)) sum(board$probability_difference >= .03) else 0
+captured <- if (nrow(status)) format_status_time(status$last_line_refresh[1]) else "Not available"
+qualified <- if (nrow(board)) nrow(board) else 0
 cards <- c(
-  metric_card("Line feed", line_status, paste("Last refresh:", captured), "The board cannot price an edge without a sportsbook line."),
+  metric_card("Last site update", updated_at, "Includes board, grading, and site data", "This timestamp should move forward on each refresh."),
   metric_card("Slate date", slate_label, "Games shown on this board", "This date comes from the generated MLB schedule snapshot."),
-  metric_card("Best confidence", if (nrow(projections)) sprintf("%.1f", max(projections$confidence)) else "-", "0-100 cross-market score", "A blended score from probability and model-versus-line distance.")
+  metric_card("Priced edges", as.character(qualified), if (qualified) paste("FanDuel snapshot captured", captured) else "No FanDuel edges cleared the current threshold", "This count changes with available lines and the edge threshold.")
 )
 cat('<div class="metric-grid">', paste(cards, collapse = ""), '</div>')
 if (nrow(board)) {
-  cat('<h2>Priced edges</h2>')
+  cat('<h2>FanDuel-priced edges</h2>')
+  cat(sprintf('<p class="mini-note">These are the current FanDuel picks that cleared the model edge threshold in this run. If only %s show up, only %s met the filter at the captured prices.</p>', qualified, qualified))
   cat(render_signal_table(board))
 }
 cat('<h2>Model-only projections</h2>')
-cat('<p class="mini-note">These recreate a 4 AM ET pregame research board using the MLB schedule, probable starters, forecast weather, and current model inputs. Displayed prop lines are analytical reference lines unless a sportsbook line feed is configured.</p>')
+cat('<p class="mini-note">This is the broader research board for the slate. FanDuel prices are auto-filled on add when a matching live price exists; otherwise you can still edit the odds manually in My Picks.</p>')
 cat(render_projection_board(projections))
 ```
 
 <div class="callout-panel">
 <span class="card-kicker">How to read this board</span>
-<h3>Confidence is cross-market, not certainty.</h3>
-<p><strong>Bet</strong> shows the player or matchup with the listed side and line directly underneath. <strong>Gap</strong> shows only how far the model is above or below that listed line for props. <strong>Probability</strong> is the chance of the listed side, and <strong>Confidence</strong> is a 0-100 score that blends probability with model-versus-line distance so strikeouts, total bases, and NRFI can be compared on one board.</p>
+<h3>Use priced edges as the actionable shortlist.</h3>
+<p><strong>FanDuel-priced edges</strong> are the picks where the model currently disagrees most with the captured FanDuel price. <strong>Probability</strong> is the model's estimate for that side. <strong>Score</strong> on the model-only board is just a ranking signal for the slate, not a literal chance of winning.</p>
 </div>
 
-## Signal guide
+## Score guide
 
 <div class="feature-grid">
-<div class="feature-card"><span class="pill strong">70+</span><h3>Strong research signal</h3><p>Meaningful probability plus a meaningful model-versus-line gap. Still check lineups, starters, and current prices.</p></div>
-<div class="feature-card"><span class="pill watch">45-70</span><h3>Watchlist signal</h3><p>Interesting but more sensitive to model error, late news, or an actual sportsbook line moving away.</p></div>
-<div class="feature-card"><span class="pill">Below 45</span><h3>Low separation</h3><p>The model is not far enough from the displayed line or probability midpoint to prioritize it.</p></div>
+<div class="feature-card"><span class="pill strong">60+</span><h3>Top of slate</h3><p>Usually the best mix of modeled probability and separation from the reference line. Start here, then confirm price and news.</p></div>
+<div class="feature-card"><span class="pill watch">35-60</span><h3>Worth checking</h3><p>Reasonable model support, but more dependent on lineup confirmation, starting pitchers, and what the live FanDuel number is.</p></div>
+<div class="feature-card"><span class="pill">Below 35</span><h3>Thin edge</h3><p>Still on the board for transparency, but not something the model is separating strongly from the rest of the slate.</p></div>
 </div>

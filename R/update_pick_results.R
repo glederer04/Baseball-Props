@@ -52,6 +52,10 @@ fetch_schedule_date <- function(date) {
   })
 }
 
+is_final_state <- function(x) {
+  grepl("^Final", x %||% "") | (x %in% c("Game Over", "Completed Early"))
+}
+
 fetch_boxscore <- function(game_pk) {
   get_json(paste0("https://statsapi.mlb.com/api/v1/game/", game_pk, "/boxscore"))
 }
@@ -109,7 +113,7 @@ extract_game_results <- function(game) {
 
 dates <- seq.Date(start_date, end_date, by = "day")
 games <- map_dfr(dates, fetch_schedule_date) |>
-  filter(game_state == "Final")
+  filter(is_final_state(game_state))
 
 results <- if (nrow(games)) {
   map_dfr(seq_len(nrow(games)), function(index) extract_game_results(games[index, ])) |>

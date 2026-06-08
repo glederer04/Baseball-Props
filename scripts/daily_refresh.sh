@@ -97,8 +97,8 @@ Rscript -e "${renv_bootstrap} source('R/export_site_data.R')"
 export EVENT_DATE="${today}"
 Rscript -e "${renv_bootstrap} source('R/run_model_projections.R')"
 Rscript -e "${renv_bootstrap} source('R/run_daily_predictions.R')"
-Rscript -e "${renv_bootstrap} source('R/update_site_status.R')"
 retry 3 20 Rscript -e "${renv_bootstrap} source('R/update_pick_results.R')"
+Rscript -e "${renv_bootstrap} source('R/update_site_status.R')"
 
 "${quarto_cmd}" render
 

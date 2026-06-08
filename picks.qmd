@@ -6,7 +6,7 @@ toc: false
 <section class="page-lead">
 <div class="eyebrow">Local pick tracker</div>
 <h1>Your saved card.</h1>
-<p>Build singles or parlays from the Model Board, enter the American odds you actually see, and save the slip for local tracking. No stake size, payout, account, or personal information is stored.</p>
+<p>Build singles or parlays from the Model Board, keep the auto-filled FanDuel price when it is available, or edit the American odds yourself before saving. No stake size, payout, account, or personal information is stored.</p>
 </section>
 
 <div class="callout-panel">

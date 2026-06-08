@@ -10,7 +10,7 @@ source("R/site_helpers.R")
 status <- read_site_csv("pipeline_status.csv")
 summary <- read_site_csv("model_summary.csv")
 board <- read_site_csv("latest_board.csv")
-is_live <- nrow(status) && identical(status$line_feed_status[1], "Live")
+is_live <- nrow(board) > 0
 ```
 
 <section class="hero">
@@ -28,9 +28,9 @@ is_live <- nrow(status) && identical(status$line_feed_status[1], "Live")
 #| results: asis
 dot_class <- if (is_live) "status-dot live" else "status-dot"
 feed_text <- if (is_live) {
-  paste0("Live card captured ", escape_html(status$last_line_refresh[1]))
+  paste0("FanDuel prices captured ", escape_html(format_status_time(status$last_line_refresh[1])))
 } else {
-  "Model engine ready · live line feed awaiting an Odds API key or available markets"
+  "Model engine ready. No FanDuel-priced edges were available in the latest run."
 }
 cat(sprintf('<div class="status-strip"><span class="%s"></span><strong>%s</strong></div>', dot_class, feed_text))
 ```
@@ -45,7 +45,7 @@ if (nrow(summary)) {
   cards <- c(
     metric_card("Markets modeled", "3", "Total bases · strikeouts · NRFI", "Each market has its own evaluated model."),
     metric_card("Holdout predictions", format(sum(summary$test_rows), big.mark = ","), "Later games only", "Models are evaluated on games after their training window."),
-    metric_card("Best live edge", if (nrow(board)) paste0("+", pct(max(board$probability_difference))) else "Waiting", if (nrow(board)) "Current priced card" else "No line snapshot yet", "Edge is model probability minus no-vig market probability.")
+    metric_card("Top FanDuel edge", if (nrow(board)) paste0("+", pct(max(board$probability_difference))) else "-", if (nrow(board)) "Current priced card" else "No priced edge snapshot yet", "Edge is model probability minus no-vig market probability.")
   )
   cat('<div class="metric-grid">', paste(cards, collapse = ""), '</div>')
 }

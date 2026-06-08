@@ -7,7 +7,8 @@
     type: "All",
     slate: "All",
     market: "All",
-    query: ""
+    query: "",
+    sort: "Newest"
   };
 
   const money = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
@@ -21,6 +22,7 @@
     if (!Number.isFinite(decimal) || decimal <= 1) return "-";
     return decimal >= 2 ? `+${money.format(Math.round((decimal - 1) * 100))}` : `${money.format(Math.round(-100 / (decimal - 1)))}`;
   };
+  const normalizeMarket = value => value === "totals_1st_1_innings" ? "nrfi" : value;
   const legKey = leg => [leg.slateDate, leg.market, leg.selection, leg.matchup, leg.side, leg.line].join("|");
   const ticketType = ticket => ticket.legs.length === 1 ? "Single" : "Parlay";
   const unique = values => [...new Set(values.filter(Boolean))];
@@ -46,10 +48,31 @@
     batter_total_bases: "Batter Total Bases",
     pitcher_strikeouts: "Pitcher Strikeouts",
     nrfi: "NRFI / YRFI"
-  }[value] || value || "Unknown market");
-  const resultKey = leg => [leg.slateDate, leg.market, leg.selection, leg.matchup].join("|");
+  }[normalizeMarket(value)] || value || "Unknown market");
+  const resultKey = leg => [leg.slateDate, normalizeMarket(leg.market), leg.selection, leg.matchup].join("|");
   const currentSlip = () => read(slipKey);
   const savedTickets = () => read(ticketsKey);
+
+  const normalizeNrfiSide = leg => {
+    if (normalizeMarket(leg.market) !== "nrfi") return leg.side;
+    if (leg.side === "NRFI" || leg.side === "YRFI") return leg.side;
+    if (leg.selection === "NRFI" || leg.selection === "YRFI") return leg.selection;
+    return leg.side;
+  };
+
+  const migrateStorage = () => {
+    const normalizeLeg = leg => ({
+      ...leg,
+      market: normalizeMarket(leg.market),
+      marketLabel: formatMarket(leg.market),
+      side: normalizeNrfiSide(leg)
+    });
+    write(slipKey, currentSlip().map(normalizeLeg));
+    write(ticketsKey, savedTickets().map(ticket => ({
+      ...ticket,
+      legs: (ticket.legs || []).map(normalizeLeg)
+    })));
+  };
 
   const saveSlip = slip => {
     write(slipKey, slip);
@@ -98,14 +121,14 @@
     selection: button.dataset.selection || "",
     matchup: button.dataset.matchup || "",
     gameTime: button.dataset.gameTime || "",
-    market: button.dataset.market || "",
-    marketLabel: button.dataset.marketLabel || button.dataset.market || "",
+    market: normalizeMarket(button.dataset.market || ""),
+    marketLabel: button.dataset.marketLabel || formatMarket(button.dataset.market || ""),
     side: button.dataset.side || "",
     line: Number(button.dataset.line || "0"),
     recommendation: button.dataset.recommendation || "",
     modelProbability: Number(button.dataset.modelProbability || "0"),
     confidence: Number(button.dataset.confidence || "0"),
-    odds: ""
+    odds: button.dataset.odds || ""
   });
 
   const bindAddButtons = () => {
@@ -136,7 +159,7 @@
     <div class="pick-leg">
       <div>
         <strong>${escapeText(leg.selection)}</strong>
-        <span>${escapeText(leg.recommendation || `${leg.side} ${leg.line}`)}</span>
+        <span>${escapeText(normalizeMarket(leg.market) === "nrfi" ? leg.selection : (leg.recommendation || `${leg.side} ${leg.line}`))}</span>
         <small>${escapeText(leg.marketLabel || formatMarket(leg.market))} · ${escapeText(leg.matchup)} · ${escapeText(leg.gameTime)}</small>
       </div>
     </div>`;
@@ -259,7 +282,7 @@
       const response = await fetch("site-data/pick_results.csv", { cache: "no-store" });
       if (!response.ok) return new Map();
       const rows = parseCsv(await response.text());
-      return new Map(rows.map(row => [[row.slate_date, row.market, row.selection, row.matchup].join("|"), row]));
+      return new Map(rows.map(row => [[row.slate_date, normalizeMarket(row.market), row.selection, row.matchup].join("|"), row]));
     } catch {
       return new Map();
     }
@@ -268,9 +291,10 @@
   const gradeLeg = (leg, results) => {
     const row = results.get(resultKey(leg));
     if (!row) return { status: "Pending", detail: "Awaiting final result", actualLabel: "Pending" };
-    if (leg.market === "nrfi") {
+    if (normalizeMarket(leg.market) === "nrfi") {
+      const side = normalizeNrfiSide(leg);
       const actualNrfi = Number(row.actual_nrfi);
-      const won = leg.side === "NRFI" ? actualNrfi === 1 : actualNrfi === 0;
+      const won = side === "NRFI" ? actualNrfi === 1 : actualNrfi === 0;
       return {
         status: won ? "Won" : "Lost",
         detail: actualNrfi === 1 ? "No run in the 1st" : "Run scored in the 1st",
@@ -334,6 +358,17 @@
       leg.side
     ].join(" ").toLowerCase().includes(query));
   });
+
+  const sortTickets = tickets => {
+    const sorted = [...tickets];
+    sorted.sort((a, b) => {
+      if (filters.sort === "Oldest") return new Date(a.savedAt) - new Date(b.savedAt);
+      if (filters.sort === "Best odds") return (b.totalDecimalOdds || -Infinity) - (a.totalDecimalOdds || -Infinity);
+      if (filters.sort === "Shortest odds") return (a.totalDecimalOdds || Infinity) - (b.totalDecimalOdds || Infinity);
+      return new Date(b.savedAt) - new Date(a.savedAt);
+    });
+    return sorted;
+  };
 
   const renderSummary = tickets => {
     const summary = document.querySelector("[data-pick-summary]");
@@ -409,6 +444,14 @@
           <label><span>Search</span>
             <input type="search" data-filter-query placeholder="Player, matchup, recommendation" value="${escapeText(filters.query)}">
           </label>
+          <label><span>Sort</span>
+            <select data-filter-sort>
+              <option value="Newest"${filters.sort === "Newest" ? " selected" : ""}>Newest first</option>
+              <option value="Oldest"${filters.sort === "Oldest" ? " selected" : ""}>Oldest first</option>
+              <option value="Best odds"${filters.sort === "Best odds" ? " selected" : ""}>Largest odds</option>
+              <option value="Shortest odds"${filters.sort === "Shortest odds" ? " selected" : ""}>Smallest odds</option>
+            </select>
+          </label>
         </div>
       </section>`;
 
@@ -432,6 +475,10 @@
     });
     container.querySelector("[data-filter-query]")?.addEventListener("input", event => {
       filters.query = event.target.value;
+      renderTickets();
+    });
+    container.querySelector("[data-filter-sort]")?.addEventListener("change", event => {
+      filters.sort = event.target.value;
       renderTickets();
     });
   };
@@ -561,7 +608,7 @@
 
   const renderTickets = async () => {
     const allTickets = await gradeTickets();
-    const filteredTickets = applyFilters(allTickets);
+    const filteredTickets = sortTickets(applyFilters(allTickets));
     const container = document.querySelector("[data-saved-tickets]");
     if (!container) return;
     if (!allTickets.length) {
@@ -584,6 +631,7 @@
   };
 
   document.addEventListener("DOMContentLoaded", () => {
+    migrateStorage();
     bindAddButtons();
     updateSlipCount();
     syncAddButtons();

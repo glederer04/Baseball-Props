@@ -35,7 +35,7 @@ side_probability <- function(probability_over) pmax(probability_over, 1 - probab
 confidence_score <- function(probability, line_gap, line_scale) {
   probability_component <- clamp((probability - 0.5) / 0.25, 0, 1)
   gap_component <- clamp(abs(line_gap) / line_scale, 0, 1)
-  round(100 * (0.62 * probability_component + 0.38 * gap_component), 1)
+  round(85 * (0.62 * probability_component + 0.38 * gap_component), 1)
 }
 
 get_json <- function(url, ...) {
@@ -239,7 +239,7 @@ project_nrfi <- function(schedule) {
       probability_nrfi = predict(nrfi_model, newdata = features, type = "response"),
       selected_side = if_else(probability_nrfi >= 0.5, "NRFI", "YRFI"),
       model_probability = pmax(probability_nrfi, 1 - probability_nrfi),
-      confidence = round(100 * clamp((model_probability - 0.5) / 0.15, 0, 1), 1),
+      confidence = round(85 * clamp((model_probability - 0.5) / 0.15, 0, 1), 1),
       recommendation = selected_side
     ) |>
     transmute(

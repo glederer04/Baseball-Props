@@ -56,11 +56,11 @@ jobs:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: Rscript R/run_daily_predictions.R
 
-      - name: Refresh site status
-        run: Rscript R/update_site_status.R
-
       - name: Refresh pick settlement results
         run: Rscript R/update_pick_results.R
+
+      - name: Refresh site status
+        run: Rscript R/update_site_status.R
 
       - name: Render site
         uses: quarto-dev/quarto-actions/render@v2
