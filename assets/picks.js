@@ -111,6 +111,19 @@
     const match = text.match(/\b(Over|Under)\s+([0-9]+(?:\.[0-9]+)?)/i);
     return match ? { side: match[1][0].toUpperCase() + match[1].slice(1).toLowerCase(), line: Number(match[2]) } : { side: "", line: null };
   };
+  const buildResultRef = leg => {
+    const market = normalizeMarket(leg.market || "");
+    const selection = String(leg.selection || "");
+    const matchup = String(leg.matchup || "");
+    const slateDate = String(leg.slateDate || "");
+    const nrfiSide = normalizeNrfiSide({ ...leg, market, selection });
+    return {
+      exactKey: [slateDate, market, selection, matchup].join("|"),
+      looseKey: [market, normalizeText(selection), normalizeText(matchup)].join("|"),
+      playerDateKey: market === "nrfi" ? "" : [slateDate, market, normalizeText(selection)].join("|"),
+      nrfiDateKey: market === "nrfi" ? [slateDate, matchupSignature(matchup), nrfiSide].join("|") : ""
+    };
+  };
   const legKey = leg => [leg.slateDate, leg.market, leg.selection, leg.matchup, leg.side, leg.line].join("|");
   const ticketType = ticket => ticket.legs.length === 1 ? "Single" : "Parlay";
   const unique = values => [...new Set(values.filter(Boolean))];
@@ -252,7 +265,15 @@
       side,
       line: Number.isFinite(line) ? line : 0,
       recommendation: leg.recommendation || (side && Number.isFinite(line) && market !== "nrfi" ? `${side} ${line}` : side || ""),
-      marketLabel: leg.marketLabel || formatMarket(market)
+      marketLabel: leg.marketLabel || formatMarket(market),
+      resultRef: leg.resultRef || buildResultRef({
+        ...leg,
+        market,
+        selection,
+        matchup,
+        slateDate,
+        side
+      })
     };
   };
 
@@ -428,7 +449,7 @@
   };
 
   const saveTicket = async () => {
-    const legs = currentSlip();
+    const legs = currentSlip().map(leg => coerceLeg(leg));
     if (!legs.length) return;
     if (legs.some(leg => !cleanOdds(leg.odds))) {
       alert("Add American odds for every leg before saving.");
@@ -531,11 +552,12 @@
   const findResultRow = (leg, results, fallbackSlateDate = "") => {
     const slateDate = leg.slateDate || fallbackSlateDate || "";
     const normalizedLeg = slateDate && slateDate !== leg.slateDate ? { ...leg, slateDate } : leg;
-    return results.exact.get(resultKey(normalizedLeg))
-      || results.loose.get(looseResultKey(normalizedLeg))
+    const resultRef = normalizedLeg.resultRef || buildResultRef(normalizedLeg);
+    return results.exact.get(resultRef.exactKey)
+      || results.loose.get(resultRef.looseKey)
       || (normalizeMarket(normalizedLeg.market) === "nrfi"
-        ? results.nrfiByDate.get([slateDate, matchupSignature(normalizedLeg.matchup), normalizeNrfiSide(normalizedLeg)].join("|"))
-        : results.playerByDate.get([slateDate, normalizeMarket(normalizedLeg.market), normalizeText(normalizedLeg.selection)].join("|")));
+        ? results.nrfiByDate.get(resultRef.nrfiDateKey || [slateDate, matchupSignature(normalizedLeg.matchup), normalizeNrfiSide(normalizedLeg)].join("|"))
+        : results.playerByDate.get(resultRef.playerDateKey || [slateDate, normalizeMarket(normalizedLeg.market), normalizeText(normalizedLeg.selection)].join("|")));
   };
 
   const gradeLeg = (leg, results, fallbackSlateDate = "") => {
