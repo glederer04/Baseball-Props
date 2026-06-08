@@ -67,11 +67,14 @@ add_no_vig_probability <- function(data) {
     mutate(implied_probability_raw = american_implied_probability(american_price)) |>
     group_by(event_id, market, player_name, line) |>
     mutate(
-      implied_probability = if_else(
-        n() == 2L,
-        implied_probability_raw / sum(implied_probability_raw),
-        implied_probability_raw
-      )
+      implied_probability = {
+        # Only remove vig when we have a clean two-sided market.
+        if (dplyr::n() == 2L && dplyr::n_distinct(side, na.rm = TRUE) == 2L) {
+          implied_probability_raw / sum(implied_probability_raw)
+        } else {
+          implied_probability_raw
+        }
+      }
     ) |>
     ungroup()
 }
