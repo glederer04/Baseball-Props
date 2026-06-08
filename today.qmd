@@ -40,12 +40,7 @@ if (nrow(board)) {
 #| results: asis
 captured <- if (nrow(status)) format_status_time(status$last_line_refresh[1]) else "Not available"
 qualified <- if (nrow(board)) nrow(board) else 0
-cards <- c(
-  metric_card("Last site update", updated_at, "Includes board, grading, and site data", "This timestamp should move forward on each refresh."),
-  metric_card("Slate date", slate_label, "Games shown on this board", "This date comes from the generated MLB schedule snapshot."),
-  metric_card("Priced edges", as.character(qualified), if (qualified) paste("FanDuel snapshot captured", captured) else "No FanDuel edges cleared the current threshold", "This count changes with available lines and the edge threshold.")
-)
-cat('<div class="metric-grid">', paste(cards, collapse = ""), '</div>')
+cat('<div class="metric-grid single-metric">', metric_card("Slate date", slate_label, "Games shown on this board", "This date comes from the generated MLB schedule snapshot."), '</div>')
 if (nrow(board)) {
   cat('<h2>FanDuel-priced edges</h2>')
   cat(sprintf('<p class="mini-note">These are the current FanDuel picks that cleared the model edge threshold in this run. If only %s show up, only %s met the filter at the captured prices.</p>', qualified, qualified))

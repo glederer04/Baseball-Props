@@ -23,6 +23,11 @@
     return decimal >= 2 ? `+${money.format(Math.round((decimal - 1) * 100))}` : `${money.format(Math.round(-100 / (decimal - 1)))}`;
   };
   const normalizeMarket = value => value === "totals_1st_1_innings" ? "nrfi" : value;
+  const normalizeText = value => String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/gi, "")
+    .toLowerCase();
   const legKey = leg => [leg.slateDate, leg.market, leg.selection, leg.matchup, leg.side, leg.line].join("|");
   const ticketType = ticket => ticket.legs.length === 1 ? "Single" : "Parlay";
   const unique = values => [...new Set(values.filter(Boolean))];
@@ -50,6 +55,11 @@
     nrfi: "NRFI / YRFI"
   }[normalizeMarket(value)] || value || "Unknown market");
   const resultKey = leg => [leg.slateDate, normalizeMarket(leg.market), leg.selection, leg.matchup].join("|");
+  const looseResultKey = leg => [
+    normalizeMarket(leg.market),
+    normalizeText(leg.selection),
+    normalizeText(leg.matchup)
+  ].join("|");
   const currentSlip = () => read(slipKey);
   const savedTickets = () => read(ticketsKey);
 
@@ -282,14 +292,21 @@
       const response = await fetch("site-data/pick_results.csv", { cache: "no-store" });
       if (!response.ok) return new Map();
       const rows = parseCsv(await response.text());
-      return new Map(rows.map(row => [[row.slate_date, normalizeMarket(row.market), row.selection, row.matchup].join("|"), row]));
+      const exact = new Map();
+      const loose = new Map();
+      rows.forEach(row => {
+        exact.set([row.slate_date, normalizeMarket(row.market), row.selection, row.matchup].join("|"), row);
+        const key = [normalizeMarket(row.market), normalizeText(row.selection), normalizeText(row.matchup)].join("|");
+        if (!loose.has(key)) loose.set(key, row);
+      });
+      return { exact, loose };
     } catch {
-      return new Map();
+      return { exact: new Map(), loose: new Map() };
     }
   };
 
   const gradeLeg = (leg, results) => {
-    const row = results.get(resultKey(leg));
+    const row = results.exact.get(resultKey(leg)) || results.loose.get(looseResultKey(leg));
     if (!row) return { status: "Pending", detail: "Awaiting final result", actualLabel: "Pending" };
     if (normalizeMarket(leg.market) === "nrfi") {
       const side = normalizeNrfiSide(leg);
@@ -506,7 +523,7 @@
           </div>
           <p>${groups[date].length} saved slip${groups[date].length === 1 ? "" : "s"}</p>
         </div>
-        <div class="ticket-group-list">
+        <div class="ticket-group-list saved-slips-scroll">
           ${groups[date].map(ticket => `
             <div class="ticket-card">
               <div class="ticket-head">
@@ -575,7 +592,7 @@
           </div>
           <p>Parlays still show every leg result even when the full ticket loses.</p>
         </div>
-        <div class="signal-table-wrap">
+        <div class="signal-table-wrap leg-results-scroll">
           <table class="signal-table">
             <thead>
               <tr>

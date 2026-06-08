@@ -32,6 +32,7 @@ p { color: var(--muted); line-height: 1.7; }
 .button-ghost { border: 1px solid var(--line); color: var(--text); }
 
 .metric-grid, .feature-grid, .market-grid, .health-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; margin: 1.4rem 0; }
+.single-metric { grid-template-columns: minmax(0, 20rem); }
 .metric, .feature-card, .market-card, .health-card, .callout-panel { background: linear-gradient(145deg, rgba(17,34,56,.96), rgba(10,25,42,.96)); border: 1px solid var(--line); border-radius: 20px; padding: 1.25rem; box-shadow: 0 18px 55px rgba(0,0,0,.16); }
 .metric-label, .card-kicker { color: var(--muted); text-transform: uppercase; letter-spacing: .13em; font-size: .68rem; font-weight: 700; }
 .metric-value { display: block; color: var(--text); font-size: 2rem; line-height: 1.2; margin: .35rem 0; font-weight: 750; }
@@ -126,6 +127,9 @@ footer.footer { border-top: 1px solid var(--line); }
 .ticket-group-head h3 { margin: .15rem 0 0; font-size: 1.45rem; }
 .ticket-group-head p { margin: 0; font-size: .9rem; }
 .ticket-group-list { display: grid; gap: 1rem; }
+.saved-slips-scroll, .leg-results-scroll { max-height: 62vh; overflow-y: auto; padding-right: .35rem; }
+.saved-slips-scroll::-webkit-scrollbar, .leg-results-scroll::-webkit-scrollbar { width: .65rem; }
+.saved-slips-scroll::-webkit-scrollbar-thumb, .leg-results-scroll::-webkit-scrollbar-thumb { background: rgba(114,224,196,.25); border-radius: 999px; }
 .ticket-meta-row { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: .9rem; }
 .pill.loss-pill { background: rgba(255,105,105,.12); color: #ff9e9e; }
 .leg-results-wrap { margin-top: 2.3rem; }
