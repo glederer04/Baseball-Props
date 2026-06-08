@@ -46,6 +46,11 @@ jobs:
       - name: Gate to 9:00 AM New York time
         id: local_time_gate
         run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Manual dispatch detected; allowing refresh."
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           local_time="$(TZ=America/New_York date +%H:%M)"
           echo "Local New York time: ${local_time}"
           if [ "${local_time}" != "09:00" ]; then
