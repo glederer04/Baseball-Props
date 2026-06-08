@@ -1,4 +1,453 @@
 slate_date,matchup,selection,market,actual_count,actual_nrfi
+2026-06-07,Athletics at Houston Astros,Alika Williams,batter_total_bases,1,NA
+2026-06-07,Athletics at Houston Astros,Brent Rooker,batter_total_bases,6,NA
+2026-06-07,Athletics at Houston Astros,Brice Matthews,batter_total_bases,0,NA
+2026-06-07,Athletics at Houston Astros,Cam Smith,batter_total_bases,2,NA
+2026-06-07,Athletics at Houston Astros,Carlos Cortes,batter_total_bases,0,NA
+2026-06-07,Athletics at Houston Astros,Christian Vázquez,batter_total_bases,0,NA
+2026-06-07,Athletics at Houston Astros,Christian Walker,batter_total_bases,0,NA
+2026-06-07,Athletics at Houston Astros,Henry Bolte,batter_total_bases,0,NA
+2026-06-07,Athletics at Houston Astros,Isaac Paredes,batter_total_bases,0,NA
+2026-06-07,Athletics at Houston Astros,Jake Meyers,batter_total_bases,0,NA
+2026-06-07,Athletics at Houston Astros,Jeff McNeil,batter_total_bases,0,NA
+2026-06-07,Athletics at Houston Astros,Jeremy Peña,batter_total_bases,0,NA
+2026-06-07,Athletics at Houston Astros,Jose Altuve,batter_total_bases,0,NA
+2026-06-07,Athletics at Houston Astros,LaMonte Wade Jr.,batter_total_bases,0,NA
+2026-06-07,Athletics at Houston Astros,Lawrence Butler,batter_total_bases,2,NA
+2026-06-07,Athletics at Houston Astros,Nick Allen,batter_total_bases,1,NA
+2026-06-07,Athletics at Houston Astros,Nick Kurtz,batter_total_bases,4,NA
+2026-06-07,Athletics at Houston Astros,Shea Langeliers,batter_total_bases,1,NA
+2026-06-07,Athletics at Houston Astros,Taylor Trammell,batter_total_bases,0,NA
+2026-06-07,Athletics at Houston Astros,Tyler Soderstrom,batter_total_bases,0,NA
+2026-06-07,Athletics at Houston Astros,Yordan Alvarez,batter_total_bases,1,NA
+2026-06-07,Athletics at Houston Astros,Zack Gelof,batter_total_bases,2,NA
+2026-06-07,Athletics at Houston Astros,NRFI,nrfi,NA,1
+2026-06-07,Athletics at Houston Astros,YRFI,nrfi,NA,1
+2026-06-07,Athletics at Houston Astros,Bryan Abreu,pitcher_strikeouts,2,NA
+2026-06-07,Athletics at Houston Astros,Gage Jump,pitcher_strikeouts,3,NA
+2026-06-07,Athletics at Houston Astros,Hogan Harris,pitcher_strikeouts,1,NA
+2026-06-07,Athletics at Houston Astros,Justin Sterner,pitcher_strikeouts,1,NA
+2026-06-07,Athletics at Houston Astros,Mark Leiter Jr.,pitcher_strikeouts,2,NA
+2026-06-07,Athletics at Houston Astros,Mike Burrows,pitcher_strikeouts,3,NA
+2026-06-07,Athletics at Houston Astros,Nate Pearson,pitcher_strikeouts,2,NA
+2026-06-07,Athletics at Houston Astros,Steven Okert,pitcher_strikeouts,1,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Adley Rutschman,batter_total_bases,1,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Andrés Giménez,batter_total_bases,3,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Blaze Alexander,batter_total_bases,4,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Brandon Valenzuela,batter_total_bases,4,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Colton Cowser,batter_total_bases,5,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Daulton Varsho,batter_total_bases,0,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Ernie Clement,batter_total_bases,1,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,George Springer,batter_total_bases,0,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Gunnar Henderson,batter_total_bases,0,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Jackson Holliday,batter_total_bases,3,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Jesús Sánchez,batter_total_bases,3,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Kazuma Okamoto,batter_total_bases,1,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Leody Taveras,batter_total_bases,0,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Myles Straw,batter_total_bases,0,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Nathan Lukes,batter_total_bases,1,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Pete Alonso,batter_total_bases,0,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Sam Huff,batter_total_bases,0,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Samuel Basallo,batter_total_bases,0,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Taylor Ward,batter_total_bases,4,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Tyler O'Neill,batter_total_bases,1,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Vladimir Guerrero Jr.,batter_total_bases,0,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Yohendrick Piñango,batter_total_bases,5,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,NRFI,nrfi,NA,1
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,YRFI,nrfi,NA,1
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Adam Macko,pitcher_strikeouts,2,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Connor Seabold,pitcher_strikeouts,0,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Grant Wolfram,pitcher_strikeouts,1,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Kevin Gausman,pitcher_strikeouts,5,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Louis Varland,pitcher_strikeouts,2,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Rico Garcia,pitcher_strikeouts,1,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Shane Baz,pitcher_strikeouts,3,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Tyler Rogers,pitcher_strikeouts,1,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Tyler Wells,pitcher_strikeouts,0,NA
+2026-06-07,Baltimore Orioles at Toronto Blue Jays,Yennier Cano,pitcher_strikeouts,0,NA
+2026-06-07,Boston Red Sox at New York Yankees,Ali Sánchez,batter_total_bases,0,NA
+2026-06-07,Boston Red Sox at New York Yankees,Amed Rosario,batter_total_bases,1,NA
+2026-06-07,Boston Red Sox at New York Yankees,Andruw Monasterio,batter_total_bases,1,NA
+2026-06-07,Boston Red Sox at New York Yankees,Anthony Seigler,batter_total_bases,2,NA
+2026-06-07,Boston Red Sox at New York Yankees,Anthony Volpe,batter_total_bases,0,NA
+2026-06-07,Boston Red Sox at New York Yankees,Ben Rice,batter_total_bases,0,NA
+2026-06-07,Boston Red Sox at New York Yankees,Caleb Durbin,batter_total_bases,0,NA
+2026-06-07,Boston Red Sox at New York Yankees,Ceddanne Rafaela,batter_total_bases,2,NA
+2026-06-07,Boston Red Sox at New York Yankees,Cody Bellinger,batter_total_bases,5,NA
+2026-06-07,Boston Red Sox at New York Yankees,Isiah Kiner-Falefa,batter_total_bases,0,NA
+2026-06-07,Boston Red Sox at New York Yankees,J.C. Escarra,batter_total_bases,0,NA
+2026-06-07,Boston Red Sox at New York Yankees,Jarren Duran,batter_total_bases,0,NA
+2026-06-07,Boston Red Sox at New York Yankees,Jazz Chisholm Jr.,batter_total_bases,4,NA
+2026-06-07,Boston Red Sox at New York Yankees,José Caballero,batter_total_bases,2,NA
+2026-06-07,Boston Red Sox at New York Yankees,Marcelo Mayer,batter_total_bases,0,NA
+2026-06-07,Boston Red Sox at New York Yankees,Masataka Yoshida,batter_total_bases,0,NA
+2026-06-07,Boston Red Sox at New York Yankees,Mickey Gasper,batter_total_bases,1,NA
+2026-06-07,Boston Red Sox at New York Yankees,Paul Goldschmidt,batter_total_bases,2,NA
+2026-06-07,Boston Red Sox at New York Yankees,Ryan McMahon,batter_total_bases,0,NA
+2026-06-07,Boston Red Sox at New York Yankees,Spencer Jones,batter_total_bases,0,NA
+2026-06-07,Boston Red Sox at New York Yankees,Trent Grisham,batter_total_bases,4,NA
+2026-06-07,Boston Red Sox at New York Yankees,Willson Contreras,batter_total_bases,2,NA
+2026-06-07,Boston Red Sox at New York Yankees,Wilyer Abreu,batter_total_bases,0,NA
+2026-06-07,Boston Red Sox at New York Yankees,NRFI,nrfi,NA,1
+2026-06-07,Boston Red Sox at New York Yankees,YRFI,nrfi,NA,1
+2026-06-07,Boston Red Sox at New York Yankees,Brent Headrick,pitcher_strikeouts,0,NA
+2026-06-07,Boston Red Sox at New York Yankees,Cam Schlittler,pitcher_strikeouts,5,NA
+2026-06-07,Boston Red Sox at New York Yankees,David Bednar,pitcher_strikeouts,1,NA
+2026-06-07,Boston Red Sox at New York Yankees,Fernando Cruz,pitcher_strikeouts,0,NA
+2026-06-07,Boston Red Sox at New York Yankees,Joe La Sorsa,pitcher_strikeouts,1,NA
+2026-06-07,Boston Red Sox at New York Yankees,Justin Slaten,pitcher_strikeouts,2,NA
+2026-06-07,Boston Red Sox at New York Yankees,Ranger Suarez,pitcher_strikeouts,6,NA
+2026-06-07,Boston Red Sox at New York Yankees,Tim Hill,pitcher_strikeouts,0,NA
+2026-06-07,Boston Red Sox at New York Yankees,Tyron Guerrero,pitcher_strikeouts,1,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Adolis García,batter_total_bases,0,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Alec Bohm,batter_total_bases,3,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Andrew Benintendi,batter_total_bases,0,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Brandon Marsh,batter_total_bases,5,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Bryce Harper,batter_total_bases,3,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Bryson Stott,batter_total_bases,1,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Chase Meidroth,batter_total_bases,1,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Colson Montgomery,batter_total_bases,2,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Derek Hill,batter_total_bases,0,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Drew Romo,batter_total_bases,0,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Edgar Quero,batter_total_bases,0,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Jacob Gonzalez,batter_total_bases,0,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Justin Crawford,batter_total_bases,1,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Kyle Schwarber,batter_total_bases,0,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Miguel Vargas,batter_total_bases,1,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Rafael Marchán,batter_total_bases,4,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Randal Grichuk,batter_total_bases,2,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Rikuu Nishida,batter_total_bases,1,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Sam Antonacci,batter_total_bases,2,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Trea Turner,batter_total_bases,3,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Tristan Peters,batter_total_bases,4,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,NRFI,nrfi,NA,0
+2026-06-07,Chicago White Sox at Philadelphia Phillies,YRFI,nrfi,NA,0
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Aaron Nola,pitcher_strikeouts,4,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Bryan Hudson,pitcher_strikeouts,0,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,David Sandlin,pitcher_strikeouts,6,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Jonathan Bowlan,pitcher_strikeouts,3,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,José Alvarado,pitcher_strikeouts,2,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Orion Kerkering,pitcher_strikeouts,2,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Tim Mayza,pitcher_strikeouts,0,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Trevor Richards,pitcher_strikeouts,1,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Tyler Davis,pitcher_strikeouts,1,NA
+2026-06-07,Chicago White Sox at Philadelphia Phillies,Tyler Gilbert,pitcher_strikeouts,1,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Alec Burleson,batter_total_bases,2,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Blake Dunn,batter_total_bases,1,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Bryan Torres,batter_total_bases,4,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Dane Myers,batter_total_bases,1,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Edwin Arroyo,batter_total_bases,1,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Iván Herrera,batter_total_bases,0,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,JJ Bleday,batter_total_bases,0,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,JJ Wetherholt,batter_total_bases,0,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Jordan Walker,batter_total_bases,3,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,José Fermín,batter_total_bases,1,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Lars Nootbaar,batter_total_bases,0,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Matt McLain,batter_total_bases,8,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Nathaniel Lowe,batter_total_bases,2,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Nelson Velázquez,batter_total_bases,1,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Nolan Gorman,batter_total_bases,0,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Sal Stewart,batter_total_bases,0,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Spencer Steer,batter_total_bases,0,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Tyler Stephenson,batter_total_bases,7,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Victor Scott II,batter_total_bases,0,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Will Benson,batter_total_bases,0,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,NRFI,nrfi,NA,1
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,YRFI,nrfi,NA,1
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Brock Burke,pitcher_strikeouts,0,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Caleb Ferguson,pitcher_strikeouts,1,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Chris Paddack,pitcher_strikeouts,2,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,George Soriano,pitcher_strikeouts,1,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,JoJo Romero,pitcher_strikeouts,1,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Michael McGreevy,pitcher_strikeouts,5,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Rhett Lowder,pitcher_strikeouts,4,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Riley O'Brien,pitcher_strikeouts,1,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Ryne Stanek,pitcher_strikeouts,1,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Sam Moll,pitcher_strikeouts,0,NA
+2026-06-07,Cincinnati Reds at St. Louis Cardinals,Tony Santillan,pitcher_strikeouts,0,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Angel Martínez,batter_total_bases,1,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Brandon Nimmo,batter_total_bases,2,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Brayan Rocchio,batter_total_bases,0,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Chase DeLauter,batter_total_bases,1,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Daniel Schneemann,batter_total_bases,0,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,David Fry,batter_total_bases,2,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Elias Díaz,batter_total_bases,1,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Evan Carter,batter_total_bases,1,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Ezequiel Duran,batter_total_bases,5,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Jake Burger,batter_total_bases,4,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Joc Pederson,batter_total_bases,0,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Josh Jung,batter_total_bases,5,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,José Ramírez,batter_total_bases,0,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Justin Foscue,batter_total_bases,4,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Kyle Manzardo,batter_total_bases,0,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Michael Helman,batter_total_bases,4,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Nicky Lopez,batter_total_bases,1,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Patrick Bailey,batter_total_bases,1,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Steven Kwan,batter_total_bases,2,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Stuart Fairchild,batter_total_bases,0,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Travis Bazzana,batter_total_bases,0,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Wyatt Langford,batter_total_bases,4,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,NRFI,nrfi,NA,0
+2026-06-07,Cleveland Guardians at Texas Rangers,YRFI,nrfi,NA,0
+2026-06-07,Cleveland Guardians at Texas Rangers,Austin Hedges,pitcher_strikeouts,0,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Jacob deGrom,pitcher_strikeouts,6,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Joey Cantillo,pitcher_strikeouts,7,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Luis Curvelo,pitcher_strikeouts,1,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Peyton Gray,pitcher_strikeouts,1,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Tyler Alexander,pitcher_strikeouts,0,NA
+2026-06-07,Cleveland Guardians at Texas Rangers,Will Dion,pitcher_strikeouts,1,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Alex Jackson,batter_total_bases,0,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Austin Martin,batter_total_bases,0,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Bobby Witt Jr.,batter_total_bases,0,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Brooks Lee,batter_total_bases,0,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Carter Jensen,batter_total_bases,1,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Isaac Collins,batter_total_bases,0,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Josh Bell,batter_total_bases,4,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Kody Clemens,batter_total_bases,2,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Lane Thomas,batter_total_bases,1,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Luke Keaschall,batter_total_bases,1,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Maikel Garcia,batter_total_bases,1,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Michael Massey,batter_total_bases,0,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Nick Loftin,batter_total_bases,3,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Orlando Arcia,batter_total_bases,0,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Royce Lewis,batter_total_bases,1,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Ryan Kreidler,batter_total_bases,0,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Starling Marte,batter_total_bases,4,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Trevor Larnach,batter_total_bases,2,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Tristan Gray,batter_total_bases,1,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Tyler Tolbert,batter_total_bases,1,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Victor Caratini,batter_total_bases,1,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Vinnie Pasquantino,batter_total_bases,3,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,NRFI,nrfi,NA,1
+2026-06-07,Kansas City Royals at Minnesota Twins,YRFI,nrfi,NA,1
+2026-06-07,Kansas City Royals at Minnesota Twins,Andrew Morris,pitcher_strikeouts,4,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Beck Way,pitcher_strikeouts,0,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Cody Laweryson,pitcher_strikeouts,3,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Connor Prielipp,pitcher_strikeouts,7,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,John Schreiber,pitcher_strikeouts,0,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Justin Lawrence,pitcher_strikeouts,1,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Lucas Erceg,pitcher_strikeouts,0,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Mason Black,pitcher_strikeouts,1,NA
+2026-06-07,Kansas City Royals at Minnesota Twins,Noah Cameron,pitcher_strikeouts,7,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Alex Call,batter_total_bases,1,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Alex Freeland,batter_total_bases,0,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Dalton Rushing,batter_total_bases,8,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Freddie Freeman,batter_total_bases,2,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Jo Adell,batter_total_bases,7,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Jose Siri,batter_total_bases,3,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Kyle Tucker,batter_total_bases,0,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Max Muncy,batter_total_bases,1,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Miguel Rojas,batter_total_bases,0,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Mike Trout,batter_total_bases,0,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Nick Madrigal,batter_total_bases,1,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Nolan Schanuel,batter_total_bases,0,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Oswald Peraza,batter_total_bases,0,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Ryan Ward,batter_total_bases,4,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Sebastián Rivero,batter_total_bases,6,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Shohei Ohtani,batter_total_bases,2,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Wade Meckler,batter_total_bases,2,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Zach Neto,batter_total_bases,4,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,NRFI,nrfi,NA,1
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,YRFI,nrfi,NA,1
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Alex Vesia,pitcher_strikeouts,2,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Blake Treinen,pitcher_strikeouts,1,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Chase Silseth,pitcher_strikeouts,2,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Drew Pomeranz,pitcher_strikeouts,1,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Edgardo Henriquez,pitcher_strikeouts,3,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Emmet Sheehan,pitcher_strikeouts,2,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Jack Dreyer,pitcher_strikeouts,2,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Jonathan Hernández,pitcher_strikeouts,1,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,José Soriano,pitcher_strikeouts,2,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Kyle Hurt,pitcher_strikeouts,3,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Mitch Farris,pitcher_strikeouts,3,NA
+2026-06-07,Los Angeles Angels at Los Angeles Dodgers,Sam Bachman,pitcher_strikeouts,1,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Andrew Vaughn,batter_total_bases,5,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Blake Perkins,batter_total_bases,1,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Braxton Fulford,batter_total_bases,2,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Brice Turang,batter_total_bases,1,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Chad Stevens,batter_total_bases,0,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Edouard Julien,batter_total_bases,0,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Ezequiel Tovar,batter_total_bases,2,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Garrett Mitchell,batter_total_bases,7,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Gary Sánchez,batter_total_bases,6,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Hunter Goodman,batter_total_bases,4,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Jackson Chourio,batter_total_bases,5,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Jake McCarthy,batter_total_bases,1,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Joey Ortiz,batter_total_bases,2,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Kyle Karros,batter_total_bases,0,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Luis Rengifo,batter_total_bases,2,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Sal Frelick,batter_total_bases,0,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Sterlin Thompson,batter_total_bases,0,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,TJ Rumfield,batter_total_bases,0,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Troy Johnston,batter_total_bases,2,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Willi Castro,batter_total_bases,2,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,William Contreras,batter_total_bases,2,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,NRFI,nrfi,NA,0
+2026-06-07,Milwaukee Brewers at Colorado Rockies,YRFI,nrfi,NA,0
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Chad Patrick,pitcher_strikeouts,1,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Craig Yoho,pitcher_strikeouts,2,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Jaden Hill,pitcher_strikeouts,0,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Keegan Thompson,pitcher_strikeouts,3,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Kyle Freeland,pitcher_strikeouts,2,NA
+2026-06-07,Milwaukee Brewers at Colorado Rockies,Shane Drohan,pitcher_strikeouts,4,NA
+2026-06-07,New York Mets at San Diego Padres,A.J. Ewing,batter_total_bases,1,NA
+2026-06-07,New York Mets at San Diego Padres,Bo Bichette,batter_total_bases,3,NA
+2026-06-07,New York Mets at San Diego Padres,Brett Baty,batter_total_bases,2,NA
+2026-06-07,New York Mets at San Diego Padres,Bryce Johnson,batter_total_bases,0,NA
+2026-06-07,New York Mets at San Diego Padres,Carson Benge,batter_total_bases,10,NA
+2026-06-07,New York Mets at San Diego Padres,Fernando Tatis Jr.,batter_total_bases,2,NA
+2026-06-07,New York Mets at San Diego Padres,Freddy Fermin,batter_total_bases,6,NA
+2026-06-07,New York Mets at San Diego Padres,Jackson Merrill,batter_total_bases,1,NA
+2026-06-07,New York Mets at San Diego Padres,Jared Young,batter_total_bases,1,NA
+2026-06-07,New York Mets at San Diego Padres,Jase Bowen,batter_total_bases,0,NA
+2026-06-07,New York Mets at San Diego Padres,Juan Soto,batter_total_bases,0,NA
+2026-06-07,New York Mets at San Diego Padres,Luis Torrens,batter_total_bases,0,NA
+2026-06-07,New York Mets at San Diego Padres,MJ Melendez,batter_total_bases,4,NA
+2026-06-07,New York Mets at San Diego Padres,Manny Machado,batter_total_bases,0,NA
+2026-06-07,New York Mets at San Diego Padres,Marcus Semien,batter_total_bases,5,NA
+2026-06-07,New York Mets at San Diego Padres,Miguel Andujar,batter_total_bases,1,NA
+2026-06-07,New York Mets at San Diego Padres,Samad Taylor,batter_total_bases,1,NA
+2026-06-07,New York Mets at San Diego Padres,Ty France,batter_total_bases,0,NA
+2026-06-07,New York Mets at San Diego Padres,Xander Bogaerts,batter_total_bases,1,NA
+2026-06-07,New York Mets at San Diego Padres,NRFI,nrfi,NA,0
+2026-06-07,New York Mets at San Diego Padres,YRFI,nrfi,NA,0
+2026-06-07,New York Mets at San Diego Padres,A.J. Minter,pitcher_strikeouts,0,NA
+2026-06-07,New York Mets at San Diego Padres,Brooks Raley,pitcher_strikeouts,2,NA
+2026-06-07,New York Mets at San Diego Padres,Devin Williams,pitcher_strikeouts,2,NA
+2026-06-07,New York Mets at San Diego Padres,Huascar Brazobán,pitcher_strikeouts,0,NA
+2026-06-07,New York Mets at San Diego Padres,Luke Weaver,pitcher_strikeouts,0,NA
+2026-06-07,New York Mets at San Diego Padres,Randy Vásquez,pitcher_strikeouts,3,NA
+2026-06-07,New York Mets at San Diego Padres,Ron Marinaccio,pitcher_strikeouts,3,NA
+2026-06-07,New York Mets at San Diego Padres,Sean Manaea,pitcher_strikeouts,3,NA
+2026-06-07,New York Mets at San Diego Padres,Wandy Peralta,pitcher_strikeouts,0,NA
+2026-06-07,New York Mets at San Diego Padres,Yuki Matsui,pitcher_strikeouts,1,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Austin Riley,batter_total_bases,0,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Austin Wynns,batter_total_bases,0,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Brandon Lowe,batter_total_bases,2,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Bryan Reynolds,batter_total_bases,0,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Davis Wendzel,batter_total_bases,0,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Dominic Smith,batter_total_bases,0,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Endy Rodríguez,batter_total_bases,1,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Henry Davis,batter_total_bases,0,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Jake Mangum,batter_total_bases,1,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Jared Triolo,batter_total_bases,0,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Jorge Mateo,batter_total_bases,0,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Marcell Ozuna,batter_total_bases,0,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Matt Olson,batter_total_bases,0,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Mauricio Dubón,batter_total_bases,0,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Michael Harris II,batter_total_bases,2,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Mike Yastrzemski,batter_total_bases,0,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Nick Gonzales,batter_total_bases,0,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Oneil Cruz,batter_total_bases,0,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Ozzie Albies,batter_total_bases,2,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Ronald Acuña Jr.,batter_total_bases,0,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Ryan O'Hearn,batter_total_bases,0,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Sandy León,batter_total_bases,1,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Spencer Horwitz,batter_total_bases,5,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Tyler Callihan,batter_total_bases,0,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,NRFI,nrfi,NA,0
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,YRFI,nrfi,NA,0
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Bryce Elder,pitcher_strikeouts,4,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Bubba Chandler,pitcher_strikeouts,7,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Didier Fuentes,pitcher_strikeouts,2,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Evan Sisk,pitcher_strikeouts,1,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Mason Montgomery,pitcher_strikeouts,2,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Reynaldo López,pitcher_strikeouts,2,NA
+2026-06-07,Pittsburgh Pirates at Atlanta Braves,Tyler Kinley,pitcher_strikeouts,0,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Cole Young,batter_total_bases,2,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Colt Emerson,batter_total_bases,2,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Colt Keith,batter_total_bases,0,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Dillon Dingler,batter_total_bases,0,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Dominic Canzone,batter_total_bases,0,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Gleyber Torres,batter_total_bases,0,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Jahmai Jones,batter_total_bases,0,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Jhonny Pereda,batter_total_bases,1,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Josh Naylor,batter_total_bases,3,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Julio Rodríguez,batter_total_bases,1,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Kerry Carpenter,batter_total_bases,0,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Kevin McGonigle,batter_total_bases,5,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Luke Raley,batter_total_bases,3,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Matt Vierling,batter_total_bases,0,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Patrick Wisdom,batter_total_bases,1,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Randy Arozarena,batter_total_bases,1,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Riley Greene,batter_total_bases,0,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Rob Refsnyder,batter_total_bases,0,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Spencer Torkelson,batter_total_bases,1,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Victor Robles,batter_total_bases,0,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Wenceel Pérez,batter_total_bases,4,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Zach McKinstry,batter_total_bases,1,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Zack Short,batter_total_bases,0,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,NRFI,nrfi,NA,1
+2026-06-07,Seattle Mariners at Detroit Tigers,YRFI,nrfi,NA,1
+2026-06-07,Seattle Mariners at Detroit Tigers,Andrés Muñoz,pitcher_strikeouts,0,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Cooper Criswell,pitcher_strikeouts,0,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Drew Anderson,pitcher_strikeouts,2,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Drew Sommers,pitcher_strikeouts,1,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Eduard Bazardo,pitcher_strikeouts,1,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Gabe Speier,pitcher_strikeouts,1,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Jack Flaherty,pitcher_strikeouts,7,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,José A. Ferrer,pitcher_strikeouts,0,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Kyle Finnegan,pitcher_strikeouts,0,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Luis Castillo,pitcher_strikeouts,5,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Tyler Holton,pitcher_strikeouts,0,NA
+2026-06-07,Seattle Mariners at Detroit Tigers,Will Vest,pitcher_strikeouts,1,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Cedric Mullins,batter_total_bases,0,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Connor Norby,batter_total_bases,0,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Esteury Ruiz,batter_total_bases,0,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Heriberto Hernández,batter_total_bases,1,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Hunter Feduccia,batter_total_bases,1,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Jakob Marsee,batter_total_bases,1,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Javier Sanoja,batter_total_bases,0,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Joe Mack,batter_total_bases,0,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Jonathan Aranda,batter_total_bases,1,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Junior Caminero,batter_total_bases,0,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Kyle Stowers,batter_total_bases,1,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Liam Hicks,batter_total_bases,0,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Otto Lopez,batter_total_bases,5,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Owen Caissie,batter_total_bases,0,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Richie Palacios,batter_total_bases,1,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Ryan Vilade,batter_total_bases,1,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Taylor Walls,batter_total_bases,0,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Victor Mesa Jr.,batter_total_bases,1,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Xavier Edwards,batter_total_bases,0,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Yandy Díaz,batter_total_bases,1,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,NRFI,nrfi,NA,1
+2026-06-07,Tampa Bay Rays at Miami Marlins,YRFI,nrfi,NA,1
+2026-06-07,Tampa Bay Rays at Miami Marlins,Anthony Bender,pitcher_strikeouts,1,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Cole Sulser,pitcher_strikeouts,2,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Garrett Cleavinger,pitcher_strikeouts,2,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Griffin Jax,pitcher_strikeouts,4,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Michael Petersen,pitcher_strikeouts,2,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Sandy Alcantara,pitcher_strikeouts,7,NA
+2026-06-07,Tampa Bay Rays at Miami Marlins,Steven Matz,pitcher_strikeouts,0,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,CJ Abrams,batter_total_bases,4,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Corbin Carroll,batter_total_bases,4,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Curtis Mead,batter_total_bases,2,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Daylen Lile,batter_total_bases,0,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Dylan Crews,batter_total_bases,0,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Gabriel Moreno,batter_total_bases,5,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Geraldo Perdomo,batter_total_bases,2,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Ildemaro Vargas,batter_total_bases,0,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Jacob Young,batter_total_bases,0,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,James Wood,batter_total_bases,0,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Jorge Barrosa,batter_total_bases,0,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,José Tena,batter_total_bases,0,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Keibert Ruiz,batter_total_bases,2,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Ketel Marte,batter_total_bases,0,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,LuJames Groover,batter_total_bases,1,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Luis García Jr.,batter_total_bases,0,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Nolan Arenado,batter_total_bases,1,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Pavin Smith,batter_total_bases,1,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Ryan Waldschmidt,batter_total_bases,2,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Tommy Troy,batter_total_bases,0,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,NRFI,nrfi,NA,0
+2026-06-07,Washington Nationals at Arizona Diamondbacks,YRFI,nrfi,NA,0
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Cade Cavalli,pitcher_strikeouts,2,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Gus Varland,pitcher_strikeouts,1,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Kevin Ginkel,pitcher_strikeouts,0,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Michael Soroka,pitcher_strikeouts,6,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Riley Cornelio,pitcher_strikeouts,1,NA
+2026-06-07,Washington Nationals at Arizona Diamondbacks,Taylor Clarke,pitcher_strikeouts,1,NA
 2026-06-06,Athletics at Houston Astros,Brent Rooker,batter_total_bases,1,NA
 2026-06-06,Athletics at Houston Astros,Brice Matthews,batter_total_bases,0,NA
 2026-06-06,Athletics at Houston Astros,Cam Smith,batter_total_bases,0,NA
@@ -4083,465 +4532,3 @@ slate_date,matchup,selection,market,actual_count,actual_nrfi
 2026-05-28,Toronto Blue Jays at Baltimore Orioles,Louis Varland,pitcher_strikeouts,0,NA
 2026-05-28,Toronto Blue Jays at Baltimore Orioles,Patrick Corbin,pitcher_strikeouts,4,NA
 2026-05-28,Toronto Blue Jays at Baltimore Orioles,Tyler Rogers,pitcher_strikeouts,1,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Adrian Del Castillo,batter_total_bases,1,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Aramis Garcia,batter_total_bases,0,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Bryce Eldridge,batter_total_bases,0,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Casey Schmitt,batter_total_bases,0,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Corbin Carroll,batter_total_bases,0,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Daniel Susac,batter_total_bases,0,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Drew Gilbert,batter_total_bases,1,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Eric Haase,batter_total_bases,0,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Geraldo Perdomo,batter_total_bases,1,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Harrison Bader,batter_total_bases,0,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Ildemaro Vargas,batter_total_bases,1,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Jorge Barrosa,batter_total_bases,0,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Jose Fernandez,batter_total_bases,0,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Ketel Marte,batter_total_bases,2,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Luis Arraez,batter_total_bases,3,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Matt Chapman,batter_total_bases,0,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Rafael Devers,batter_total_bases,0,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Ryan Waldschmidt,batter_total_bases,0,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Tommy Troy,batter_total_bases,1,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Victor Bericoto,batter_total_bases,0,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Will Brennan,batter_total_bases,0,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Willy Adames,batter_total_bases,4,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,NRFI,nrfi,NA,1
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,YRFI,nrfi,NA,1
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Brandyn Garcia,pitcher_strikeouts,1,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Caleb Kilian,pitcher_strikeouts,1,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Kevin Ginkel,pitcher_strikeouts,0,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Matt Gage,pitcher_strikeouts,1,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Michael Soroka,pitcher_strikeouts,3,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Paul Sewald,pitcher_strikeouts,1,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Ryan Thompson,pitcher_strikeouts,0,NA
-2026-05-27,Arizona Diamondbacks at San Francisco Giants,Trevor McDonald,pitcher_strikeouts,6,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Austin Riley,batter_total_bases,0,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Ceddanne Rafaela,batter_total_bases,3,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Chadwick Tromp,batter_total_bases,2,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Ha-Seong Kim,batter_total_bases,0,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Isiah Kiner-Falefa,batter_total_bases,1,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Jarren Duran,batter_total_bases,7,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Jorge Mateo,batter_total_bases,2,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Marcelo Mayer,batter_total_bases,2,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Masataka Yoshida,batter_total_bases,1,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Matt Olson,batter_total_bases,0,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Mauricio Dubón,batter_total_bases,1,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Michael Harris II,batter_total_bases,0,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Mickey Gasper,batter_total_bases,1,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Nick Sogard,batter_total_bases,1,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Ozzie Albies,batter_total_bases,1,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Ronald Acuña Jr.,batter_total_bases,0,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Willson Contreras,batter_total_bases,1,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Wilyer Abreu,batter_total_bases,1,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,NRFI,nrfi,NA,1
-2026-05-27,Atlanta Braves at Boston Red Sox,YRFI,nrfi,NA,1
-2026-05-27,Atlanta Braves at Boston Red Sox,Bryce Elder,pitcher_strikeouts,1,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Carlos Carrasco,pitcher_strikeouts,2,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Connelly Early,pitcher_strikeouts,7,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Dylan Dodd,pitcher_strikeouts,0,NA
-2026-05-27,Atlanta Braves at Boston Red Sox,Ryan Watson,pitcher_strikeouts,1,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Alex Bregman,batter_total_bases,3,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Brandon Lowe,batter_total_bases,4,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Bryan Reynolds,batter_total_bases,4,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Carson Kelly,batter_total_bases,2,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Dansby Swanson,batter_total_bases,3,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Endy Rodríguez,batter_total_bases,0,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Esmerlyn Valdez,batter_total_bases,0,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Ian Happ,batter_total_bases,5,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Kevin Alcántara,batter_total_bases,0,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Konnor Griffin,batter_total_bases,4,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Marcell Ozuna,batter_total_bases,1,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Michael Busch,batter_total_bases,1,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Michael Conforto,batter_total_bases,4,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Moisés Ballesteros,batter_total_bases,0,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Nick Gonzales,batter_total_bases,0,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Nico Hoerner,batter_total_bases,2,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Oneil Cruz,batter_total_bases,0,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Pete Crow-Armstrong,batter_total_bases,2,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Seiya Suzuki,batter_total_bases,1,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Spencer Horwitz,batter_total_bases,1,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,NRFI,nrfi,NA,0
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,YRFI,nrfi,NA,0
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Bubba Chandler,pitcher_strikeouts,5,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Caleb Thielbar,pitcher_strikeouts,1,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Dennis Santana,pitcher_strikeouts,1,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Ethan Roberts,pitcher_strikeouts,0,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Evan Sisk,pitcher_strikeouts,1,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Jacob Webb,pitcher_strikeouts,3,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Jameson Taillon,pitcher_strikeouts,4,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Justin Lawrence,pitcher_strikeouts,3,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Phil Maton,pitcher_strikeouts,1,NA
-2026-05-27,Chicago Cubs at Pittsburgh Pirates,Yohan Ramírez,pitcher_strikeouts,0,NA
-2026-05-27,Cincinnati Reds at New York Mets,A.J. Ewing,batter_total_bases,0,NA
-2026-05-27,Cincinnati Reds at New York Mets,Blake Dunn,batter_total_bases,3,NA
-2026-05-27,Cincinnati Reds at New York Mets,Bo Bichette,batter_total_bases,0,NA
-2026-05-27,Cincinnati Reds at New York Mets,Brett Baty,batter_total_bases,1,NA
-2026-05-27,Cincinnati Reds at New York Mets,Carson Benge,batter_total_bases,2,NA
-2026-05-27,Cincinnati Reds at New York Mets,Dane Myers,batter_total_bases,0,NA
-2026-05-27,Cincinnati Reds at New York Mets,Elly De La Cruz,batter_total_bases,0,NA
-2026-05-27,Cincinnati Reds at New York Mets,Eric Wagaman,batter_total_bases,4,NA
-2026-05-27,Cincinnati Reds at New York Mets,Eugenio Suárez,batter_total_bases,0,NA
-2026-05-27,Cincinnati Reds at New York Mets,JJ Bleday,batter_total_bases,0,NA
-2026-05-27,Cincinnati Reds at New York Mets,Jared Young,batter_total_bases,1,NA
-2026-05-27,Cincinnati Reds at New York Mets,Juan Soto,batter_total_bases,5,NA
-2026-05-27,Cincinnati Reds at New York Mets,Luis Torrens,batter_total_bases,1,NA
-2026-05-27,Cincinnati Reds at New York Mets,Marcus Semien,batter_total_bases,0,NA
-2026-05-27,Cincinnati Reds at New York Mets,Mark Vientos,batter_total_bases,0,NA
-2026-05-27,Cincinnati Reds at New York Mets,Matt McLain,batter_total_bases,0,NA
-2026-05-27,Cincinnati Reds at New York Mets,Nathaniel Lowe,batter_total_bases,1,NA
-2026-05-27,Cincinnati Reds at New York Mets,P.J. Higgins,batter_total_bases,0,NA
-2026-05-27,Cincinnati Reds at New York Mets,Sal Stewart,batter_total_bases,1,NA
-2026-05-27,Cincinnati Reds at New York Mets,Spencer Steer,batter_total_bases,1,NA
-2026-05-27,Cincinnati Reds at New York Mets,TJ Friedl,batter_total_bases,1,NA
-2026-05-27,Cincinnati Reds at New York Mets,Tyler Stephenson,batter_total_bases,2,NA
-2026-05-27,Cincinnati Reds at New York Mets,Will Benson,batter_total_bases,0,NA
-2026-05-27,Cincinnati Reds at New York Mets,NRFI,nrfi,NA,0
-2026-05-27,Cincinnati Reds at New York Mets,YRFI,nrfi,NA,0
-2026-05-27,Cincinnati Reds at New York Mets,Andrew Abbott,pitcher_strikeouts,4,NA
-2026-05-27,Cincinnati Reds at New York Mets,Brooks Raley,pitcher_strikeouts,1,NA
-2026-05-27,Cincinnati Reds at New York Mets,Caleb Ferguson,pitcher_strikeouts,1,NA
-2026-05-27,Cincinnati Reds at New York Mets,Devin Williams,pitcher_strikeouts,3,NA
-2026-05-27,Cincinnati Reds at New York Mets,Huascar Brazobán,pitcher_strikeouts,2,NA
-2026-05-27,Cincinnati Reds at New York Mets,Jonah Tong,pitcher_strikeouts,1,NA
-2026-05-27,Cincinnati Reds at New York Mets,Luke Weaver,pitcher_strikeouts,1,NA
-2026-05-27,Cincinnati Reds at New York Mets,Tobias Myers,pitcher_strikeouts,0,NA
-2026-05-27,Cincinnati Reds at New York Mets,Zach Maxwell,pitcher_strikeouts,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Alex Call,batter_total_bases,1,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Alex Freeland,batter_total_bases,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Andy Pages,batter_total_bases,5,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Braxton Fulford,batter_total_bases,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Chad Stevens,batter_total_bases,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Edouard Julien,batter_total_bases,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Ezequiel Tovar,batter_total_bases,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Freddie Freeman,batter_total_bases,5,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Hunter Goodman,batter_total_bases,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Hyeseong Kim,batter_total_bases,1,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Jake McCarthy,batter_total_bases,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Kyle Karros,batter_total_bases,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Max Muncy,batter_total_bases,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Mookie Betts,batter_total_bases,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Shohei Ohtani,batter_total_bases,4,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Sterlin Thompson,batter_total_bases,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,TJ Rumfield,batter_total_bases,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Teoscar Hernández,batter_total_bases,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Troy Johnston,batter_total_bases,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Tyler Freeman,batter_total_bases,1,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Will Smith,batter_total_bases,2,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Willi Castro,batter_total_bases,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,NRFI,nrfi,NA,0
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,YRFI,nrfi,NA,0
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Antonio Senzatela,pitcher_strikeouts,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Blas Castaño,pitcher_strikeouts,1,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Brennan Bernardino,pitcher_strikeouts,0,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Kyle Hurt,pitcher_strikeouts,1,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Shohei Ohtani,pitcher_strikeouts,7,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Tanner Scott,pitcher_strikeouts,2,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Tomoyuki Sugano,pitcher_strikeouts,3,NA
-2026-05-27,Colorado Rockies at Los Angeles Dodgers,Will Klein,pitcher_strikeouts,0,NA
-2026-05-27,Houston Astros at Texas Rangers,Alejandro Osuna,batter_total_bases,0,NA
-2026-05-27,Houston Astros at Texas Rangers,Braden Shewmake,batter_total_bases,0,NA
-2026-05-27,Houston Astros at Texas Rangers,Brandon Nimmo,batter_total_bases,1,NA
-2026-05-27,Houston Astros at Texas Rangers,Brice Matthews,batter_total_bases,1,NA
-2026-05-27,Houston Astros at Texas Rangers,Cam Smith,batter_total_bases,0,NA
-2026-05-27,Houston Astros at Texas Rangers,Christian Vázquez,batter_total_bases,1,NA
-2026-05-27,Houston Astros at Texas Rangers,Christian Walker,batter_total_bases,0,NA
-2026-05-27,Houston Astros at Texas Rangers,Danny Jansen,batter_total_bases,1,NA
-2026-05-27,Houston Astros at Texas Rangers,Evan Carter,batter_total_bases,0,NA
-2026-05-27,Houston Astros at Texas Rangers,Ezequiel Duran,batter_total_bases,0,NA
-2026-05-27,Houston Astros at Texas Rangers,Isaac Paredes,batter_total_bases,0,NA
-2026-05-27,Houston Astros at Texas Rangers,Jake Burger,batter_total_bases,0,NA
-2026-05-27,Houston Astros at Texas Rangers,Jake Meyers,batter_total_bases,0,NA
-2026-05-27,Houston Astros at Texas Rangers,Jeremy Peña,batter_total_bases,1,NA
-2026-05-27,Houston Astros at Texas Rangers,Joc Pederson,batter_total_bases,9,NA
-2026-05-27,Houston Astros at Texas Rangers,Josh Jung,batter_total_bases,1,NA
-2026-05-27,Houston Astros at Texas Rangers,Justin Foscue,batter_total_bases,0,NA
-2026-05-27,Houston Astros at Texas Rangers,Nick Allen,batter_total_bases,0,NA
-2026-05-27,Houston Astros at Texas Rangers,Nicky Lopez,batter_total_bases,0,NA
-2026-05-27,Houston Astros at Texas Rangers,Sam Haggerty,batter_total_bases,0,NA
-2026-05-27,Houston Astros at Texas Rangers,Taylor Trammell,batter_total_bases,3,NA
-2026-05-27,Houston Astros at Texas Rangers,Yordan Alvarez,batter_total_bases,9,NA
-2026-05-27,Houston Astros at Texas Rangers,NRFI,nrfi,NA,0
-2026-05-27,Houston Astros at Texas Rangers,YRFI,nrfi,NA,0
-2026-05-27,Houston Astros at Texas Rangers,Bryan King,pitcher_strikeouts,1,NA
-2026-05-27,Houston Astros at Texas Rangers,Chris Martin,pitcher_strikeouts,0,NA
-2026-05-27,Houston Astros at Texas Rangers,Enyel De Los Santos,pitcher_strikeouts,3,NA
-2026-05-27,Houston Astros at Texas Rangers,Gavin Collyer,pitcher_strikeouts,2,NA
-2026-05-27,Houston Astros at Texas Rangers,Jacob deGrom,pitcher_strikeouts,6,NA
-2026-05-27,Houston Astros at Texas Rangers,Mike Burrows,pitcher_strikeouts,6,NA
-2026-05-27,Houston Astros at Texas Rangers,Tyler Alexander,pitcher_strikeouts,0,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Colt Keith,batter_total_bases,2,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Dillon Dingler,batter_total_bases,3,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Donovan Walton,batter_total_bases,1,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Gage Workman,batter_total_bases,0,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Hao-Yu  Lee,batter_total_bases,0,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Jahmai Jones,batter_total_bases,0,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Jo Adell,batter_total_bases,0,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Jorge Soler,batter_total_bases,1,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Kevin McGonigle,batter_total_bases,2,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Logan O'Hoppe,batter_total_bases,0,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Matt Vierling,batter_total_bases,0,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Mike Trout,batter_total_bases,0,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Oswald Peraza,batter_total_bases,0,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Riley Greene,batter_total_bases,1,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Spencer Torkelson,batter_total_bases,8,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Vaughn Grissom,batter_total_bases,0,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Wade Meckler,batter_total_bases,0,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Wenceel Pérez,batter_total_bases,0,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Zach McKinstry,batter_total_bases,0,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Zach Neto,batter_total_bases,0,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,NRFI,nrfi,NA,0
-2026-05-27,Los Angeles Angels at Detroit Tigers,YRFI,nrfi,NA,0
-2026-05-27,Los Angeles Angels at Detroit Tigers,Brenan Hanifee,pitcher_strikeouts,0,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Brent Suter,pitcher_strikeouts,2,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Casey Mize,pitcher_strikeouts,6,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Drew Anderson,pitcher_strikeouts,3,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,José Soriano,pitcher_strikeouts,4,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Kenley Jansen,pitcher_strikeouts,0,NA
-2026-05-27,Los Angeles Angels at Detroit Tigers,Kyle Finnegan,pitcher_strikeouts,0,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Andrés Giménez,batter_total_bases,1,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Christopher Morel,batter_total_bases,1,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Connor Norby,batter_total_bases,0,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Daulton Varsho,batter_total_bases,0,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Ernie Clement,batter_total_bases,0,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Esteury Ruiz,batter_total_bases,0,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,George Springer,batter_total_bases,0,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Graham Pauley,batter_total_bases,0,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Heriberto Hernández,batter_total_bases,1,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Jakob Marsee,batter_total_bases,0,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Javier Sanoja,batter_total_bases,0,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Jesús Sánchez,batter_total_bases,0,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Kazuma Okamoto,batter_total_bases,4,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Kyle Stowers,batter_total_bases,1,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Liam Hicks,batter_total_bases,0,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Myles Straw,batter_total_bases,0,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Nathan Lukes,batter_total_bases,2,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Otto Lopez,batter_total_bases,4,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Owen Caissie,batter_total_bases,1,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Tyler Heineman,batter_total_bases,0,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Vladimir Guerrero Jr.,batter_total_bases,2,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Xavier Edwards,batter_total_bases,4,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Yohendrick Piñango,batter_total_bases,0,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,NRFI,nrfi,NA,0
-2026-05-27,Miami Marlins at Toronto Blue Jays,YRFI,nrfi,NA,0
-2026-05-27,Miami Marlins at Toronto Blue Jays,Andrew Nardi,pitcher_strikeouts,2,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Eury Pérez,pitcher_strikeouts,9,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Jeff Hoffman,pitcher_strikeouts,2,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,John King,pitcher_strikeouts,1,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Kevin Gausman,pitcher_strikeouts,5,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Louis Varland,pitcher_strikeouts,1,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Mason Fluharty,pitcher_strikeouts,0,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Michael Petersen,pitcher_strikeouts,0,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Pete Fairbanks,pitcher_strikeouts,1,NA
-2026-05-27,Miami Marlins at Toronto Blue Jays,Tyler Rogers,pitcher_strikeouts,0,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Alex Jackson,batter_total_bases,0,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Austin Martin,batter_total_bases,0,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Brooks Lee,batter_total_bases,0,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Byron Buxton,batter_total_bases,4,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Chase Meidroth,batter_total_bases,5,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Colson Montgomery,batter_total_bases,3,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Derek Hill,batter_total_bases,0,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Edgar Quero,batter_total_bases,2,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,James Outman,batter_total_bases,0,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Josh Bell,batter_total_bases,0,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Kody Clemens,batter_total_bases,4,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Luisangel Acuña,batter_total_bases,1,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Luke Keaschall,batter_total_bases,2,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Miguel Vargas,batter_total_bases,1,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Munetaka Murakami,batter_total_bases,5,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Orlando Arcia,batter_total_bases,0,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Randal Grichuk,batter_total_bases,3,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Rikuu Nishida,batter_total_bases,0,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Ryan Kreidler,batter_total_bases,0,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Sam Antonacci,batter_total_bases,3,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Trevor Larnach,batter_total_bases,0,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Tristan Gray,batter_total_bases,0,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Tristan Peters,batter_total_bases,2,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,NRFI,nrfi,NA,0
-2026-05-27,Minnesota Twins at Chicago White Sox,YRFI,nrfi,NA,0
-2026-05-27,Minnesota Twins at Chicago White Sox,Brandon Eisert,pitcher_strikeouts,1,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Connor Prielipp,pitcher_strikeouts,5,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,David Sandlin,pitcher_strikeouts,4,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Eric Orze,pitcher_strikeouts,1,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Orlando Arcia,pitcher_strikeouts,0,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Travis Adams,pitcher_strikeouts,2,NA
-2026-05-27,Minnesota Twins at Chicago White Sox,Trevor Richards,pitcher_strikeouts,0,NA
-2026-05-27,New York Yankees at Kansas City Royals,Aaron Judge,batter_total_bases,0,NA
-2026-05-27,New York Yankees at Kansas City Royals,Amed Rosario,batter_total_bases,0,NA
-2026-05-27,New York Yankees at Kansas City Royals,Anthony Volpe,batter_total_bases,0,NA
-2026-05-27,New York Yankees at Kansas City Royals,Austin Wells,batter_total_bases,0,NA
-2026-05-27,New York Yankees at Kansas City Royals,Ben Rice,batter_total_bases,4,NA
-2026-05-27,New York Yankees at Kansas City Royals,Bobby Witt Jr.,batter_total_bases,0,NA
-2026-05-27,New York Yankees at Kansas City Royals,Carter Jensen,batter_total_bases,0,NA
-2026-05-27,New York Yankees at Kansas City Royals,Cody Bellinger,batter_total_bases,0,NA
-2026-05-27,New York Yankees at Kansas City Royals,Isaac Collins,batter_total_bases,0,NA
-2026-05-27,New York Yankees at Kansas City Royals,Jac Caglianone,batter_total_bases,0,NA
-2026-05-27,New York Yankees at Kansas City Royals,José Caballero,batter_total_bases,1,NA
-2026-05-27,New York Yankees at Kansas City Royals,Lane Thomas,batter_total_bases,0,NA
-2026-05-27,New York Yankees at Kansas City Royals,Maikel Garcia,batter_total_bases,3,NA
-2026-05-27,New York Yankees at Kansas City Royals,Michael Massey,batter_total_bases,2,NA
-2026-05-27,New York Yankees at Kansas City Royals,Paul Goldschmidt,batter_total_bases,2,NA
-2026-05-27,New York Yankees at Kansas City Royals,Ryan McMahon,batter_total_bases,5,NA
-2026-05-27,New York Yankees at Kansas City Royals,Salvador Perez,batter_total_bases,1,NA
-2026-05-27,New York Yankees at Kansas City Royals,Trent Grisham,batter_total_bases,1,NA
-2026-05-27,New York Yankees at Kansas City Royals,Vinnie Pasquantino,batter_total_bases,0,NA
-2026-05-27,New York Yankees at Kansas City Royals,NRFI,nrfi,NA,1
-2026-05-27,New York Yankees at Kansas City Royals,YRFI,nrfi,NA,1
-2026-05-27,New York Yankees at Kansas City Royals,Alex Lange,pitcher_strikeouts,0,NA
-2026-05-27,New York Yankees at Kansas City Royals,Camilo Doval,pitcher_strikeouts,0,NA
-2026-05-27,New York Yankees at Kansas City Royals,Fernando Cruz,pitcher_strikeouts,0,NA
-2026-05-27,New York Yankees at Kansas City Royals,Gerrit Cole,pitcher_strikeouts,10,NA
-2026-05-27,New York Yankees at Kansas City Royals,John Schreiber,pitcher_strikeouts,0,NA
-2026-05-27,New York Yankees at Kansas City Royals,Mason Black,pitcher_strikeouts,2,NA
-2026-05-27,New York Yankees at Kansas City Royals,Nick Mears,pitcher_strikeouts,1,NA
-2026-05-27,New York Yankees at Kansas City Royals,Noah Cameron,pitcher_strikeouts,4,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Adolis García,batter_total_bases,0,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Alec Bohm,batter_total_bases,1,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Bryce Harper,batter_total_bases,0,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Bryson Stott,batter_total_bases,0,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Edmundo Sosa,batter_total_bases,0,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Fernando Tatis Jr.,batter_total_bases,2,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Freddy Fermin,batter_total_bases,0,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Gavin Sheets,batter_total_bases,0,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,J.T. Realmuto,batter_total_bases,1,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Jackson Merrill,batter_total_bases,3,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Justin Crawford,batter_total_bases,1,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Kyle Schwarber,batter_total_bases,2,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Manny Machado,batter_total_bases,0,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Miguel Andujar,batter_total_bases,0,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Nick Castellanos,batter_total_bases,1,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Ramón Laureano,batter_total_bases,2,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Rodolfo Durán,batter_total_bases,0,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Trea Turner,batter_total_bases,4,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Ty France,batter_total_bases,0,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Xander Bogaerts,batter_total_bases,1,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,NRFI,nrfi,NA,1
-2026-05-27,Philadelphia Phillies at San Diego Padres,YRFI,nrfi,NA,1
-2026-05-27,Philadelphia Phillies at San Diego Padres,Adrian Morejon,pitcher_strikeouts,0,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Cristopher Sánchez,pitcher_strikeouts,9,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Jason Adam,pitcher_strikeouts,0,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Jeremiah Estrada,pitcher_strikeouts,1,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Jonathan Bowlan,pitcher_strikeouts,0,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,José Alvarado,pitcher_strikeouts,2,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Ron Marinaccio,pitcher_strikeouts,0,NA
-2026-05-27,Philadelphia Phillies at San Diego Padres,Walker Buehler,pitcher_strikeouts,2,NA
-2026-05-27,Seattle Mariners at Athletics,Carlos Cortes,batter_total_bases,1,NA
-2026-05-27,Seattle Mariners at Athletics,Cole Young,batter_total_bases,2,NA
-2026-05-27,Seattle Mariners at Athletics,Colt Emerson,batter_total_bases,4,NA
-2026-05-27,Seattle Mariners at Athletics,Darell Hernaiz,batter_total_bases,2,NA
-2026-05-27,Seattle Mariners at Athletics,Henry Bolte,batter_total_bases,1,NA
-2026-05-27,Seattle Mariners at Athletics,J.P. Crawford,batter_total_bases,3,NA
-2026-05-27,Seattle Mariners at Athletics,Jeff McNeil,batter_total_bases,0,NA
-2026-05-27,Seattle Mariners at Athletics,Jhonny Pereda,batter_total_bases,0,NA
-2026-05-27,Seattle Mariners at Athletics,Jonah Heim,batter_total_bases,0,NA
-2026-05-27,Seattle Mariners at Athletics,Josh Naylor,batter_total_bases,2,NA
-2026-05-27,Seattle Mariners at Athletics,Julio Rodríguez,batter_total_bases,4,NA
-2026-05-27,Seattle Mariners at Athletics,Luke Raley,batter_total_bases,0,NA
-2026-05-27,Seattle Mariners at Athletics,Nick Kurtz,batter_total_bases,0,NA
-2026-05-27,Seattle Mariners at Athletics,Randy Arozarena,batter_total_bases,1,NA
-2026-05-27,Seattle Mariners at Athletics,Rob Refsnyder,batter_total_bases,4,NA
-2026-05-27,Seattle Mariners at Athletics,Shea Langeliers,batter_total_bases,1,NA
-2026-05-27,Seattle Mariners at Athletics,Tyler Soderstrom,batter_total_bases,2,NA
-2026-05-27,Seattle Mariners at Athletics,Victor Robles,batter_total_bases,1,NA
-2026-05-27,Seattle Mariners at Athletics,Zack Gelof,batter_total_bases,3,NA
-2026-05-27,Seattle Mariners at Athletics,NRFI,nrfi,NA,0
-2026-05-27,Seattle Mariners at Athletics,YRFI,nrfi,NA,0
-2026-05-27,Seattle Mariners at Athletics,Cooper Criswell,pitcher_strikeouts,1,NA
-2026-05-27,Seattle Mariners at Athletics,Eduard Bazardo,pitcher_strikeouts,1,NA
-2026-05-27,Seattle Mariners at Athletics,Jeffrey Springs,pitcher_strikeouts,7,NA
-2026-05-27,Seattle Mariners at Athletics,Joel Kuhnel,pitcher_strikeouts,0,NA
-2026-05-27,Seattle Mariners at Athletics,José Suarez,pitcher_strikeouts,0,NA
-2026-05-27,Seattle Mariners at Athletics,Logan Gilbert,pitcher_strikeouts,6,NA
-2026-05-27,Seattle Mariners at Athletics,Luis Medina,pitcher_strikeouts,2,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Alec Burleson,batter_total_bases,0,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Andrew Vaughn,batter_total_bases,0,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Brice Turang,batter_total_bases,0,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Bryan Torres,batter_total_bases,3,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Christian Yelich,batter_total_bases,1,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,David Hamilton,batter_total_bases,0,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Garrett Mitchell,batter_total_bases,2,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Iván Herrera,batter_total_bases,1,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,JJ Wetherholt,batter_total_bases,2,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Jackson Chourio,batter_total_bases,0,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Jake Bauers,batter_total_bases,0,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Joey Ortiz,batter_total_bases,0,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Jordan Walker,batter_total_bases,2,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Luis Rengifo,batter_total_bases,1,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Masyn Winn,batter_total_bases,1,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Nolan Gorman,batter_total_bases,1,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Pedro Pagés,batter_total_bases,2,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Sal Frelick,batter_total_bases,0,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Victor Scott II,batter_total_bases,0,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,William Contreras,batter_total_bases,0,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Yohel Pozo,batter_total_bases,0,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,NRFI,nrfi,NA,1
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,YRFI,nrfi,NA,1
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Aaron Ashby,pitcher_strikeouts,2,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Chad Patrick,pitcher_strikeouts,4,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Dustin May,pitcher_strikeouts,9,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,JoJo Romero,pitcher_strikeouts,1,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Shane Drohan,pitcher_strikeouts,1,NA
-2026-05-27,St. Louis Cardinals at Milwaukee Brewers,Trevor Megill,pitcher_strikeouts,1,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Adley Rutschman,batter_total_bases,5,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Blaze Alexander,batter_total_bases,7,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Carson Williams,batter_total_bases,0,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Cedric Mullins,batter_total_bases,1,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Chandler Simpson,batter_total_bases,1,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Coby Mayo,batter_total_bases,3,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Colton Cowser,batter_total_bases,1,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Gunnar Henderson,batter_total_bases,8,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Hunter Feduccia,batter_total_bases,3,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Jackson Holliday,batter_total_bases,0,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Jeremiah Jackson,batter_total_bases,0,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Jonathan Aranda,batter_total_bases,2,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Junior Caminero,batter_total_bases,0,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Leody Taveras,batter_total_bases,2,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Nick Fortes,batter_total_bases,1,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Oliver Dunn,batter_total_bases,0,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Pete Alonso,batter_total_bases,1,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Richie Palacios,batter_total_bases,1,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Ryan Vilade,batter_total_bases,0,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Taylor Ward,batter_total_bases,1,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Tyler O'Neill,batter_total_bases,1,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Victor Mesa Jr.,batter_total_bases,1,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Weston Wilson,batter_total_bases,0,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Yandy Díaz,batter_total_bases,0,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,NRFI,nrfi,NA,0
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,YRFI,nrfi,NA,0
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Andrew Kittredge,pitcher_strikeouts,3,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Anthony Nunez,pitcher_strikeouts,0,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Hunter Bigge,pitcher_strikeouts,1,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Jonathan Heasley,pitcher_strikeouts,2,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Keegan Akin,pitcher_strikeouts,0,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Steven Matz,pitcher_strikeouts,2,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Trey Gibson,pitcher_strikeouts,1,NA
-2026-05-27,Tampa Bay Rays at Baltimore Orioles,Yennier Cano,pitcher_strikeouts,0,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Andrés Chaparro,batter_total_bases,0,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Angel Martínez,batter_total_bases,2,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Austin Hedges,batter_total_bases,1,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Brayan Rocchio,batter_total_bases,2,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,CJ Abrams,batter_total_bases,3,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Chase DeLauter,batter_total_bases,2,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Curtis Mead,batter_total_bases,1,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Daniel Schneemann,batter_total_bases,1,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Daylen Lile,batter_total_bases,0,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Drew Millas,batter_total_bases,1,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Jacob Young,batter_total_bases,0,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,James Wood,batter_total_bases,2,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Jorbit Vivas,batter_total_bases,0,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,José Ramírez,batter_total_bases,0,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,José Tena,batter_total_bases,0,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Kyle Manzardo,batter_total_bases,1,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Luis García Jr.,batter_total_bases,0,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Steven Kwan,batter_total_bases,1,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Travis Bazzana,batter_total_bases,4,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,NRFI,nrfi,NA,1
-2026-05-27,Washington Nationals at Cleveland Guardians,YRFI,nrfi,NA,1
-2026-05-27,Washington Nationals at Cleveland Guardians,Cade Smith,pitcher_strikeouts,2,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Clayton Beeter,pitcher_strikeouts,0,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Gavin Williams,pitcher_strikeouts,4,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Gus Varland,pitcher_strikeouts,0,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Miles Mikolas,pitcher_strikeouts,1,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Orlando Ribalta,pitcher_strikeouts,0,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,PJ Poulin,pitcher_strikeouts,1,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Richard Lovelady,pitcher_strikeouts,0,NA
-2026-05-27,Washington Nationals at Cleveland Guardians,Tim Herrin,pitcher_strikeouts,2,NA
