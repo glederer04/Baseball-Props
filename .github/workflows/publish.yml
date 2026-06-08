@@ -1,12 +1,9 @@
 on:
   workflow_dispatch:
-  schedule:
-    # 4 AM Eastern during daylight-saving time; manual dispatch is available too.
-    - cron: '0 8 * * *'
   push:
     branches: main
 
-name: Quarto Publish
+name: Publish Site
 
 concurrency:
   group: pages
@@ -43,11 +40,11 @@ jobs:
           cache-version: 1
 
       - name: Build today's model-only projection board
-        if: github.event_name != 'push'
+        if: github.event_name == 'workflow_dispatch'
         run: Rscript R/run_model_projections.R
 
       - name: Score today's live card
-        if: github.event_name != 'push'
+        if: github.event_name == 'workflow_dispatch'
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: Rscript R/run_daily_predictions.R
