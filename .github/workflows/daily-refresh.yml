@@ -3,9 +3,8 @@ name: Daily Refresh
 on:
   workflow_dispatch:
   schedule:
-    # GitHub cron is UTC. Trigger at both possible UTC offsets, then gate to exactly 9:00 AM America/New_York.
-    - cron: "0 13 * * *"
-    - cron: "0 14 * * *"
+    - cron: "7 9 * * *"
+      timezone: "America/New_York"
 
 concurrency:
   group: daily-refresh
@@ -53,24 +52,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Gate to 9:00 AM New York time
-        id: local_time_gate
-        run: |
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "Manual dispatch detected; allowing refresh."
-            echo "should_run=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          local_time="$(TZ=America/New_York date +%H:%M)"
-          echo "Local New York time: ${local_time}"
-          if [ "${local_time}" != "09:00" ]; then
-            echo "should_run=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          echo "should_run=true" >> "$GITHUB_OUTPUT"
-
       - name: Run daily refresh
-        if: steps.local_time_gate.outputs.should_run == 'true'
         run: |
           chmod +x scripts/daily_refresh.sh
           scripts/daily_refresh.sh

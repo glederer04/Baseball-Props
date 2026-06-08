@@ -109,6 +109,9 @@ fetch_venue <- function(venue_id) {
 }
 
 fetch_forecast_at_start <- function(latitude, longitude, game_datetime) {
+  if (is.na(latitude) || is.na(longitude)) {
+    return(tibble(temperature_f = 70, wind_mph = 0, precipitation_probability = NA_real_))
+  }
   payload <- get_public_json(
     "https://api.open-meteo.com/v1/forecast",
     latitude = latitude, longitude = longitude,
@@ -116,11 +119,19 @@ fetch_forecast_at_start <- function(latitude, longitude, game_datetime) {
     temperature_unit = "fahrenheit", wind_speed_unit = "mph",
     timezone = event_timezone, forecast_days = 16
   )
+  forecast_time <- unlist(payload$hourly$time)
+  temperature_f <- unlist(payload$hourly$temperature_2m)
+  wind_mph <- unlist(payload$hourly$wind_speed_10m)
+  precipitation_probability <- unlist(payload$hourly$precipitation_probability)
+  n <- min(length(forecast_time), length(temperature_f), length(wind_mph), length(precipitation_probability))
+  if (n == 0) {
+    return(tibble(temperature_f = 70, wind_mph = 0, precipitation_probability = NA_real_))
+  }
   hourly <- tibble(
-    forecast_time = ymd_hm(unlist(payload$hourly$time), tz = event_timezone),
-    temperature_f = as.numeric(unlist(payload$hourly$temperature_2m)),
-    wind_mph = as.numeric(unlist(payload$hourly$wind_speed_10m)),
-    precipitation_probability = as.numeric(unlist(payload$hourly$precipitation_probability))
+    forecast_time = ymd_hm(forecast_time[seq_len(n)], tz = event_timezone),
+    temperature_f = as.numeric(temperature_f[seq_len(n)]),
+    wind_mph = as.numeric(wind_mph[seq_len(n)]),
+    precipitation_probability = as.numeric(precipitation_probability[seq_len(n)])
   )
   local_start <- with_tz(ymd_hms(game_datetime), event_timezone)
   hourly[which.min(abs(difftime(hourly$forecast_time, local_start, units = "mins"))), ]

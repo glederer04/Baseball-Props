@@ -82,10 +82,17 @@ fetch_forecast_at_start <- function(latitude, longitude, commence_time) {
     timezone = event_timezone,
     forecast_days = 16
   )
+  forecast_time <- unlist(payload$hourly$time)
+  temperature_f <- unlist(payload$hourly$temperature_2m)
+  wind_mph <- unlist(payload$hourly$wind_speed_10m)
+  n <- min(length(forecast_time), length(temperature_f), length(wind_mph))
+  if (n == 0) {
+    return(tibble(temperature_f = 70, wind_mph = 0))
+  }
   hourly <- tibble(
-    forecast_time = ymd_hm(unlist(payload$hourly$time), tz = event_timezone),
-    temperature_f = as.numeric(unlist(payload$hourly$temperature_2m)),
-    wind_mph = as.numeric(unlist(payload$hourly$wind_speed_10m))
+    forecast_time = ymd_hm(forecast_time[seq_len(n)], tz = event_timezone),
+    temperature_f = as.numeric(temperature_f[seq_len(n)]),
+    wind_mph = as.numeric(wind_mph[seq_len(n)])
   )
   local_start <- with_tz(ymd_hms(commence_time), event_timezone)
   hourly[which.min(abs(difftime(hourly$forecast_time, local_start, units = "mins"))), c("temperature_f", "wind_mph")]
