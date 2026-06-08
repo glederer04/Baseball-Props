@@ -9,6 +9,15 @@ resolve_pandoc_dir() {
     return
   fi
 
+  if command -v quarto >/dev/null 2>&1; then
+    local quarto_bin
+    quarto_bin="$(dirname "$(command -v quarto)")"
+    if [[ -d "${quarto_bin}/tools" ]]; then
+      echo "${quarto_bin}/tools"
+      return
+    fi
+  fi
+
   if command -v pandoc >/dev/null 2>&1; then
     dirname "$(command -v pandoc)"
     return
@@ -74,19 +83,20 @@ quarto_cmd="$(resolve_quarto_cmd)"
 
 today="${EVENT_DATE:-$(date +%F)}"
 yesterday="$(date_minus_one "${today}")"
+renv_bootstrap="source('renv/activate.R');"
 
 echo "Refreshing Diamond Signal for ${today}; training data through ${yesterday}"
 
-retry 3 20 R --vanilla -q -e "rmarkdown::render('analysis/01_data_acquisition.Rmd', params = list(start_date = '2025-03-27', end_date = '${yesterday}', refresh_cache = FALSE), quiet = FALSE)"
-retry 2 20 R --vanilla -q -e "rmarkdown::render('analysis/02_feature_engineering.Rmd', quiet = FALSE); rmarkdown::render('analysis/03_modeling_evaluation.Rmd', quiet = FALSE)"
+retry 3 20 R --vanilla -q -e "${renv_bootstrap} rmarkdown::render('analysis/01_data_acquisition.Rmd', params = list(start_date = '2025-03-27', end_date = '${yesterday}', refresh_cache = FALSE), quiet = FALSE)"
+retry 2 20 R --vanilla -q -e "${renv_bootstrap} rmarkdown::render('analysis/02_feature_engineering.Rmd', quiet = FALSE); rmarkdown::render('analysis/03_modeling_evaluation.Rmd', quiet = FALSE)"
 
-Rscript R/prepare_runtime.R
-Rscript R/export_site_data.R
+Rscript -e "${renv_bootstrap} source('R/prepare_runtime.R')"
+Rscript -e "${renv_bootstrap} source('R/export_site_data.R')"
 export EVENT_DATE="${today}"
-Rscript R/run_model_projections.R
-Rscript R/run_daily_predictions.R
-Rscript R/update_site_status.R
-retry 3 20 Rscript R/update_pick_results.R
+Rscript -e "${renv_bootstrap} source('R/run_model_projections.R')"
+Rscript -e "${renv_bootstrap} source('R/run_daily_predictions.R')"
+Rscript -e "${renv_bootstrap} source('R/update_site_status.R')"
+retry 3 20 Rscript -e "${renv_bootstrap} source('R/update_pick_results.R')"
 
 "${quarto_cmd}" render
 
