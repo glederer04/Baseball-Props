@@ -27,11 +27,90 @@
     return decimal >= 2 ? `+${money.format(Math.round((decimal - 1) * 100))}` : `${money.format(Math.round(-100 / (decimal - 1)))}`;
   };
   const normalizeMarket = value => value === "totals_1st_1_innings" ? "nrfi" : value;
+  const aliasMap = new Map([
+    ["as", "athletics"],
+    ["athletics", "athletics"],
+    ["oaklandathletics", "athletics"],
+    ["losangelesangels", "angels"],
+    ["angels", "angels"],
+    ["houstonastros", "astros"],
+    ["astros", "astros"],
+    ["torontobluejays", "bluejays"],
+    ["bluejays", "bluejays"],
+    ["atlantabraves", "braves"],
+    ["braves", "braves"],
+    ["milwaukeebrewers", "brewers"],
+    ["brewers", "brewers"],
+    ["stlouiscardinals", "cardinals"],
+    ["cardinals", "cardinals"],
+    ["chicagocubs", "cubs"],
+    ["cubs", "cubs"],
+    ["arizonadiamondbacks", "diamondbacks"],
+    ["dbacks", "diamondbacks"],
+    ["diamondbacks", "diamondbacks"],
+    ["losangelesdodgers", "dodgers"],
+    ["dodgers", "dodgers"],
+    ["sanfranciscogiants", "giants"],
+    ["giants", "giants"],
+    ["clevelandguardians", "guardians"],
+    ["guardians", "guardians"],
+    ["seattlemariners", "mariners"],
+    ["mariners", "mariners"],
+    ["miamimarlins", "marlins"],
+    ["marlins", "marlins"],
+    ["newyorkmets", "mets"],
+    ["mets", "mets"],
+    ["washingtonnationals", "nationals"],
+    ["nationals", "nationals"],
+    ["sandiegopadres", "padres"],
+    ["padres", "padres"],
+    ["philadelphiaphillies", "phillies"],
+    ["phillies", "phillies"],
+    ["pittsburghpirates", "pirates"],
+    ["pirates", "pirates"],
+    ["texasrangers", "rangers"],
+    ["rangers", "rangers"],
+    ["tampabayrays", "rays"],
+    ["rays", "rays"],
+    ["bostonredsox", "redsox"],
+    ["redsox", "redsox"],
+    ["cincinnatireds", "reds"],
+    ["reds", "reds"],
+    ["coloradorockies", "rockies"],
+    ["rockies", "rockies"],
+    ["kansascityroyals", "royals"],
+    ["royals", "royals"],
+    ["detroittigers", "tigers"],
+    ["tigers", "tigers"],
+    ["minnesotatwins", "twins"],
+    ["twins", "twins"],
+    ["chicagowhitesox", "whitesox"],
+    ["whitesox", "whitesox"],
+    ["newyorkyankees", "yankees"],
+    ["yankees", "yankees"]
+  ]);
   const normalizeText = value => String(value || "")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/gi, "")
     .toLowerCase();
+  const normalizeTeamName = value => aliasMap.get(normalizeText(value)) || normalizeText(value);
+  const matchupSignature = value => {
+    const normalized = String(value || "")
+      .replace(/\bversus\b/gi, " at ")
+      .replace(/\bvs\.?\b/gi, " at ")
+      .replace(/\s@\s/g, " at ");
+    const parts = normalized.split(/\s+at\s+/i).map(part => normalizeTeamName(part)).filter(Boolean);
+    return parts.length === 2 ? parts.sort().join("|") : normalizeText(value);
+  };
+  const inferSideLine = recommendation => {
+    const text = String(recommendation || "").trim();
+    if (!text) return { side: "", line: null };
+    if (/^nrfi$/i.test(text)) return { side: "NRFI", line: 0 };
+    if (/^yrfi$/i.test(text)) return { side: "YRFI", line: 0 };
+    const match = text.match(/\b(Over|Under)\s+([0-9]+(?:\.[0-9]+)?)/i);
+    return match ? { side: match[1][0].toUpperCase() + match[1].slice(1).toLowerCase(), line: Number(match[2]) } : { side: "", line: null };
+  };
   const legKey = leg => [leg.slateDate, leg.market, leg.selection, leg.matchup, leg.side, leg.line].join("|");
   const ticketType = ticket => ticket.legs.length === 1 ? "Single" : "Parlay";
   const unique = values => [...new Set(values.filter(Boolean))];
@@ -119,13 +198,18 @@
   };
 
   const readPersisted = async key => {
+    const localValue = localRead(key);
     try {
       const value = await dbGet(key);
       storageBackend = "indexeddb";
       if (value.length) return value;
+      if (localValue.length) {
+        await dbSet(key, localValue);
+        return localValue;
+      }
     } catch {}
     storageBackend = "localStorage";
-    return localRead(key);
+    return localValue;
   };
 
   const writePersisted = async (key, value) => {
@@ -145,6 +229,33 @@
     state.tickets = await readPersisted(ticketsKey);
   };
 
+  const coerceLeg = (leg, fallbackSlateDate = "") => {
+    const inferred = inferSideLine(leg.recommendation);
+    const market = normalizeMarket(leg.market || leg.marketKey || leg.betType || "");
+    const selection = leg.selection || leg.player || leg.pick || "";
+    const matchup = leg.matchup || leg.game || leg.opponent || "";
+    const slateDate = leg.slateDate || leg.eventDate || leg.date || fallbackSlateDate || "";
+    const side = normalizeNrfiSide({
+      ...leg,
+      market,
+      selection,
+      side: leg.side || inferred.side
+    }) || inferred.side;
+    const parsedLine = Number(leg.line);
+    const line = Number.isFinite(parsedLine) && leg.line !== "" ? parsedLine : inferred.line;
+    return {
+      ...leg,
+      market,
+      selection,
+      matchup,
+      slateDate,
+      side,
+      line: Number.isFinite(line) ? line : 0,
+      recommendation: leg.recommendation || (side && Number.isFinite(line) && market !== "nrfi" ? `${side} ${line}` : side || ""),
+      marketLabel: leg.marketLabel || formatMarket(market)
+    };
+  };
+
   const normalizeNrfiSide = leg => {
     if (normalizeMarket(leg.market) !== "nrfi") return leg.side;
     if (leg.side === "NRFI" || leg.side === "YRFI") return leg.side;
@@ -153,16 +264,10 @@
   };
 
   const migrateStorage = async () => {
-    const normalizeLeg = leg => ({
-      ...leg,
-      market: normalizeMarket(leg.market),
-      marketLabel: formatMarket(leg.market),
-      side: normalizeNrfiSide(leg)
-    });
-    state.slip = currentSlip().map(normalizeLeg);
+    state.slip = currentSlip().map(leg => coerceLeg(leg));
     state.tickets = savedTickets().map(ticket => ({
       ...ticket,
-      legs: (ticket.legs || []).map(normalizeLeg)
+      legs: (ticket.legs || []).map(leg => coerceLeg(leg, ticket.savedAt ? ticket.savedAt.slice(0, 10) : ""))
     }));
     await writePersisted(slipKey, state.slip);
     await writePersisted(ticketsKey, state.tickets);
@@ -393,23 +498,48 @@
   const resultIndex = async () => {
     try {
       const response = await fetch("site-data/pick_results.csv", { cache: "no-store" });
-      if (!response.ok) return { exact: new Map(), loose: new Map() };
+      if (!response.ok) return { exact: new Map(), loose: new Map(), playerByDate: new Map(), nrfiByDate: new Map() };
       const rows = parseCsv(await response.text());
       const exact = new Map();
       const loose = new Map();
+      const playerBuckets = new Map();
+      const nrfiByDate = new Map();
       rows.forEach(row => {
         exact.set([row.slate_date, normalizeMarket(row.market), row.selection, row.matchup].join("|"), row);
         const key = [normalizeMarket(row.market), normalizeText(row.selection), normalizeText(row.matchup)].join("|");
         if (!loose.has(key)) loose.set(key, row);
+        if (normalizeMarket(row.market) === "nrfi") {
+          nrfiByDate.set([row.slate_date, matchupSignature(row.matchup), row.selection].join("|"), row);
+        } else {
+          const playerKey = [row.slate_date, normalizeMarket(row.market), normalizeText(row.selection)].join("|");
+          const bucket = playerBuckets.get(playerKey) || [];
+          bucket.push(row);
+          playerBuckets.set(playerKey, bucket);
+        }
       });
-      return { exact, loose };
+      const playerByDate = new Map();
+      playerBuckets.forEach((bucket, key) => {
+        const uniqueMatchups = [...new Set(bucket.map(row => row.matchup))];
+        if (bucket.length === 1 || uniqueMatchups.length === 1) playerByDate.set(key, bucket[0]);
+      });
+      return { exact, loose, playerByDate, nrfiByDate };
     } catch {
-      return { exact: new Map(), loose: new Map() };
+      return { exact: new Map(), loose: new Map(), playerByDate: new Map(), nrfiByDate: new Map() };
     }
   };
 
-  const gradeLeg = (leg, results) => {
-    const row = results.exact.get(resultKey(leg)) || results.loose.get(looseResultKey(leg));
+  const findResultRow = (leg, results, fallbackSlateDate = "") => {
+    const slateDate = leg.slateDate || fallbackSlateDate || "";
+    const normalizedLeg = slateDate && slateDate !== leg.slateDate ? { ...leg, slateDate } : leg;
+    return results.exact.get(resultKey(normalizedLeg))
+      || results.loose.get(looseResultKey(normalizedLeg))
+      || (normalizeMarket(normalizedLeg.market) === "nrfi"
+        ? results.nrfiByDate.get([slateDate, matchupSignature(normalizedLeg.matchup), normalizeNrfiSide(normalizedLeg)].join("|"))
+        : results.playerByDate.get([slateDate, normalizeMarket(normalizedLeg.market), normalizeText(normalizedLeg.selection)].join("|")));
+  };
+
+  const gradeLeg = (leg, results, fallbackSlateDate = "") => {
+    const row = findResultRow(leg, results, fallbackSlateDate);
     if (!row) return { status: "Pending", detail: "Awaiting final result", actualLabel: "Pending" };
     if (normalizeMarket(leg.market) === "nrfi") {
       const side = normalizeNrfiSide(leg);
@@ -443,8 +573,9 @@
   const gradeTickets = async () => {
     const results = await resultIndex();
     return savedTickets().map(ticket => {
-      const grades = ticket.legs.map(leg => gradeLeg(leg, results));
-      const slateDates = unique(ticket.legs.map(leg => leg.slateDate)).sort().reverse();
+      const fallbackSlateDate = ticket.savedAt ? ticket.savedAt.slice(0, 10) : "";
+      const grades = ticket.legs.map(leg => gradeLeg(leg, results, fallbackSlateDate));
+      const slateDates = unique(ticket.legs.map(leg => leg.slateDate || fallbackSlateDate)).sort().reverse();
       const counts = grades.reduce((acc, grade) => {
         acc[grade.status] = (acc[grade.status] || 0) + 1;
         return acc;
