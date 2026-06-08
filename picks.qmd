@@ -17,6 +17,7 @@ toc: false
 
 ## Current Slip
 
+<div data-pick-feedback></div>
 <div data-pick-slip></div>
 
 ## Saved Slips

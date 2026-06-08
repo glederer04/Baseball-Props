@@ -32,7 +32,12 @@
   const ticketType = ticket => ticket.legs.length === 1 ? "Single" : "Parlay";
   const unique = values => [...new Set(values.filter(Boolean))];
   const read = key => {
-    try { return JSON.parse(localStorage.getItem(key) || "[]"); } catch { return []; }
+    try {
+      const parsed = JSON.parse(localStorage.getItem(key) || "[]");
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
   };
   const write = (key, value) => localStorage.setItem(key, JSON.stringify(value));
   const escapeText = value => String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -62,6 +67,7 @@
   ].join("|");
   const currentSlip = () => read(slipKey);
   const savedTickets = () => read(ticketsKey);
+  let feedbackTimer = null;
 
   const normalizeNrfiSide = leg => {
     if (normalizeMarket(leg.market) !== "nrfi") return leg.side;
@@ -90,6 +96,17 @@
     syncAddButtons();
     updateFloatingLink();
     renderSlip();
+  };
+
+  const showFeedback = message => {
+    const container = document.querySelector("[data-pick-feedback]");
+    if (!container) return;
+    container.innerHTML = `<div class="slip-feedback"><strong>Saved.</strong> ${escapeText(message)}</div>`;
+    if (feedbackTimer) clearTimeout(feedbackTimer);
+    feedbackTimer = setTimeout(() => {
+      container.innerHTML = "";
+      feedbackTimer = null;
+    }, 4500);
   };
 
   const updateSlipCount = () => {
@@ -240,15 +257,15 @@
       type: legs.length === 1 ? "Single" : `${legs.length}-leg parlay`,
       totalAmericanOdds: odds.american,
       totalDecimalOdds: odds.decimal,
-      legs
+      legs: legs.map(leg => ({ ...leg }))
     });
     write(ticketsKey, tickets);
-    write(slipKey, []);
-    updateSlipCount();
-    syncAddButtons();
-    updateFloatingLink();
-    renderSlip();
-    renderTickets();
+    saveSlip([]);
+    renderTickets().then(() => {
+      const savedSection = document.querySelector("[data-saved-tickets]");
+      savedSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    showFeedback(`Your ${legs.length === 1 ? "single" : `${legs.length}-leg slip`} was moved into Saved Slips below.`);
   };
 
   const parseCsv = text => {
