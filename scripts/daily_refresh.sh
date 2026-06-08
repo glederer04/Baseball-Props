@@ -87,8 +87,10 @@ renv_bootstrap="renv::load(getwd());"
 
 echo "Refreshing Diamond Signal for ${today}; training data through ${yesterday}"
 
-retry 3 20 R --vanilla -q -e "${renv_bootstrap} rmarkdown::render('analysis/01_data_acquisition.Rmd', params = list(start_date = '2025-03-27', end_date = '${yesterday}', refresh_cache = FALSE), quiet = FALSE)"
-retry 2 20 R --vanilla -q -e "${renv_bootstrap} rmarkdown::render('analysis/02_feature_engineering.Rmd', quiet = FALSE); rmarkdown::render('analysis/03_modeling_evaluation.Rmd', quiet = FALSE)"
+Rscript -e "${renv_bootstrap} stopifnot(requireNamespace('rmarkdown', quietly = TRUE), requireNamespace('knitr', quietly = TRUE))"
+
+retry 3 20 Rscript -e "${renv_bootstrap} rmarkdown::render('analysis/01_data_acquisition.Rmd', params = list(start_date = '2025-03-27', end_date = '${yesterday}', refresh_cache = FALSE), quiet = FALSE)"
+retry 2 20 Rscript -e "${renv_bootstrap} rmarkdown::render('analysis/02_feature_engineering.Rmd', quiet = FALSE); rmarkdown::render('analysis/03_modeling_evaluation.Rmd', quiet = FALSE)"
 
 Rscript -e "${renv_bootstrap} source('R/prepare_runtime.R')"
 Rscript -e "${renv_bootstrap} source('R/export_site_data.R')"
