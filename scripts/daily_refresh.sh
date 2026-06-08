@@ -83,7 +83,7 @@ quarto_cmd="$(resolve_quarto_cmd)"
 
 today="${EVENT_DATE:-$(date +%F)}"
 yesterday="$(date_minus_one "${today}")"
-renv_bootstrap="source('renv/activate.R');"
+renv_bootstrap="renv::load(getwd());"
 
 echo "Refreshing Diamond Signal for ${today}; training data through ${yesterday}"
 
