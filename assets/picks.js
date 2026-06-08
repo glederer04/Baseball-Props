@@ -2,6 +2,10 @@
   const slipKey = "diamondSignalSlip";
   const ticketsKey = "diamondSignalTickets";
   const version = 1;
+  const state = {
+    slip: [],
+    tickets: []
+  };
   const filters = {
     status: "All",
     type: "All",
@@ -31,15 +35,6 @@
   const legKey = leg => [leg.slateDate, leg.market, leg.selection, leg.matchup, leg.side, leg.line].join("|");
   const ticketType = ticket => ticket.legs.length === 1 ? "Single" : "Parlay";
   const unique = values => [...new Set(values.filter(Boolean))];
-  const read = key => {
-    try {
-      const parsed = JSON.parse(localStorage.getItem(key) || "[]");
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  };
-  const write = (key, value) => localStorage.setItem(key, JSON.stringify(value));
   const escapeText = value => String(value ?? "").replace(/[&<>"']/g, char => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   }[char]));
@@ -65,9 +60,90 @@
     normalizeText(leg.selection),
     normalizeText(leg.matchup)
   ].join("|");
-  const currentSlip = () => read(slipKey);
-  const savedTickets = () => read(ticketsKey);
+  const currentSlip = () => state.slip;
+  const savedTickets = () => state.tickets;
   let feedbackTimer = null;
+  let storageBackend = "memory";
+
+  const localRead = key => {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(key) || "[]");
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const localWrite = (key, value) => {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const openDatabase = () => new Promise((resolve, reject) => {
+    if (!("indexedDB" in window)) {
+      reject(new Error("IndexedDB unavailable"));
+      return;
+    }
+    const request = indexedDB.open("diamond-signal-store", 1);
+    request.onupgradeneeded = () => {
+      request.result.createObjectStore("kv");
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error || new Error("IndexedDB open failed"));
+  });
+
+  const dbGet = async key => {
+    const db = await openDatabase();
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction("kv", "readonly");
+      const store = tx.objectStore("kv");
+      const request = store.get(key);
+      request.onsuccess = () => resolve(Array.isArray(request.result) ? request.result : []);
+      request.onerror = () => reject(request.error || new Error("IndexedDB read failed"));
+    });
+  };
+
+  const dbSet = async (key, value) => {
+    const db = await openDatabase();
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction("kv", "readwrite");
+      const store = tx.objectStore("kv");
+      const request = store.put(value, key);
+      request.onsuccess = () => resolve(true);
+      request.onerror = () => reject(request.error || new Error("IndexedDB write failed"));
+    });
+  };
+
+  const readPersisted = async key => {
+    try {
+      const value = await dbGet(key);
+      storageBackend = "indexeddb";
+      if (value.length) return value;
+    } catch {}
+    storageBackend = "localStorage";
+    return localRead(key);
+  };
+
+  const writePersisted = async (key, value) => {
+    try {
+      await dbSet(key, value);
+      storageBackend = "indexeddb";
+      localWrite(key, value);
+      return true;
+    } catch {
+      storageBackend = "localStorage";
+      return localWrite(key, value);
+    }
+  };
+
+  const hydrateState = async () => {
+    state.slip = await readPersisted(slipKey);
+    state.tickets = await readPersisted(ticketsKey);
+  };
 
   const normalizeNrfiSide = leg => {
     if (normalizeMarket(leg.market) !== "nrfi") return leg.side;
@@ -76,22 +152,25 @@
     return leg.side;
   };
 
-  const migrateStorage = () => {
+  const migrateStorage = async () => {
     const normalizeLeg = leg => ({
       ...leg,
       market: normalizeMarket(leg.market),
       marketLabel: formatMarket(leg.market),
       side: normalizeNrfiSide(leg)
     });
-    write(slipKey, currentSlip().map(normalizeLeg));
-    write(ticketsKey, savedTickets().map(ticket => ({
+    state.slip = currentSlip().map(normalizeLeg);
+    state.tickets = savedTickets().map(ticket => ({
       ...ticket,
       legs: (ticket.legs || []).map(normalizeLeg)
-    })));
+    }));
+    await writePersisted(slipKey, state.slip);
+    await writePersisted(ticketsKey, state.tickets);
   };
 
-  const saveSlip = slip => {
-    write(slipKey, slip);
+  const saveSlip = async slip => {
+    state.slip = [...slip];
+    await writePersisted(slipKey, state.slip);
     updateSlipCount();
     syncAddButtons();
     updateFloatingLink();
@@ -160,11 +239,12 @@
 
   const bindAddButtons = () => {
     document.querySelectorAll(".add-pick-btn").forEach(button => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", async () => {
         const leg = getButtonLeg(button);
-        const slip = currentSlip();
+        const slip = [...currentSlip()];
         if (!slip.some(item => legKey(item) === legKey(leg))) slip.push(leg);
-        write(slipKey, slip);
+        state.slip = slip;
+        await writePersisted(slipKey, state.slip);
         updateSlipCount();
         syncAddButtons();
         updateFloatingLink();
@@ -222,26 +302,27 @@
       </div>`;
 
     container.querySelectorAll(".odds-input").forEach(input => {
-      input.addEventListener("input", () => {
-        const next = currentSlip();
+      input.addEventListener("input", async () => {
+        const next = [...currentSlip()];
         next[Number(input.dataset.oddsIndex)].odds = input.value;
-        write(slipKey, next);
+        state.slip = next;
+        await writePersisted(slipKey, state.slip);
         const refreshedOdds = totalOdds(next);
         const totalNode = container.querySelector("[data-current-slip-odds]");
         if (totalNode) totalNode.textContent = refreshedOdds.american;
       });
     });
     container.querySelectorAll(".remove-leg-btn").forEach(button => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", async () => {
         const next = currentSlip().filter((_, index) => index !== Number(button.dataset.removeIndex));
-        saveSlip(next);
+        await saveSlip(next);
       });
     });
-    container.querySelector(".clear-slip-btn")?.addEventListener("click", () => saveSlip([]));
-    container.querySelector(".save-ticket-btn")?.addEventListener("click", () => saveTicket());
+    container.querySelector(".clear-slip-btn")?.addEventListener("click", async () => saveSlip([]));
+    container.querySelector(".save-ticket-btn")?.addEventListener("click", async () => saveTicket());
   };
 
-  const saveTicket = () => {
+  const saveTicket = async () => {
     const legs = currentSlip();
     if (!legs.length) return;
     if (legs.some(leg => !cleanOdds(leg.odds))) {
@@ -249,7 +330,7 @@
       return;
     }
     const odds = totalOdds(legs);
-    const tickets = savedTickets();
+    const tickets = [...savedTickets()];
     tickets.unshift({
       id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`,
       version,
@@ -259,13 +340,18 @@
       totalDecimalOdds: odds.decimal,
       legs: legs.map(leg => ({ ...leg }))
     });
-    write(ticketsKey, tickets);
-    saveSlip([]);
+    state.tickets = tickets;
+    const stored = await writePersisted(ticketsKey, state.tickets);
+    if (!stored) {
+      showFeedback("Saving failed in this browser session. Try disabling private browsing or storage blocking.");
+      return;
+    }
+    await saveSlip([]);
     renderTickets().then(() => {
       const savedSection = document.querySelector("[data-saved-tickets]");
       savedSection?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
-    showFeedback(`Your ${legs.length === 1 ? "single" : `${legs.length}-leg slip`} was moved into Saved Slips below.`);
+    showFeedback(`Your ${legs.length === 1 ? "single" : `${legs.length}-leg slip`} was moved into Saved Slips below using ${storageBackend}.`);
   };
 
   const parseCsv = text => {
@@ -307,7 +393,7 @@
   const resultIndex = async () => {
     try {
       const response = await fetch("site-data/pick_results.csv", { cache: "no-store" });
-      if (!response.ok) return new Map();
+      if (!response.ok) return { exact: new Map(), loose: new Map() };
       const rows = parseCsv(await response.text());
       const exact = new Map();
       const loose = new Map();
@@ -576,8 +662,9 @@
       </section>
     `).join("");
     container.querySelectorAll(".delete-ticket-btn").forEach(button => {
-      button.addEventListener("click", () => {
-        write(ticketsKey, savedTickets().filter(ticket => ticket.id !== button.dataset.ticketId));
+      button.addEventListener("click", async () => {
+        state.tickets = savedTickets().filter(ticket => ticket.id !== button.dataset.ticketId);
+        await writePersisted(ticketsKey, state.tickets);
         renderTickets();
       });
     });
@@ -656,16 +743,18 @@
     renderFilterControls(allTickets);
     renderTicketGroups(filteredTickets);
     renderLegResults(filteredTickets);
-    document.querySelector("[data-pick-summary]")?.querySelector(".clear-tickets-btn")?.addEventListener("click", () => {
+    document.querySelector("[data-pick-summary]")?.querySelector(".clear-tickets-btn")?.addEventListener("click", async () => {
       if (confirm("Clear all saved slips from this browser?")) {
-        write(ticketsKey, []);
+        state.tickets = [];
+        await writePersisted(ticketsKey, state.tickets);
         renderTickets();
       }
     });
   };
 
-  document.addEventListener("DOMContentLoaded", () => {
-    migrateStorage();
+  document.addEventListener("DOMContentLoaded", async () => {
+    await hydrateState();
+    await migrateStorage();
     bindAddButtons();
     updateSlipCount();
     syncAddButtons();
