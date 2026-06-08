@@ -44,6 +44,10 @@ jobs:
           cache-version: 2
           bypass-cache: true
 
+      - name: Ensure render packages
+        run: |
+          Rscript -e "if (!requireNamespace('rmarkdown', quietly = TRUE) || !requireNamespace('knitr', quietly = TRUE)) install.packages(c('rmarkdown', 'knitr'), repos = Sys.getenv('RSPM'))"
+
       - name: Configure git author
         run: |
           git config user.name "github-actions[bot]"
