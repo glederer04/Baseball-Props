@@ -41,12 +41,17 @@ normalize_market_key <- function(x) {
 format_status_time <- function(x) {
   if (!length(x) || is.na(x) || !nzchar(x)) return("Not available")
   if (grepl(" ET$", x)) return(x)
-  parsed <- suppressWarnings(as.POSIXct(x, tz = "UTC", tryFormats = c(
+  formats <- c(
     "%Y-%m-%dT%H:%M:%S%z",
     "%Y-%m-%dT%H:%M:%SZ",
     "%Y-%m-%d %H:%M %Z",
     "%Y-%m-%d %H:%M:%S %Z"
-  )))
+  )
+  parsed <- NULL
+  for (fmt in formats) {
+    parsed <- suppressWarnings(tryCatch(as.POSIXct(x, tz = "UTC", format = fmt), error = function(...) NA))
+    if (!is.na(parsed)) break
+  }
   if (is.na(parsed)) return(x)
   format(parsed, "%B %e, %Y at %I:%M %p ET", tz = "America/New_York")
 }
