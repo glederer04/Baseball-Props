@@ -1,8 +1,16 @@
 selection,matchup,game_time,market,side,line,american_price,model_probability,implied_probability,probability_difference,signal,captured_at
-Gavin Williams,New York Yankees at Cleveland Guardians,6:41 PM ET,pitcher_strikeouts,Under,6.5,112,0.6091149190675773,0.4485826296743064,0.1605322893932709,Strong,2026-06-08T13:49:31+0000
-Emerson Hancock,Seattle Mariners at Baltimore Orioles,6:36 PM ET,pitcher_strikeouts,Under,4.5,108,0.5461543165021355,0.44892552251987045,0.09722879398226508,Strong,2026-06-08T13:49:31+0000
-YRFI,Philadelphia Phillies at Toronto Blue Jays,7:08 PM ET,totals_1st_1_innings,Over,0.5,-106,0.5528526801397979,0.48542880932556204,0.0674238708142359,Watch,2026-06-08T13:49:31+0000
-Patrick Corbin,Philadelphia Phillies at Toronto Blue Jays,7:08 PM ET,pitcher_strikeouts,Over,3.5,-164,0.6483238245375957,0.5924416450537237,0.055882179483872085,Watch,2026-06-08T13:49:31+0000
-Will Warren,New York Yankees at Cleveland Guardians,6:41 PM ET,pitcher_strikeouts,Over,4.5,-104,0.5198077346929157,0.47591522157996147,0.04389251311295428,Watch,2026-06-08T13:49:31+0000
-NRFI,Boston Red Sox at Tampa Bay Rays,6:41 PM ET,totals_1st_1_innings,Under,0.5,-115,0.5432987020163912,0.5041554124246831,0.0391432895917081,Watch,2026-06-08T13:49:31+0000
-Connelly Early,Boston Red Sox at Tampa Bay Rays,6:41 PM ET,pitcher_strikeouts,Over,5.5,128,0.44510414319204517,0.40953986991086483,0.035564273281180336,Watch,2026-06-08T13:49:31+0000
+Taj Bradley,Minnesota Twins at Detroit Tigers,6:41 PM ET,pitcher_strikeouts,Under,5.5,-102,0.6681071040882782,0.4718423169750604,0.19626478711321782,Strong,2026-06-09T14:48:10+0000
+Trevor Rogers,Seattle Mariners at Baltimore Orioles,6:36 PM ET,pitcher_strikeouts,Under,4.5,118,0.597125901451421,0.437338686550043,0.15978721490137798,Strong,2026-06-09T14:48:10+0000
+Logan Gilbert,Seattle Mariners at Baltimore Orioles,6:36 PM ET,pitcher_strikeouts,Under,6.5,-140,0.6967051859333115,0.5457986373959123,0.15090654853739927,Strong,2026-06-09T14:48:10+0000
+Paul Skenes,Los Angeles Dodgers at Pittsburgh Pirates,6:41 PM ET,pitcher_strikeouts,Under,6.5,-112,0.6355684807320119,0.5043297540699688,0.13123872666204306,Strong,2026-06-09T14:48:10+0000
+Payton Tolle,Boston Red Sox at Tampa Bay Rays,6:41 PM ET,pitcher_strikeouts,Under,5.5,-130,0.652719533724527,0.5281576830249397,0.12456185069958725,Strong,2026-06-09T14:48:10+0000
+Eric Lauer,Los Angeles Dodgers at Pittsburgh Pirates,6:41 PM ET,pitcher_strikeouts,Under,4.5,-174,0.6797913682628565,0.5935924058142985,0.08619896244855796,Strong,2026-06-09T14:48:10+0000
+Stephen Kolek,Texas Rangers at Kansas City Royals,7:41 PM ET,pitcher_strikeouts,Over,3.5,-140,0.6340124237367718,0.5552260934025204,0.07878633033425142,Strong,2026-06-09T14:48:10+0000
+Zack Wheeler,Philadelphia Phillies at Toronto Blue Jays,7:08 PM ET,pitcher_strikeouts,Over,5.5,-144,0.6153344694706123,0.5510744774801295,0.06425999199048282,Watch,2026-06-09T14:48:10+0000
+YRFI,Boston Red Sox at Tampa Bay Rays,6:41 PM ET,totals_1st_1_innings,Over,0.5,112,0.5028176891891668,0.4456393635827931,0.0571783256063737,Watch,2026-06-09T14:48:10+0000
+Max Meyer,Arizona Diamondbacks at Miami Marlins,6:41 PM ET,pitcher_strikeouts,Under,5.5,-102,0.5301687468348932,0.48071979434447304,0.049448952490420195,Watch,2026-06-09T14:48:10+0000
+YRFI,Seattle Mariners at Baltimore Orioles,6:36 PM ET,totals_1st_1_innings,Over,0.5,-106,0.5320610839934057,0.48542880932556204,0.04663227466784364,Watch,2026-06-09T14:48:10+0000
+Dustin May,St. Louis Cardinals at New York Mets,7:11 PM ET,pitcher_strikeouts,Under,4.5,122,0.4658128632368853,0.421465800141561,0.044347063095324324,Watch,2026-06-09T14:48:10+0000
+Zac Gallen,Arizona Diamondbacks at Miami Marlins,6:41 PM ET,pitcher_strikeouts,Under,4.5,-132,0.5690063631796517,0.532258064516129,0.036748298663522694,Watch,2026-06-09T14:48:10+0000
+Freddy Peralta,St. Louis Cardinals at New York Mets,7:11 PM ET,pitcher_strikeouts,Under,5.5,110,0.4897758038815221,0.45401629802095467,0.03575950586056742,Watch,2026-06-09T14:48:10+0000
+YRFI,Los Angeles Dodgers at Pittsburgh Pirates,6:41 PM ET,totals_1st_1_innings,Over,0.5,102,0.501866860003428,0.4669102720259846,0.03495658797744333,Watch,2026-06-09T14:48:10+0000
