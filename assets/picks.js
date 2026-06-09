@@ -810,50 +810,54 @@
       return acc;
     }, {});
     const orderedKeys = Object.keys(groups).sort().reverse();
-    container.innerHTML = orderedKeys.map(date => `
-      <section class="ticket-group">
-        <div class="ticket-group-head">
-          <div>
-            <span class="card-kicker">Slate</span>
-            <h3>${escapeText(formatDate(date))}</h3>
-          </div>
-          <p>${groups[date].length} saved slip${groups[date].length === 1 ? "" : "s"}</p>
-        </div>
-        <div class="ticket-group-list saved-slips-scroll">
-          ${groups[date].map(ticket => `
-            <div class="ticket-card">
-              <div class="ticket-head">
-                <div>
-                  <span class="status-chip ${ticket.status.toLowerCase()}">${ticket.status}</span>
-                  <h3>${escapeText(ticket.normalizedType)} · ${escapeText(ticket.totalAmericanOdds)}</h3>
-                  <p>${escapeText(formatDateTime(ticket.savedAt))} · ${escapeText(ticket.markets.join(" · "))}</p>
-                </div>
-                <button class="delete-ticket-btn" type="button" data-ticket-id="${escapeText(ticket.id)}">Delete</button>
+    container.innerHTML = `
+      <div class="saved-slips-scroll">
+        ${orderedKeys.map(date => `
+          <section class="ticket-group">
+            <div class="ticket-group-head">
+              <div>
+                <span class="card-kicker">Slate</span>
+                <h3>${escapeText(formatDate(date))}</h3>
               </div>
-              <div class="ticket-meta-row">
-                <span class="pill">${ticket.counts.Won} won</span>
-                <span class="pill ${ticket.counts.Lost ? "loss-pill" : "strong"}">${ticket.counts.Lost} lost</span>
-                <span class="pill watch">${ticket.counts.Pending} pending</span>
-                ${ticket.counts.Push ? `<span class="pill">${ticket.counts.Push} push</span>` : ""}
-                ${ticket.nearMiss && ticket.status === "Lost" ? `<span class="pill watch">One leg short</span>` : ""}
-              </div>
-              <div class="ticket-leg-list">
-                ${ticket.legs.map((leg, index) => `
-                  <div class="ticket-leg">
-                    ${formatLeg(leg)}
-                    <div class="ticket-leg-result">
-                      <strong>${escapeText(leg.odds)}</strong>
-                      <span class="status-chip ${ticket.grades[index].status.toLowerCase()}">${ticket.grades[index].status}</span>
-                      <small>${escapeText(ticket.grades[index].detail)}</small>
-                    </div>
-                  </div>
-                `).join("")}
-              </div>
+              <p>${groups[date].length} saved slip${groups[date].length === 1 ? "" : "s"}</p>
             </div>
-          `).join("")}
+            <div class="ticket-group-list">
+              ${groups[date].map(ticket => `
+                <div class="ticket-card">
+                  <div class="ticket-head">
+                    <div>
+                      <span class="status-chip ${ticket.status.toLowerCase()}">${ticket.status}</span>
+                      <h3>${escapeText(ticket.normalizedType)} · ${escapeText(ticket.totalAmericanOdds)}</h3>
+                      <p>${escapeText(formatDateTime(ticket.savedAt))} · ${escapeText(ticket.markets.join(" · "))}</p>
+                    </div>
+                    <button class="delete-ticket-btn" type="button" data-ticket-id="${escapeText(ticket.id)}">Delete</button>
+                  </div>
+                  <div class="ticket-meta-row">
+                    <span class="pill">${ticket.counts.Won} won</span>
+                    <span class="pill ${ticket.counts.Lost ? "loss-pill" : "strong"}">${ticket.counts.Lost} lost</span>
+                    <span class="pill watch">${ticket.counts.Pending} pending</span>
+                    ${ticket.counts.Push ? `<span class="pill">${ticket.counts.Push} push</span>` : ""}
+                    ${ticket.nearMiss && ticket.status === "Lost" ? `<span class="pill watch">One leg short</span>` : ""}
+                  </div>
+                  <div class="ticket-leg-list">
+                    ${ticket.legs.map((leg, index) => `
+                      <div class="ticket-leg">
+                        ${formatLeg(leg)}
+                        <div class="ticket-leg-result">
+                          <strong>${escapeText(leg.odds)}</strong>
+                          <span class="status-chip ${ticket.grades[index].status.toLowerCase()}">${ticket.grades[index].status}</span>
+                          <small>${escapeText(ticket.grades[index].detail)}</small>
+                        </div>
+                      </div>
+                    `).join("")}
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </section>
+        `).join("")}
         </div>
-      </section>
-    `).join("");
+      </div>`;
     container.querySelectorAll(".delete-ticket-btn").forEach(button => {
       button.addEventListener("click", async () => {
         state.tickets = savedTickets().filter(ticket => ticket.id !== button.dataset.ticketId);
