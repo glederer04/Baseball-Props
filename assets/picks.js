@@ -14,6 +14,13 @@
     query: "",
     sort: "Newest"
   };
+  const legFilters = {
+    status: "All",
+    slate: "All",
+    market: "All",
+    query: "",
+    sort: "Newest"
+  };
 
   const money = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
   const pct = value => Number.isFinite(value) ? `${(100 * value).toFixed(1)}%` : "-";
@@ -643,6 +650,39 @@
     return sorted;
   };
 
+  const applyLegFilters = legs => legs.filter(leg => {
+    if (legFilters.status !== "All" && leg.grade.status !== legFilters.status) return false;
+    if (legFilters.slate !== "All" && leg.slateDate !== legFilters.slate) return false;
+    if (legFilters.market !== "All" && normalizeMarket(leg.market) !== legFilters.market) return false;
+    const query = legFilters.query.trim().toLowerCase();
+    if (!query) return true;
+    return [
+      leg.selection,
+      leg.matchup,
+      leg.recommendation,
+      leg.marketLabel,
+      leg.side
+    ].join(" ").toLowerCase().includes(query);
+  });
+
+  const sortLegs = legs => {
+    const sorted = [...legs];
+    sorted.sort((a, b) => {
+      if (legFilters.sort === "Oldest") {
+        if (a.slateDate === b.slateDate) return a.selection.localeCompare(b.selection);
+        return a.slateDate > b.slateDate ? 1 : -1;
+      }
+      if (legFilters.sort === "Market") {
+        const marketCompare = formatMarket(a.market).localeCompare(formatMarket(b.market));
+        if (marketCompare !== 0) return marketCompare;
+        return a.selection.localeCompare(b.selection);
+      }
+      if (a.slateDate === b.slateDate) return a.selection.localeCompare(b.selection);
+      return a.slateDate < b.slateDate ? 1 : -1;
+    });
+    return sorted;
+  };
+
   const renderSummary = tickets => {
     const summary = document.querySelector("[data-pick-summary]");
     if (!summary) return;
@@ -826,20 +866,27 @@
   const renderLegResults = tickets => {
     const container = document.querySelector("[data-leg-results]");
     if (!container) return;
-    const legs = tickets.flatMap(ticket => ticket.legs.map((leg, index) => ({
+    const allLegs = tickets.flatMap(ticket => ticket.legs.map((leg, index) => ({
       ...leg,
       grade: ticket.grades[index],
       ticketStatus: ticket.status,
       slateDate: leg.slateDate || ticket.primarySlateDate
     })));
-    if (!legs.length) {
+    if (!allLegs.length) {
       container.innerHTML = "";
       return;
     }
-    const ordered = legs.sort((a, b) => {
-      if (a.slateDate === b.slateDate) return a.selection.localeCompare(b.selection);
-      return a.slateDate < b.slateDate ? 1 : -1;
-    });
+    const slateOptions = unique(allLegs.map(leg => leg.slateDate)).sort().reverse();
+    const marketOptions = unique(allLegs.map(leg => normalizeMarket(leg.market))).sort();
+    const statusOptions = ["All", "Pending", "Won", "Lost", "Push"];
+    const filteredLegs = sortLegs(applyLegFilters(allLegs));
+    const settledLegs = filteredLegs.filter(leg => leg.grade.status !== "Pending");
+    const decidedLegs = settledLegs.filter(leg => leg.grade.status !== "Push");
+    const wins = settledLegs.filter(leg => leg.grade.status === "Won").length;
+    const losses = settledLegs.filter(leg => leg.grade.status === "Lost").length;
+    const pushes = settledLegs.filter(leg => leg.grade.status === "Push").length;
+    const pending = filteredLegs.filter(leg => leg.grade.status === "Pending").length;
+    const efficiency = decidedLegs.length ? pct(wins / decidedLegs.length) : "-";
     container.innerHTML = `
       <section class="leg-results-wrap">
         <div class="results-control-head">
@@ -849,6 +896,50 @@
           </div>
           <p>Parlays still show every leg result even when the full ticket loses.</p>
         </div>
+        <div class="metric-grid leg-summary-grid">
+          <div class="metric"><span class="metric-label">Visible legs</span><span class="metric-value">${filteredLegs.length}</span><span class="metric-detail">Legs in the current filtered view</span></div>
+          <div class="metric"><span class="metric-label">Record</span><span class="metric-value">${wins}-${losses}-${pushes}</span><span class="metric-detail">Settled leg record in this view</span></div>
+          <div class="metric"><span class="metric-label">Efficiency</span><span class="metric-value">${efficiency}</span><span class="metric-detail">Win rate on decided legs, excluding pushes</span></div>
+          <div class="metric"><span class="metric-label">Pending legs</span><span class="metric-value">${pending}</span><span class="metric-detail">Still waiting on public final results</span></div>
+        </div>
+        <section class="results-controls leg-results-controls">
+          <div class="results-control-head">
+            <div>
+              <span class="card-kicker">Leg filters</span>
+              <h2>Break down pick performance.</h2>
+            </div>
+            <p>Filter this section by market, result, slate date, or search to isolate pitcher props, NRFI/YRFI, and total-base picks.</p>
+          </div>
+          <div class="board-controls ticket-status-filters">
+            ${statusOptions.map(status => `
+              <button class="filter-chip ${legFilters.status === status ? "active" : ""}" type="button" data-leg-filter-status="${status}">${status}</button>
+            `).join("")}
+          </div>
+          <div class="ticket-filter-grid">
+            <label><span>Slate</span>
+              <select data-leg-filter-slate>
+                <option value="All">All slate dates</option>
+                ${slateOptions.map(date => `<option value="${escapeText(date)}"${legFilters.slate === date ? " selected" : ""}>${escapeText(formatDate(date))}</option>`).join("")}
+              </select>
+            </label>
+            <label><span>Market</span>
+              <select data-leg-filter-market>
+                <option value="All">All markets</option>
+                ${marketOptions.map(market => `<option value="${escapeText(market)}"${legFilters.market === market ? " selected" : ""}>${escapeText(formatMarket(market))}</option>`).join("")}
+              </select>
+            </label>
+            <label><span>Search</span>
+              <input type="search" data-leg-filter-query placeholder="Player, matchup, recommendation" value="${escapeText(legFilters.query)}">
+            </label>
+            <label><span>Sort</span>
+              <select data-leg-filter-sort>
+                <option value="Newest"${legFilters.sort === "Newest" ? " selected" : ""}>Newest first</option>
+                <option value="Oldest"${legFilters.sort === "Oldest" ? " selected" : ""}>Oldest first</option>
+                <option value="Market"${legFilters.sort === "Market" ? " selected" : ""}>Group by market</option>
+              </select>
+            </label>
+          </div>
+        </section>
         <div class="signal-table-wrap leg-results-scroll">
           <table class="signal-table">
             <thead>
@@ -863,7 +954,7 @@
               </tr>
             </thead>
             <tbody>
-              ${ordered.map(leg => `
+              ${filteredLegs.map(leg => `
                 <tr>
                   <td>${escapeText(formatDate(leg.slateDate))}</td>
                   <td><strong>${escapeText(leg.selection)}</strong><br><small>${escapeText(leg.matchup)}</small></td>
@@ -878,6 +969,28 @@
           </table>
         </div>
       </section>`;
+    container.querySelectorAll("[data-leg-filter-status]").forEach(button => {
+      button.addEventListener("click", () => {
+        legFilters.status = button.dataset.legFilterStatus || "All";
+        renderTickets();
+      });
+    });
+    container.querySelector("[data-leg-filter-slate]")?.addEventListener("change", event => {
+      legFilters.slate = event.target.value;
+      renderTickets();
+    });
+    container.querySelector("[data-leg-filter-market]")?.addEventListener("change", event => {
+      legFilters.market = event.target.value;
+      renderTickets();
+    });
+    container.querySelector("[data-leg-filter-query]")?.addEventListener("input", event => {
+      legFilters.query = event.target.value;
+      renderTickets();
+    });
+    container.querySelector("[data-leg-filter-sort]")?.addEventListener("change", event => {
+      legFilters.sort = event.target.value;
+      renderTickets();
+    });
   };
 
   const renderTickets = async () => {
