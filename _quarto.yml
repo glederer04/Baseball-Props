@@ -6,6 +6,7 @@ project:
   resources:
     - favicon.png
     - assets/favicon.png
+    - site-data/**
 
 website:
   title: "Diamond Signal"
