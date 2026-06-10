@@ -173,28 +173,44 @@ body.scroll-reveal-enabled .status-strip {
   transform: translateY(calc(var(--scroll-progress) * -8px));
 }
 body.scroll-reveal-enabled .reveal-on-scroll {
-  opacity: .08;
-  filter: blur(10px);
-  transform: translate3d(0, 34px, 0) scale(.975);
+  opacity: calc(.32 + var(--section-progress, 0) * .68);
+  filter: blur(calc((1 - var(--section-progress, 0)) * 10px));
+  transform:
+    perspective(1200px)
+    translate3d(0, calc(30px + var(--section-shift, 0px)), 0)
+    rotateX(var(--section-tilt, 0deg))
+    scale(var(--section-scale, 1));
   transition:
-    opacity .55s ease,
-    transform .7s cubic-bezier(.22, 1, .36, 1),
-    filter .7s ease,
-    box-shadow .5s ease,
-    border-color .5s ease;
+    opacity .3s ease,
+    transform .35s cubic-bezier(.22, 1, .36, 1),
+    filter .35s ease,
+    box-shadow .35s ease,
+    border-color .35s ease;
   transition-delay: var(--reveal-delay, 0ms);
   will-change: opacity, transform, filter;
 }
 body.scroll-reveal-enabled .reveal-on-scroll.is-visible {
   opacity: 1;
   filter: blur(0);
-  transform: translate3d(0, 0, 0) scale(1);
+  transform:
+    perspective(1200px)
+    translate3d(0, calc(var(--section-shift, 0px) * .55), 0)
+    rotateX(calc(var(--section-tilt, 0deg) * .45))
+    scale(var(--section-scale, 1));
 }
 body.scroll-reveal-enabled.is-scrolling-up .reveal-on-scroll {
-  transform: translate3d(0, -24px, 0) scale(.982);
+  transform:
+    perspective(1200px)
+    translate3d(0, calc(-16px + var(--section-shift, 0px)), 0)
+    rotateX(calc(var(--section-tilt, 0deg) * -.85))
+    scale(var(--section-scale, 1));
 }
 body.scroll-reveal-enabled.is-scrolling-up .reveal-on-scroll.is-visible {
-  transform: translate3d(0, 0, 0) scale(1);
+  transform:
+    perspective(1200px)
+    translate3d(0, calc(var(--section-shift, 0px) * .55), 0)
+    rotateX(calc(var(--section-tilt, 0deg) * -.3))
+    scale(var(--section-scale, 1));
 }
 body.scroll-reveal-enabled .metric.reveal-on-scroll.is-visible,
 body.scroll-reveal-enabled .feature-card.reveal-on-scroll.is-visible,
@@ -206,10 +222,18 @@ body.scroll-reveal-enabled .signal-table-wrap.reveal-on-scroll.is-visible {
   border-color: rgba(114,224,196,.14);
 }
 body.scroll-reveal-enabled .method-step.reveal-on-scroll {
-  transform: translate3d(-18px, 24px, 0);
+  transform:
+    perspective(1200px)
+    translate3d(calc(-16px + var(--section-shift, 0px) * .35), calc(22px + var(--section-shift, 0px)), 0)
+    rotateX(var(--section-tilt, 0deg))
+    scale(var(--section-scale, 1));
 }
 body.scroll-reveal-enabled .method-step.reveal-on-scroll.is-visible {
-  transform: translate3d(0, 0, 0);
+  transform:
+    perspective(1200px)
+    translate3d(calc(var(--section-shift, 0px) * .3), calc(var(--section-shift, 0px) * .5), 0)
+    rotateX(calc(var(--section-tilt, 0deg) * .35))
+    scale(var(--section-scale, 1));
 }
 
 @media (max-width: 850px) {

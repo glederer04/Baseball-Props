@@ -33,6 +33,10 @@
   nodes.forEach((node, index) => {
     node.classList.add("reveal-on-scroll");
     node.style.setProperty("--reveal-delay", `${Math.min(index * 45, 240)}ms`);
+    node.style.setProperty("--section-progress", "0");
+    node.style.setProperty("--section-shift", "0px");
+    node.style.setProperty("--section-tilt", "0deg");
+    node.style.setProperty("--section-scale", "1");
   });
 
   const updateScrollEffects = () => {
@@ -43,6 +47,19 @@
     document.body.classList.toggle("is-scrolling-down", scrollTop > (updateScrollEffects.lastTop || 0));
     document.body.classList.toggle("is-scrolling-up", scrollTop < (updateScrollEffects.lastTop || 0));
     updateScrollEffects.lastTop = scrollTop;
+    const viewportHeight = window.innerHeight || 1;
+    nodes.forEach(node => {
+      const rect = node.getBoundingClientRect();
+      const nodeCenter = rect.top + rect.height / 2;
+      const viewportCenter = viewportHeight / 2;
+      const distance = (nodeCenter - viewportCenter) / viewportHeight;
+      const clamped = Math.max(-1, Math.min(1, distance));
+      const visibility = Math.max(0, Math.min(1, 1 - Math.abs(clamped) * 1.35));
+      node.style.setProperty("--section-progress", visibility.toFixed(4));
+      node.style.setProperty("--section-shift", `${(-clamped * 18).toFixed(2)}px`);
+      node.style.setProperty("--section-tilt", `${(clamped * -1.6).toFixed(2)}deg`);
+      node.style.setProperty("--section-scale", `${(0.985 + visibility * 0.02).toFixed(4)}`);
+    });
   };
   updateScrollEffects.lastTop = 0;
   updateScrollEffects();
