@@ -30,9 +30,35 @@
   if (!nodes.length) return;
 
   document.body.classList.add("scroll-reveal-enabled");
-  nodes.forEach(node => node.classList.add("reveal-on-scroll"));
+  nodes.forEach((node, index) => {
+    node.classList.add("reveal-on-scroll");
+    node.style.setProperty("--reveal-delay", `${Math.min(index * 45, 240)}ms`);
+  });
+
+  const updateScrollEffects = () => {
+    const scrollTop = window.scrollY || window.pageYOffset || 0;
+    const docHeight = Math.max(document.body.scrollHeight - window.innerHeight, 1);
+    const progress = Math.max(0, Math.min(scrollTop / docHeight, 1));
+    document.body.style.setProperty("--scroll-progress", progress.toFixed(4));
+    document.body.classList.toggle("is-scrolling-down", scrollTop > (updateScrollEffects.lastTop || 0));
+    document.body.classList.toggle("is-scrolling-up", scrollTop < (updateScrollEffects.lastTop || 0));
+    updateScrollEffects.lastTop = scrollTop;
+  };
+  updateScrollEffects.lastTop = 0;
+  updateScrollEffects();
+
+  let ticking = false;
+  window.addEventListener("scroll", () => {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(() => {
+      updateScrollEffects();
+      ticking = false;
+    });
+  }, { passive: true });
 
   const reveal = node => node.classList.add("is-visible");
+  const hide = node => node.classList.remove("is-visible");
   if (!("IntersectionObserver" in window)) {
     nodes.forEach(reveal);
     return;
@@ -40,13 +66,15 @@
 
   const observer = new IntersectionObserver(entries => {
     entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      reveal(entry.target);
-      observer.unobserve(entry.target);
+      if (entry.isIntersecting) {
+        reveal(entry.target);
+      } else {
+        hide(entry.target);
+      }
     });
   }, {
-    rootMargin: "0px 0px -10% 0px",
-    threshold: 0.12
+    rootMargin: "0px 0px -6% 0px",
+    threshold: 0.18
   });
 
   nodes.forEach(node => observer.observe(node));

@@ -141,18 +141,76 @@ footer.footer { border-top: 1px solid var(--line); }
 .floating-slip-link:hover { color: var(--mint); border-color: rgba(114,224,196,.72); }
 .floating-slip-link strong { display: grid; place-items: center; min-width: 1.55rem; height: 1.55rem; padding: 0 .34rem; border-radius: 999px; background: var(--mint); color: var(--ink); font-size: .78rem; }
 
+body.scroll-reveal-enabled {
+  --scroll-progress: 0;
+}
+body.scroll-reveal-enabled main.content {
+  position: relative;
+}
+body.scroll-reveal-enabled main.content::before {
+  content: "";
+  position: fixed;
+  inset: auto auto 8% 4%;
+  width: 16rem;
+  height: 16rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(113,183,255,.16), rgba(113,183,255,0));
+  filter: blur(30px);
+  pointer-events: none;
+  opacity: calc(.25 + var(--scroll-progress) * .35);
+  transform: translate3d(0, calc(var(--scroll-progress) * -28px), 0);
+}
+body.scroll-reveal-enabled .hero::before {
+  transform: rotate(calc(45deg + var(--scroll-progress) * 10deg)) translateY(calc(var(--scroll-progress) * -16px));
+  border-color: rgba(114,224,196,.32);
+  box-shadow: 0 0 0 1px rgba(114,224,196,.04), 0 24px 80px rgba(0,0,0,.12);
+}
+body.scroll-reveal-enabled .market-card::after {
+  transform: translate3d(calc(var(--scroll-progress) * -8px), calc(var(--scroll-progress) * -16px), 0) scale(calc(1 + var(--scroll-progress) * .08));
+}
+body.scroll-reveal-enabled .status-strip {
+  box-shadow: 0 14px 40px rgba(0,0,0,.12);
+  transform: translateY(calc(var(--scroll-progress) * -8px));
+}
 body.scroll-reveal-enabled .reveal-on-scroll {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity .65s ease, transform .65s ease;
-  will-change: opacity, transform;
+  opacity: .08;
+  filter: blur(10px);
+  transform: translate3d(0, 34px, 0) scale(.975);
+  transition:
+    opacity .55s ease,
+    transform .7s cubic-bezier(.22, 1, .36, 1),
+    filter .7s ease,
+    box-shadow .5s ease,
+    border-color .5s ease;
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform, filter;
 }
 body.scroll-reveal-enabled .reveal-on-scroll.is-visible {
   opacity: 1;
-  transform: translateY(0);
+  filter: blur(0);
+  transform: translate3d(0, 0, 0) scale(1);
 }
-body.scroll-reveal-enabled .reveal-on-scroll:nth-of-type(2n) { transition-duration: .75s; }
-body.scroll-reveal-enabled .reveal-on-scroll:nth-of-type(3n) { transition-duration: .85s; }
+body.scroll-reveal-enabled.is-scrolling-up .reveal-on-scroll {
+  transform: translate3d(0, -24px, 0) scale(.982);
+}
+body.scroll-reveal-enabled.is-scrolling-up .reveal-on-scroll.is-visible {
+  transform: translate3d(0, 0, 0) scale(1);
+}
+body.scroll-reveal-enabled .metric.reveal-on-scroll.is-visible,
+body.scroll-reveal-enabled .feature-card.reveal-on-scroll.is-visible,
+body.scroll-reveal-enabled .market-card.reveal-on-scroll.is-visible,
+body.scroll-reveal-enabled .health-card.reveal-on-scroll.is-visible,
+body.scroll-reveal-enabled .callout-panel.reveal-on-scroll.is-visible,
+body.scroll-reveal-enabled .signal-table-wrap.reveal-on-scroll.is-visible {
+  box-shadow: 0 22px 60px rgba(0,0,0,.18);
+  border-color: rgba(114,224,196,.14);
+}
+body.scroll-reveal-enabled .method-step.reveal-on-scroll {
+  transform: translate3d(-18px, 24px, 0);
+}
+body.scroll-reveal-enabled .method-step.reveal-on-scroll.is-visible {
+  transform: translate3d(0, 0, 0);
+}
 
 @media (max-width: 850px) {
   .metric-grid, .feature-grid, .market-grid, .health-grid { grid-template-columns: 1fr; }
