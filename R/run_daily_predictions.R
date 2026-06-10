@@ -112,13 +112,28 @@ fetch_forecast_at_start <- function(latitude, longitude, game_datetime) {
   if (is.na(latitude) || is.na(longitude)) {
     return(tibble(temperature_f = 70, wind_mph = 0, precipitation_probability = NA_real_))
   }
-  payload <- get_public_json(
-    "https://api.open-meteo.com/v1/forecast",
-    latitude = latitude, longitude = longitude,
-    hourly = "temperature_2m,wind_speed_10m,precipitation_probability",
-    temperature_unit = "fahrenheit", wind_speed_unit = "mph",
-    timezone = event_timezone, forecast_days = 16
+  payload <- tryCatch(
+    get_public_json(
+      "https://api.open-meteo.com/v1/forecast",
+      latitude = latitude, longitude = longitude,
+      hourly = "temperature_2m,wind_speed_10m,precipitation_probability",
+      temperature_unit = "fahrenheit", wind_speed_unit = "mph",
+      timezone = event_timezone, forecast_days = 16
+    ),
+    error = function(cnd) {
+      warning(
+        sprintf(
+          "Open-Meteo forecast unavailable for %.4f, %.4f at %s: %s",
+          latitude, longitude, game_datetime, conditionMessage(cnd)
+        ),
+        call. = FALSE
+      )
+      NULL
+    }
   )
+  if (is.null(payload) || is.null(payload$hourly)) {
+    return(tibble(temperature_f = 70, wind_mph = 0, precipitation_probability = NA_real_))
+  }
   forecast_time <- unlist(payload$hourly$time)
   temperature_f <- unlist(payload$hourly$temperature_2m)
   wind_mph <- unlist(payload$hourly$wind_speed_10m)
