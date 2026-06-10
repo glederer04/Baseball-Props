@@ -6,6 +6,7 @@ project:
   resources:
     - favicon.png
     - assets/favicon.png
+    - assets/scroll-reveal.js
     - site-data/**
 
 website:
