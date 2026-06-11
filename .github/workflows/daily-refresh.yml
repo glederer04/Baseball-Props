@@ -3,9 +3,8 @@ name: Daily Refresh
 on:
   workflow_dispatch:
   schedule:
-    # GitHub Actions schedules are evaluated in UTC.
-    # 13:07 UTC = 9:07 AM America/New_York during daylight saving time.
-    - cron: "7 13 * * *"
+    - cron: "7 9 * * *"
+      timezone: "America/New_York"
 
 concurrency:
   group: daily-refresh
