@@ -1,12 +1,25 @@
 selection,matchup,game_time,market,side,line,american_price,model_probability,implied_probability,probability_difference,signal,captured_at
-Justin Wrobleski,Los Angeles Dodgers at Pittsburgh Pirates,6:41 PM ET,pitcher_strikeouts,Under,4.5,108,0.5966508635762996,0.44892552251987045,0.14772534105642915,Strong,2026-06-11T15:17:21+0000
-Kyle Bradish,Seattle Mariners at Baltimore Orioles,7:06 PM ET,pitcher_strikeouts,Under,5.5,-112,0.6207585912962039,0.5043297540699688,0.1164288372262351,Strong,2026-06-11T15:17:21+0000
-Bryan Woo,Seattle Mariners at Baltimore Orioles,7:06 PM ET,pitcher_strikeouts,Under,6.5,-154,0.6636240691166457,0.5670257738988136,0.09659829521783214,Strong,2026-06-11T15:17:21+0000
-YRFI,Seattle Mariners at Baltimore Orioles,7:06 PM ET,totals_1st_1_innings,Over,0.5,-106,0.5680646972957759,0.48542880932556204,0.08263588797021387,Strong,2026-06-11T15:17:21+0000
-Ryan Feltner,Chicago Cubs at Colorado Rockies,3:11 PM ET,pitcher_strikeouts,Over,3.5,-110,0.5796980500291027,0.5,0.07969805002910268,Strong,2026-06-11T15:17:21+0000
-YRFI,St. Louis Cardinals at New York Mets,1:11 PM ET,totals_1st_1_innings,Over,0.5,-120,0.5832075469413893,0.5145711906744379,0.06863635626695141,Watch,2026-06-11T15:17:21+0000
-Michael Wacha,Texas Rangers at Kansas City Royals,2:11 PM ET,pitcher_strikeouts,Under,4.5,-115,0.5696063350442706,0.5108342361863488,0.058772098857921784,Watch,2026-06-11T15:17:21+0000
-Martin Perez,Atlanta Braves at Chicago White Sox,7:41 PM ET,pitcher_strikeouts,Under,4.5,-154,0.6152693139562524,0.5670257738988136,0.048243540057438805,Watch,2026-06-11T15:17:21+0000
-Christian Scott,St. Louis Cardinals at New York Mets,1:11 PM ET,pitcher_strikeouts,Under,5.5,-148,0.6136979229289168,0.5676429567642958,0.046054966164621014,Watch,2026-06-11T15:17:21+0000
-YRFI,Chicago Cubs at Colorado Rockies,3:11 PM ET,totals_1st_1_innings,Over,0.5,-154,0.611706013336355,0.5715249662618084,0.040181047074546616,Watch,2026-06-11T15:17:21+0000
-Merrill Kelly,Arizona Diamondbacks at Miami Marlins,1:11 PM ET,pitcher_strikeouts,Under,4.5,-146,0.5854821844785121,0.5548317046688382,0.030650479809673836,Watch,2026-06-11T15:17:21+0000
+Jacob Misiorowski,Philadelphia Phillies at Milwaukee Brewers,7:41 PM ET,pitcher_strikeouts,Under,8.5,-110,0.6927180240245359,0.5,0.19271802402453586,Strong,2026-06-12T16:45:59+0000
+Trey Yesavage,New York Yankees at Toronto Blue Jays,7:37 PM ET,pitcher_strikeouts,Under,6.5,-154,0.7373516388921191,0.5781011228489802,0.1592505160431389,Strong,2026-06-12T16:45:59+0000
+Roki Sasaki,Los Angeles Dodgers at Chicago White Sox,7:41 PM ET,pitcher_strikeouts,Under,5.5,-136,0.6905996722010401,0.5379072681704261,0.15269240403061402,Strong,2026-06-12T16:45:59+0000
+Eduardo Rodriguez,Arizona Diamondbacks at Cincinnati Reds,7:16 PM ET,pitcher_strikeouts,Under,5.5,-154,0.7093920499666715,0.5670257738988136,0.1423662760678579,Strong,2026-06-12T16:45:59+0000
+Spencer Strider,Atlanta Braves at New York Mets,7:15 PM ET,pitcher_strikeouts,Under,5.5,-102,0.608605189053289,0.4718423169750604,0.13676287207822857,Strong,2026-06-12T16:45:59+0000
+Anthony Kay,Los Angeles Dodgers at Chicago White Sox,7:41 PM ET,pitcher_strikeouts,Over,3.5,-114,0.6040213766118289,0.5086640097036909,0.09535736690813801,Strong,2026-06-12T16:45:59+0000
+Griffin Canning,San Diego Padres at Baltimore Orioles,7:06 PM ET,pitcher_strikeouts,Under,4.5,-122,0.6025201466930429,0.5141838223374939,0.08833632435554895,Strong,2026-06-12T16:45:59+0000
+Bryce Miller,Seattle Mariners at Washington Nationals,6:46 PM ET,pitcher_strikeouts,Under,4.5,-102,0.5595427828300338,0.4718423169750604,0.08770046585497338,Strong,2026-06-12T16:45:59+0000
+Andrew Painter,Philadelphia Phillies at Milwaukee Brewers,7:41 PM ET,pitcher_strikeouts,Under,3.5,116,0.519781407975438,0.4329742261011864,0.08680718187425163,Strong,2026-06-12T16:45:59+0000
+Nolan McLean,Atlanta Braves at New York Mets,7:15 PM ET,pitcher_strikeouts,Under,5.5,104,0.5515206867185084,0.4661432777232581,0.08537740899525031,Strong,2026-06-12T16:45:59+0000
+Sandy Alcantara,Miami Marlins at Pittsburgh Pirates,6:41 PM ET,pitcher_strikeouts,Under,4.5,-122,0.5862253811051887,0.5141838223374939,0.0720415587676948,Strong,2026-06-12T16:45:59+0000
+YRFI,Seattle Mariners at Washington Nationals,6:46 PM ET,totals_1st_1_innings,Over,0.5,-125,0.5899971426248708,0.5238589211618258,0.06613822146304504,Watch,2026-06-12T16:45:59+0000
+Braxton Ashcraft,Miami Marlins at Pittsburgh Pirates,6:41 PM ET,pitcher_strikeouts,Under,5.5,104,0.5292040812914575,0.4661432777232581,0.06306080356819938,Watch,2026-06-12T16:45:59+0000
+YRFI,San Diego Padres at Baltimore Orioles,7:06 PM ET,totals_1st_1_innings,Over,0.5,-128,0.5905206678373482,0.5289256198347108,0.06159504800263749,Watch,2026-06-12T16:45:59+0000
+Jack Flaherty,Detroit Tigers at Cleveland Guardians,7:11 PM ET,pitcher_strikeouts,Over,5.5,132,0.46296517995072095,0.4023387750376288,0.060626404913092125,Watch,2026-06-12T16:45:59+0000
+YRFI,Texas Rangers at Boston Red Sox,7:11 PM ET,totals_1st_1_innings,Over,0.5,102,0.5269747038008092,0.4669102720259846,0.06006443177482462,Watch,2026-06-12T16:45:59+0000
+Zack Littell,Seattle Mariners at Washington Nationals,6:46 PM ET,pitcher_strikeouts,Over,3.5,100,0.5347553167753636,0.47639484978540764,0.05836046698995595,Watch,2026-06-12T16:45:59+0000
+NRFI,Philadelphia Phillies at Milwaukee Brewers,7:41 PM ET,totals_1st_1_innings,Under,0.5,-113,0.556450526554276,0.5,0.05645052655427596,Watch,2026-06-12T16:45:59+0000
+Sonny Gray,Texas Rangers at Boston Red Sox,7:11 PM ET,pitcher_strikeouts,Over,5.5,136,0.4590013058586718,0.40332289910907776,0.05567840674959407,Watch,2026-06-12T16:45:59+0000
+Jack Leiter,Texas Rangers at Boston Red Sox,7:11 PM ET,pitcher_strikeouts,Under,5.5,-174,0.6492560394659095,0.5935924058142985,0.05566363365161098,Watch,2026-06-12T16:45:59+0000
+Tanner Bibee,Detroit Tigers at Cleveland Guardians,7:11 PM ET,pitcher_strikeouts,Under,5.5,-164,0.6437811597159895,0.5924416450537237,0.05133951466226583,Watch,2026-06-12T16:45:59+0000
+NRFI,Arizona Diamondbacks at Cincinnati Reds,7:16 PM ET,totals_1st_1_innings,Under,0.5,112,0.4931334273700193,0.4456393635827931,0.047494063787226204,Watch,2026-06-12T16:45:59+0000
+Shane Baz,San Diego Padres at Baltimore Orioles,7:06 PM ET,pitcher_strikeouts,Over,5.5,128,0.4588291017662226,0.4173136645962733,0.04151543716994932,Watch,2026-06-12T16:45:59+0000
+YRFI,Miami Marlins at Pittsburgh Pirates,6:41 PM ET,totals_1st_1_innings,Over,0.5,100,0.5014883566591491,0.4710743801652893,0.03041397649385985,Watch,2026-06-12T16:45:59+0000
